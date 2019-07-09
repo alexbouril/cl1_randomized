@@ -26,10 +26,15 @@ class Relationship:
 class CL1_Randomized:
 
     def __init__(self, base_file_path, original_graph_filename, quality_function_name):
+        self.base_file_path = base_file_path
         self.graph = Graph(base_file_path+"/"+original_graph_filename)
         self.vertices_by_degree = self.sort_vertices_by_degree()
         self.quality_function_name = quality_function_name
         self.clustering = list()
+        self.cluster_list = list()
+        self.merged_cluster_list = list()
+        self.sizeThreshold_merged_cluster_list = list()
+        self.densityThreshold_sizeThreshold_merged_cluster_list = list()
 
     def sort_vertices_by_degree(self):
         retval = [[k, len(self.graph.hash_graph[k])] for k in self.graph.hash_graph]
@@ -42,14 +47,53 @@ class CL1_Randomized:
             clusters.append([vertex for vertex in cluster])
         return clusters
 
-    def print_translated_clusters(self):
-        clusters = self.get_clusters()
-        for cluster in clusters:
+    def make_cluster_list(self):
+        self.cluster_list = [set(cluster) for cluster in self.get_clusters()]
+
+    def write_final_clusters(self, output_filename):
+        f = open(self.base_file_path+"/"+ output_filename, "w+")
+        counter = 1
+        for cluster in self.densityThreshold_sizeThreshold_merged_cluster_list:
             s = ""
             for id in cluster:
                 s+=self.graph.id_to_name[id]+"\t"
+            print("Cluster #%s: "%str(counter),len(cluster), " proteins")
             print(s)
+            f.write(s + "\n")
+            counter+=1
+        f.close()
 
+
+    def sizeThreshold(self):
+        self.sizeThreshold_merged_cluster_list = [cluster for cluster in self.merged_cluster_list if len(cluster) > 2]
+
+    def densityThreshold(self, threshold=.125):
+
+        def checkDensity(cluster_set):
+            in_weight=0
+            for source in cluster_set:
+                for target in self.graph.hash_graph[source]:
+                    if target in cluster_set:
+                        in_weight+=self.graph.hash_graph[source][target]
+            in_weight/=2
+            n = len(cluster_set)
+            # TODO: check that authors didn't mean n* (n+1)/2
+            denominator = (n * (n-1)) /2
+            return in_weight/denominator
+
+        for cluster_set in self.sizeThreshold_merged_cluster_list:
+            density = checkDensity(cluster_set)
+            if density>threshold:
+                self.densityThreshold_sizeThreshold_merged_cluster_list.append(cluster_set)
+            print("density: ", density)
+
+        return "Dummy"
+
+    def process(self):
+        self.original_construction()
+        self.merger()
+        self.sizeThreshold()
+        self.densityThreshold()
 
     def original_construction(self):
 
@@ -312,46 +356,65 @@ class CL1_Randomized:
                 print("CLUSTER #%s: %s"%(str(len(self.clustering)), str([vertex for vertex in current_cluster])))
                 # time.sleep(2)
 
-
-    def merger(self, clusters):# takes a list of clusters
-        num_clusters = len(clusters)
-        for i in range(num_clusters):
-            for j in range(num_clusters):
-                print("Dummy merger")
+        self.make_cluster_list()
 
 
 
+    def merger(self, threshold=.8):# takes a list of clusters
+        indices_of_considered_clusters = {}
+        hash_graph = dict()
+
+        def similarity(A, B):
+            numerator = len(A.intersection(B))**2
+            denominator = len(A) * len(B)
+            return numerator / denominator
+
+        def dfs(index, local_visited):
+            local_visited.add(index)
+            for neigbor in hash_graph[index]:
+                if neigbor not in local_visited:
+                    dfs(neigbor, local_visited)
+
+        for i in range(len(self.cluster_list)):
+            if i not in hash_graph:
+                hash_graph[i]=set()
+            for j in range(i+1, len(self.cluster_list)):
+                if similarity(self.cluster_list[i], self.cluster_list[j])>threshold:
+                    if i in hash_graph:
+                        hash_graph[i].add(j)
+                    else:
+                        hash_graph[i] = {j}
+                    if j in hash_graph:
+                        hash_graph[j].add(i)
+                    else:
+                        hash_graph[j] = {i}
+
+        global_visited = set()
+        merge_indices = list()
+        for index in range(len(self.cluster_list)):
+            if index not in global_visited:
+                local_visited = set()
+                dfs(index, local_visited)
+                # TODO: is the copy necessary?
+                merge_indices.append(local_visited.copy())
+                for reached in local_visited:
+                    global_visited.add(reached)
+
+
+        new_clusters = list()
+        for group in merge_indices:
+            new_cluster = set()
+            for cluster_index in group:
+                new_cluster = new_cluster.union(self.cluster_list[cluster_index])
+            new_clusters.append(new_cluster)
+
+        self.merged_cluster_list =  new_clusters
 
 
 
 
 
-    # def quality_function(self, current_cluster:dict, change_vertex = None, change_relationship=None, action=""):
-    #     if action:
-    #         if action is 'add':
-    #             dummy = -1
-    #         if action is 'remove':
-    #             dummy = -2
-    #     else:
-    #         dummy = -3
-    #     return dummyPycharmProjects
 
 
-    # def change_add(self,  current_cluster:dict, change_vertex = None, change_relationship=None, action =""):
-    #     return "dummy"
-
-
-    # def quality_function_naive(self, current_cluster:dict, change_vertex=None, change_relationship=None, action =""):
-    #     weight_in = 0
-    #     weight_out = 0
-    #     for source in current_cluster:
-    #         for target in self.graph.hash_graph[source]:
-    #             edge_weight = self.graph.hash_graph[source][target]
-    #             if target in current_cluster:
-    #                 weight_in+=edge_weight
-    #             else:
-    #                 weight_out+=edge_weight
-    #     weight_in /= 2
-    #     cohesiveness = weight_in / (weight_in + weight_out)
 
 
