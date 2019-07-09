@@ -63,8 +63,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/cl1_randomized.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="391">
-              <caret line="69" column="45" selection-start-line="69" selection-start-column="45" selection-end-line="69" selection-end-column="45" />
+            <state relative-caret-position="193">
+              <caret line="27" column="137" selection-start-line="27" selection-start-column="137" selection-end-line="27" selection-end-column="137" />
               <folding>
                 <element signature="e#70#82#0" expanded="true" />
               </folding>
@@ -200,7 +200,7 @@
       <workItem from="1562253435600" duration="1030000" />
       <workItem from="1562558976803" duration="1474000" />
       <workItem from="1562599705128" duration="24616000" />
-      <workItem from="1562677948203" duration="3751000" />
+      <workItem from="1562677948203" duration="7411000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1562624427613</created>
@@ -213,7 +213,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="185681000" />
+    <option name="totallyTimeSpent" value="189341000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="791" y="27" width="1129" height="1053" extended-state="4" />
@@ -234,7 +234,7 @@
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Concurrent Activities Diagram" order="11" visible="true" weight="0.3297062" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="12" visible="true" weight="0.3293348" />
+      <window_info anchor="bottom" id="Terminal" order="12" visible="true" weight="0.3293348" />
       <window_info anchor="bottom" id="Python Console" order="13" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -315,8 +315,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/cl1_randomized.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="69" column="45" selection-start-line="69" selection-start-column="45" selection-end-line="69" selection-end-column="45" />
+        <state relative-caret-position="193">
+          <caret line="27" column="137" selection-start-line="27" selection-start-column="137" selection-end-line="27" selection-end-column="137" />
           <folding>
             <element signature="e#70#82#0" expanded="true" />
           </folding>

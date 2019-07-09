@@ -25,11 +25,14 @@ class Relationship:
 
 class CL1_Randomized:
 
-    def __init__(self, base_file_path, original_graph_filename, quality_function_name):
+    def __init__(self, base_file_path, original_graph_filename, quality_function_name, density_threshold = .3, penalty_value_per_node = 2):
         self.base_file_path = base_file_path
         self.graph = Graph(base_file_path+"/"+original_graph_filename)
         self.vertices_by_degree = self.sort_vertices_by_degree()
         self.quality_function_name = quality_function_name
+        self.density_threshold = density_threshold
+        self.penalty_value_per_node = penalty_value_per_node
+
         self.clustering = list()
         self.cluster_list = list()
         self.merged_cluster_list = list()
@@ -67,7 +70,7 @@ class CL1_Randomized:
     def sizeThreshold(self):
         self.sizeThreshold_merged_cluster_list = [cluster for cluster in self.merged_cluster_list if len(cluster) > 2]
 
-    def densityThreshold(self, threshold=.125):
+    def densityThreshold(self):
 
         def checkDensity(cluster_set):
             in_weight=0
@@ -83,7 +86,7 @@ class CL1_Randomized:
 
         for cluster_set in self.sizeThreshold_merged_cluster_list:
             density = checkDensity(cluster_set)
-            if density>threshold:
+            if density>self.density_threshold:
                 self.densityThreshold_sizeThreshold_merged_cluster_list.append(cluster_set)
             print("density: ", density)
 
@@ -156,7 +159,7 @@ class CL1_Randomized:
                 while improvement_flag and (add_candidates or remove_candidates):
                     improvement_flag = False
 
-                    # Consider adding a vertex on the boundary
+                    # Consider ADDING a vertex on the boundary
                     #
                     #
                     #
@@ -164,7 +167,8 @@ class CL1_Randomized:
                     best_change_score = current_score
                     for v in add_candidates:
                         numerator = current_cluster_weight_in + add_candidates[v].sum_weight_to
-                        denominator = current_cluster_weight_in + current_cluster_weight_out + add_candidates[v].sum_weight_to + add_candidates[v].sum_weight_from
+                        denominator = current_cluster_weight_in + current_cluster_weight_out + add_candidates[v].sum_weight_from + self.penalty_value_per_node * (len(current_cluster)+1)
+
                         proposed_score = numerator / denominator
 
                         if proposed_score>best_change_score:
@@ -246,7 +250,7 @@ class CL1_Randomized:
 
                     # sleep_debug(1)
 
-                    # Consider removing a vertex on the boundary
+                    # Consider REMOVING a vertex on the boundary
                     #
                     #
                     #
@@ -282,7 +286,7 @@ class CL1_Randomized:
                             if not is_a_cut:
                                 # TODO: check that this makes sense
                                 numerator = current_cluster_weight_in - remove_candidates[v].sum_weight_to
-                                denominator = current_cluster_weight_in + current_cluster_weight_out - remove_candidates[v].sum_weight_to - remove_candidates[v].sum_weight_from
+                                denominator = current_cluster_weight_in + current_cluster_weight_out - remove_candidates[v].sum_weight_from + self.penalty_value_per_node * (len(current_cluster)-1)
                                 proposed_score = numerator / denominator
                                 if proposed_score>best_change_score:
                                     best_change = v
