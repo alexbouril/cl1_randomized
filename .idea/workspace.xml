@@ -5,9 +5,7 @@
     <bookmark url="file://$PROJECT_DIR$/rli2.py" line="490" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1865913f-46b4-461e-9cda-61e2c58d2182" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/cl1_randomized.py" beforeDir="false" afterPath="$PROJECT_DIR$/cl1_randomized.py" afterDir="false" />
-    </list>
+    <list default="true" id="1865913f-46b4-461e-9cda-61e2c58d2182" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +60,7 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/cl1_randomized.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="220">
+            <state relative-caret-position="-3590">
               <caret line="431" column="76" selection-start-line="431" selection-start-column="76" selection-end-line="431" selection-end-column="76" />
               <folding>
                 <element signature="e#70#82#0" expanded="true" />
@@ -203,7 +201,7 @@
       <workItem from="1562558976803" duration="1474000" />
       <workItem from="1562599705128" duration="24616000" />
       <workItem from="1562677948203" duration="14785000" />
-      <workItem from="1562765172320" duration="4014000" />
+      <workItem from="1562765172320" duration="4739000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1562624427613</created>
@@ -216,11 +214,10 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="200729000" />
+    <option name="totallyTimeSpent" value="201454000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="56" y="27" width="1864" height="1053" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.13544019" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -237,7 +234,7 @@
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Concurrent Activities Diagram" order="11" visible="true" weight="0.3297062" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="12" visible="true" weight="0.099236645" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="12" visible="true" weight="0.2780807" />
       <window_info anchor="bottom" id="Python Console" order="13" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -348,7 +345,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/cl1_randomized.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
+        <state relative-caret-position="-3590">
           <caret line="431" column="76" selection-start-line="431" selection-start-column="76" selection-end-line="431" selection-end-column="76" />
           <folding>
             <element signature="e#70#82#0" expanded="true" />

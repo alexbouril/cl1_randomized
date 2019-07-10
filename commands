@@ -1,0 +1,143 @@
+todo:
+- take a look at the tie breaking rules
+- check my density calculations
+- check if any of the cluster produced by clusterONE are disconnected
+- add framework for other measure
+- experiment with randomization technique
+
+exec(open("/home/alonzo/PycharmProjects/relinking/cl1_randomized.py").read())
+
+a = CL1_Randomized("/home/alonzo/Documents/comb/cl1/cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality', "tarea_lowerdensitythreshold5.txt", .15, 2, True)
+
+a.process()
+
+
+
+#from ~/Documents/comb/cl1/
+# %prog [options] reference_complexes predicted_complexes
+ python2 cl1_reproducibility/reproducibility/scripts/match_standalone.py  cl1_datasets/datasets/test1.txt cl1_datasets/datasets/tarea.txt
+
+ python2 cl1_reproducibility/reproducibility/scripts/match_standalone.py  cl1_gold_standard/gold_standard/mips_3_100.txt cl1_datasets/datasets/tarea.txt
+
+ python2 cl1_reproducibility/reproducibility/scripts/match_standalone.py  cl1_gold_standard/gold_standard/mips_3_100.txt cl1_datasets/datasets/test1.txt
+
+ python2 cl1_reproducibility/reproducibility/scripts/match_standalone.py  cl1_gold_standard/gold_standard/sgd.txt cl1_datasets/datasets/test1.txt
+
+ python2 cl1_reproducibility/reproducibility/scripts/match_standalone.py   cl1_gold_standard/gold_standard/sgd.txt cl1_datasets/datasets/tarea.txt
+
+
+python2 cl1_reproducibility/reproducibility/scripts/match_standalone.py  cl1_datasets/datasets/test4.txt cl1_datasets/datasets/tarea.txt
+
+ python2 cl1_reproducibility/reproducibility/scripts/match_standalone.py   cl1_gold_standard/gold_standard/sgd.txt cl1_datasets/datasets/tarea_higherdensitythreshold3.txt
+
+ python2 cl1_reproducibility/reproducibility/scripts/match_standalone.py   cl1_gold_standard/gold_standard/sgd.txt cl1_datasets/datasets/tarea_lowerdensitythreshold4.txt
+
+
+---  7/10 master 6749186
+
+a = CL1_Randomized("/home/alonzo/Documents/comb/cl1/cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality', "tarea_lowerdensitythreshold5.txt", .15, 2, True)
+a.process()
+ python2 cl1_reproducibility/reproducibility/scripts/match_standalone.py   cl1_gold_standard/gold_standard/sgd.txt cl1_datasets/datasets/tarea_lowerdensitythreshold5.txt
+310 reference complexes, 250 predicted complexes
+acc = 0.5211
+cws = 0.4754
+frac = 0.3516
+mmr = 0.1924
+ppv = 0.5712
+sep = 0.3681
+
+---  7/10 master 6749186
+
+a = CL1_Randomized("/home/alonzo/Documents/comb/cl1/cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality', "tarea_lowerdensitythreshold6.txt", .15, 2, True)
+a.process()
+ python2 cl1_reproducibility/reproducibility/scripts/match_standalone.py   cl1_gold_standard/gold_standard/sgd.txt cl1_datasets/datasets/tarea_lowerdensitythreshold6.txt
+310 reference complexes, 251 predicted complexes
+acc = 0.5191
+cws = 0.4731
+frac = 0.3484
+mmr = 0.1929
+ppv = 0.5696
+sep = 0.3673
+
+--- 7/10 master 6749186
+
+a = CL1_Randomized("/home/alonzo/Documents/comb/cl1/cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality', "tarea_lowerdensitythreshold7.txt", .15, 2, True)
+a.process()
+ python2 cl1_reproducibility/reproducibility/scripts/match_standalone.py   cl1_gold_standard/gold_standard/sgd.txt cl1_datasets/datasets/tarea_lowerdensitythreshold7.txt
+310 reference complexes, 253 predicted complexes
+acc = 0.5224
+cws = 0.4778
+frac = 0.3548
+mmr = 0.1938
+ppv = 0.5711
+sep = 0.3683
+
+---  7/10 master 6749186
+
+a = CL1_Randomized("/home/alonzo/Documents/comb/cl1/cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality', "tarea_lowerdensitythreshold8.txt", .15, 2, True)
+a.process()
+ python2 cl1_reproducibility/reproducibility/scripts/match_standalone.py   cl1_gold_standard/gold_standard/sgd.txt cl1_datasets/datasets/tarea_lowerdensitythreshold8.txt
+310 reference complexes, 250 predicted complexes
+acc = 0.5186
+cws = 0.4726
+frac = 0.3484
+mmr = 0.1916
+ppv = 0.5691
+sep = 0.3655
+
+---  7/10 master 6749186
+
+a = CL1_Randomized("/home/alonzo/Documents/comb/cl1/cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality', "tarea_lowerdensitythreshold9.txt", .15, 2, True)
+a.process()
+ python2 cl1_reproducibility/reproducibility/scripts/match_standalone.py   cl1_gold_standard/gold_standard/sgd.txt cl1_datasets/datasets/tarea_lowerdensitythreshold9.txt
+310 reference complexes, 254 predicted complexes
+acc = 0.5230
+cws = 0.4795
+frac = 0.3548
+mmr = 0.1943
+ppv = 0.5705
+sep = 0.3698
+
+---  7/10 master 6749186
+
+a = CL1_Randomized("/home/alonzo/Documents/comb/cl1/cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality', "tarea_lowerdensitythreshold10.txt", .15, 2, False)
+a.process()
+ python2 cl1_reproducibility/reproducibility/scripts/match_standalone.py   cl1_gold_standard/gold_standard/sgd.txt cl1_datasets/datasets/tarea_lowerdensitythreshold10.txt
+acc = 0.5224
+cws = 0.4778
+frac = 0.3548
+mmr = 0.1943
+ppv = 0.5713
+sep = 0.3680
+
+---
+
+ python2 cl1_reproducibility/reproducibility/scripts/match_standalone.py   cl1_gold_standard/gold_standard/sgd.txt cl1_datasets/datasets/test4.txt
+acc = 0.5388
+cws = 0.5043
+frac = 0.3839
+mmr = 0.2029
+ppv = 0.5757
+sep = 0.4079
+
+---
+
+ python2 cl1_reproducibility/reproducibility/scripts/match_standalone.py   cl1_gold_standard/gold_standard/sgd.txt cl1_datasets/datasets/test1.txt
+
+acc = 0.5149
+cws = 0.4593
+frac = 0.3710
+mmr = 0.1986
+ppv = 0.5773
+sep = 0.3714
+
+
+
+
+
+
+
+
+
+
+
