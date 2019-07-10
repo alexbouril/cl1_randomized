@@ -132,8 +132,17 @@ ppv = 0.5773
 sep = 0.3714
 
 
+###################################################################################################
 
+7/10/19
+python3
+exec(open("cl1_randomized.py").read())
 
+a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality', "tarea_lowerdensitythreshold12.txt", .15, 2, True)
+
+a.process()
+
+python2 cl1_reproducibility/reproducibility/scripts/match_standalone.py   cl1_gold_standard/gold_standard/sgd.txt cl1_datasets/datasets/tarea_lowerdensitythreshold12.txt
 
 
 

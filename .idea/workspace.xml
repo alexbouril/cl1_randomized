@@ -5,7 +5,10 @@
     <bookmark url="file://$PROJECT_DIR$/rli2.py" line="490" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1865913f-46b4-461e-9cda-61e2c58d2182" name="Default Changelist" comment="" />
+    <list default="true" id="1865913f-46b4-461e-9cda-61e2c58d2182" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/commands" beforeDir="false" afterPath="$PROJECT_DIR$/commands" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -116,7 +119,31 @@
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
-    <panes />
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="relinking" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relinking" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="relinking" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relinking" type="462c0819:PsiDirectoryNode" />
+              <item name="cl1_datasets" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="relinking" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relinking" type="462c0819:PsiDirectoryNode" />
+              <item name="cl1_datasets" type="462c0819:PsiDirectoryNode" />
+              <item name="datasets" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="MANAGE_IGNORE_FILES_PROPERTY" value="true" />
@@ -201,7 +228,7 @@
       <workItem from="1562558976803" duration="1474000" />
       <workItem from="1562599705128" duration="24616000" />
       <workItem from="1562677948203" duration="14785000" />
-      <workItem from="1562765172320" duration="4739000" />
+      <workItem from="1562765172320" duration="5671000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1562624427613</created>
@@ -214,12 +241,12 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="201454000" />
+    <option name="totallyTimeSpent" value="202386000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="56" y="27" width="1864" height="1053" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.13544019" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13531353" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
