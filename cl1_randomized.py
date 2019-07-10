@@ -25,11 +25,12 @@ class Relationship:
 
 class CL1_Randomized:
 
-    def __init__(self, base_file_path, original_graph_filename, quality_function_name, density_threshold = .3, penalty_value_per_node = 2):
+    def __init__(self, base_file_path, original_graph_filename, quality_function_name, output_filename="unnamed.txt", density_threshold = .3, penalty_value_per_node = 2,):
         self.base_file_path = base_file_path
         self.graph = Graph(base_file_path+"/"+original_graph_filename)
         self.vertices_by_degree = self.sort_vertices_by_degree()
         self.quality_function_name = quality_function_name
+        self.output_filename = output_filename
         self.density_threshold = density_threshold
         self.penalty_value_per_node = penalty_value_per_node
 
@@ -53,8 +54,8 @@ class CL1_Randomized:
     def make_cluster_list(self):
         self.cluster_list = [set(cluster) for cluster in self.get_clusters()]
 
-    def write_final_clusters(self, output_filename):
-        f = open(self.base_file_path+"/"+ output_filename, "w+")
+    def write_final_clusters(self):
+        f = open(self.base_file_path+"/"+ self.output_filename, "w+")
         counter = 1
         for cluster in self.densityThreshold_sizeThreshold_merged_cluster_list:
             s = ""
@@ -97,6 +98,7 @@ class CL1_Randomized:
         self.merger()
         self.sizeThreshold()
         self.densityThreshold()
+        self.write_final_clusters()
 
     def original_construction(self):
 
