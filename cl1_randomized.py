@@ -27,7 +27,7 @@ class Relationship:
 
 class CL1_Randomized:
 
-    def __init__(self, base_file_path, original_graph_filename, quality_function_name, output_filename="unnamed.txt", density_threshold = .3, penalty_value_per_node = 2, randomized_construction = False):
+    def __init__(self, base_file_path, original_graph_filename, quality_function_name, output_filename="unnamed.txt", density_threshold = .3, penalty_value_per_node = 2, randomized_construction_bool= False):
         self.base_file_path = base_file_path
         self.graph = Graph(base_file_path+"/"+original_graph_filename)
         self.vertices_by_degree = self.sort_vertices_by_degree()
@@ -35,7 +35,7 @@ class CL1_Randomized:
         self.output_filename = output_filename
         self.density_threshold = density_threshold
         self.penalty_value_per_node = penalty_value_per_node
-        self.randomized_construction = randomized_construction
+        self.randomized_construction_bool = randomized_construction_bool
         self.clustering = list()
         self.cluster_list = list()
         self.merged_cluster_list = list()
@@ -96,7 +96,7 @@ class CL1_Randomized:
         return "Dummy"
 
     def process(self):
-        if self.randomized_construction:
+        if self.randomized_construction_bool:
             self.randomized_construction()
         else:
             self.original_construction()
@@ -429,13 +429,14 @@ class CL1_Randomized:
                 last_failed_remove_round = -666
                 round = 0
                 while (add_candidates or remove_candidates) and abs(last_failed_remove_round-last_failed_add_round) != 1:
+                    debug("Current cluster #%s" % str(len(self.clustering)))
                     decider = numpy.random.rand()
 
                     # Consider ADDING a vertex on the boundary
                     #
                     #
                     #
-                    if decider <= .5 or last_failed_remove_round == round:
+                    if (decider <= .5 or last_failed_remove_round == round) and last_failed_add_round!=round:
                         round+=1
                         best_change = None
                         best_change_score = current_score
@@ -459,6 +460,7 @@ class CL1_Randomized:
                             debug("add_candidates[v].sum_weight_to: %s"%str(add_candidates[v].sum_weight_to))
                             debug("current_cluster_weight_out: %s"%str(current_cluster_weight_out))
                             debug("add_candidates[v].sum_weight_from: %s"%str(add_candidates[v].sum_weight_from))
+                            debug("len(current_cluster): %s"%str(len(current_cluster)))
                             sleep_debug(.25)
 
                         if best_change:
@@ -525,10 +527,11 @@ class CL1_Randomized:
                     #
                     #
                     #
-                    if decider>.5 or last_failed_add_round == round:
+                    if (decider>.5 or last_failed_add_round == round) and  last_failed_remove_round!=round:
                         round+=1
                         # check that
                         #   (1) the cluster has more than one element
+                        print(len(current_cluster))
                         if len(current_cluster) > 1:
                             best_change = None
                             best_change_score = current_score
@@ -575,6 +578,7 @@ class CL1_Randomized:
                                     debug("remove_candidates[v].sum_weight_to: %s" % str(remove_candidates[v].sum_weight_to))
                                     debug("current_cluster_weight_out: %s" % str(current_cluster_weight_out))
                                     debug("remove_candidates[v].sum_weight_from: %s" % str(remove_candidates[v].sum_weight_from))
+                                    debug("len(current_cluster): %s" % str(len(current_cluster)))
                                     sleep_debug(1)
                             if best_change:
                                 debug("REMOVE: ", best_change, "best_change_score: ", best_change_score)
@@ -622,6 +626,12 @@ class CL1_Randomized:
                             else:
                                 debug("\n", "No improvement by REMOVING", "\n")
                                 last_failed_remove_round = round
+
+                        else:
+                            debug("\n", "No improvement by REMOVING, len(current_cluster) = 1", "\n")
+                            last_failed_remove_round = round
+
+                    print("$$$$$$$$$", last_failed_add_round, last_failed_remove_round, decider)
 
 
                 #add current_cluster to the list of clusters

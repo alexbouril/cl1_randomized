@@ -6,7 +6,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1865913f-46b4-461e-9cda-61e2c58d2182" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cl1_randomized.py" beforeDir="false" afterPath="$PROJECT_DIR$/cl1_randomized.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -63,8 +62,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/cl1_randomized.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="95">
-              <caret line="522" selection-start-line="522" selection-end-line="522" />
+            <state relative-caret-position="220">
+              <caret line="431" column="76" selection-start-line="431" selection-start-column="76" selection-end-line="431" selection-end-column="76" />
               <folding>
                 <element signature="e#70#82#0" expanded="true" />
                 <element signature="e#3742#21006#0" />
@@ -92,6 +91,7 @@
       <find>debug</find>
       <find>time</find>
       <find>&quot;density</find>
+      <find>round</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -203,7 +203,7 @@
       <workItem from="1562558976803" duration="1474000" />
       <workItem from="1562599705128" duration="24616000" />
       <workItem from="1562677948203" duration="14785000" />
-      <workItem from="1562765172320" duration="2253000" />
+      <workItem from="1562765172320" duration="4014000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1562624427613</created>
@@ -216,7 +216,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="198968000" />
+    <option name="totallyTimeSpent" value="200729000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="56" y="27" width="1864" height="1053" extended-state="6" />
@@ -288,13 +288,33 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/cl1_randomized.py</url>
-          <line>527</line>
+          <line>529</line>
           <option name="timeStamp" value="19" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/cl1_randomized.py</url>
-          <line>437</line>
+          <line>438</line>
           <option name="timeStamp" value="20" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/cl1_randomized.py</url>
+          <line>439</line>
+          <option name="timeStamp" value="21" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/cl1_randomized.py</url>
+          <line>530</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/cl1_randomized.py</url>
+          <line>523</line>
+          <option name="timeStamp" value="23" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/cl1_randomized.py</url>
+          <line>627</line>
+          <option name="timeStamp" value="24" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -328,8 +348,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/cl1_randomized.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="522" selection-start-line="522" selection-end-line="522" />
+        <state relative-caret-position="220">
+          <caret line="431" column="76" selection-start-line="431" selection-start-column="76" selection-end-line="431" selection-end-column="76" />
           <folding>
             <element signature="e#70#82#0" expanded="true" />
             <element signature="e#3742#21006#0" />
