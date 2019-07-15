@@ -15,6 +15,14 @@ def sleep_debug(t):
     if SLEEP_DEBUG:
         time.sleep(t)
 
+def jaccard_similarity(l1:list, l2:list)->float:
+    set1 = set(l1)
+    set2 = set(l2)
+    numerator = len(set1.intersection(set2))
+    denominator = len(set1.union(set2))
+    return numerator/denominator
+
+
 class Relationship:
     def __init__(self, sum_weight_to:float, num_edges_to:int, sum_weight_from:float, num_edges_from:int):
         self.sum_weight_to = sum_weight_to
@@ -25,17 +33,24 @@ class Relationship:
     def copy(self):
         return Relationship(self.sum_weight_to, self.num_edges_to, self.sum_weight_from, self.num_edges_from)
 
+
 class CL1_Randomized:
 
-    def __init__(self, base_file_path, original_graph_filename, quality_function_name, output_filename="unnamed.txt", density_threshold = .3, penalty_value_per_node = 2, randomized_construction_bool= False):
+    def __init__(self, base_file_path, original_graph_filename, quality_function_name, output_filename="unnamed.txt",
+                 density_threshold = .3, penalty_value_per_node = 2, randomized_construction_bool= False,
+                 sort_seeds_by="degree", gold_standard_filename = ""):
         self.base_file_path = base_file_path
         self.graph = Graph(base_file_path+"/"+original_graph_filename)
         self.vertices_by_degree = self.sort_vertices_by_degree()
+        self.vertices_by_weight = self.sort_vertices_by_weight()
         self.quality_function_name = quality_function_name
         self.output_filename = output_filename
         self.density_threshold = density_threshold
         self.penalty_value_per_node = penalty_value_per_node
         self.randomized_construction_bool = randomized_construction_bool
+        self.sort_seeds_by = sort_seeds_by
+        self.gold_standard_filename = gold_standard_filename
+
         self.clustering = list()
         self.cluster_list = list()
         self.merged_cluster_list = list()
@@ -44,6 +59,11 @@ class CL1_Randomized:
 
     def sort_vertices_by_degree(self):
         retval = [[k, len(self.graph.hash_graph[k])] for k in self.graph.hash_graph]
+        retval.sort(key=lambda x: x[1], reverse=True)
+        return retval
+
+    def sort_vertices_by_weight(self):
+        retval = [[k, sum([self.graph.hash_graph[k][target] for target in self.graph.hash_graph[k]])] for k in self.graph.hash_graph]
         retval.sort(key=lambda x: x[1], reverse=True)
         return retval
 
@@ -105,6 +125,79 @@ class CL1_Randomized:
         self.sizeThreshold()
         self.densityThreshold()
         self.write_final_clusters()
+
+    def gold_standard_complex_appearance(self,gold_standard_filename=""):
+        if gold_standard_filename:
+            gsf = gold_standard_filename
+        else:
+            gsf = self.gold_standard_filename
+
+        f = open(gsf, "r")
+        li = []
+        counter = 0
+        for line in f.readlines():
+            complex = line.split()
+            li.append(complex)
+            counter+=1
+
+        intermediate = []
+        for complex in li:
+            complex_appears = True
+            for protein in complex:
+                if protein not in self.graph.name_to_id:
+                    complex_appears=False
+            if complex_appears:
+                intermediate.append(complex)
+        print(counter," reference complexes")
+        print(len(intermediate), " appear in the dataset")
+
+        final=[]
+        for complex in intermediate:
+            current = []
+            for protein in complex:
+                current.append(self.graph.name_to_id[protein])
+            final.append(current)
+        return final
+
+
+    def found(self):
+        retval = []
+        for A in self.gold_standard_complex_appearance():
+            for B in self.densityThreshold_sizeThreshold_merged_cluster_list:
+                if jaccard_similarity(A,B) >=.75:
+                    retval.append(A)
+
+        print(len(retval)," were found by the algorithm")
+        print (retval)
+        return retval
+
+    def not_found(self):
+        retval = []
+        for A in self.gold_standard_complex_appearance():
+            found = False
+            for B in self.densityThreshold_sizeThreshold_merged_cluster_list:
+                if jaccard_similarity(A,B) >= .75:
+                    found = True
+            if not found:
+                retval.append(A)
+        print(len(retval)," were not found by the algorithm")
+        print (retval)
+        return retval
+
+
+    def cohesiveness(self, list_of_proteins):
+        weight_in = 0
+        weight_out = 0
+        for source in list_of_proteins:
+            for target in self.graph.hash_graph[source]:
+                if target in list_of_proteins:
+                    weight_in += self.graph.hash_graph[source][target] /2.0
+                else:
+                    weight_out += self.graph.hash_graph[source][target]
+        return weight_in/(weight_in + weight_out)
+
+
+
 
     def original_construction(self):
 
@@ -385,9 +478,14 @@ class CL1_Randomized:
         considered_vertices = set()
         index = 0
 
-        while index < len(self.vertices_by_degree):
-            current_seed = self.vertices_by_degree[index][0]
-            current_seed_degree = self.vertices_by_degree[index][1]
+        if self.sort_seeds_by == 'degree':
+            sorted_seeds = self.vertices_by_degree
+        else:
+            sorted_seeds = self.vertices_by_weight
+
+        while index < len(sorted_seeds):
+            current_seed = sorted_seeds[index][0]
+            current_seed_degree = sorted_seeds[index][1]
             debug("current_seed: ", current_seed)
             debug("current_seed_degree: ", current_seed_degree)
             if current_seed in considered_vertices:
@@ -692,11 +790,6 @@ class CL1_Randomized:
             new_clusters.append(new_cluster)
 
         self.merged_cluster_list =  new_clusters
-
-
-
-
-
 
 
 

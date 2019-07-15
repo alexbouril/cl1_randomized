@@ -147,6 +147,107 @@ python2 cl1_reproducibility/reproducibility/scripts/match_standalone.py   cl1_go
 
 
 
+###################################################################################################
+## 7/14/19 now with everything in the current repo
+
+exec(open("cl1_randomized.py").read())
+a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality', "tarea_lowerdensitythreshold12.txt", .15, 2, True)
+a.process()
+python2 cl1_reproducibility/reproducibility/scripts/match_standalone.py   cl1_gold_standard/gold_standard/sgd.txt cl1_datasets/datasets/tarea_lowerdensitythreshold12.txt
+310 reference complexes, 250 predicted complexes
+acc = 0.5185
+cws = 0.4726
+frac = 0.3484
+mmr = 0.1912
+ppv = 0.5689
+sep = 0.3660
 
 
+###################################################################################################
+## 7/14/19 now with everything in the current repo
+
+exec(open("cl1_randomized.py").read())
+a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality', "tarea_lowerdensitythreshold14.txt", .15, 2, randomized_construction_bool=False, sort_seeds_by="degree")
+a.process()
+python2 cl1_reproducibility/reproducibility/scripts/match_standalone.py   cl1_gold_standard/gold_standard/sgd.txt cl1_datasets/datasets/tarea_lowerdensitythreshold14.txt
+310 reference complexes, 254 predicted complexes
+acc = 0.5224
+cws = 0.4778
+frac = 0.3548
+mmr = 0.1943
+ppv = 0.5713
+sep = 0.3680
+
+######## 16 ###
+
+exec(open("cl1_randomized.py").read())
+a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality', "tarea_lowerdensitythreshold16.txt", .15, 2, randomized_construction_bool=False, sort_seeds_by="degree")
+a.process()
+python2 cl1_reproducibility/reproducibility/scripts/match_standalone.py   cl1_gold_standard/gold_standard/sgd.txt cl1_datasets/datasets/tarea_lowerdensitythreshold16.txt
+310 reference complexes, 254 predicted complexes
+acc = 0.5224
+cws = 0.4778
+frac = 0.3548
+mmr = 0.1943
+ppv = 0.5713
+sep = 0.3680
+
+
+###################################################################################################
+
+exec(open("cl1_randomized.py").read())
+a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality', "tarea_lowerdensitythreshold13.txt", .15, 2, randomized_construction_bool=False, sort_seeds_by="weight")
+a.process()
+python2 cl1_reproducibility/reproducibility/scripts/match_standalone.py   cl1_gold_standard/gold_standard/sgd.txt cl1_datasets/datasets/tarea_lowerdensitythreshold13.txt
+
+310 reference complexes, 254 predicted complexes
+acc = 0.5224
+cws = 0.4778
+frac = 0.3548
+mmr = 0.1943
+ppv = 0.5713
+sep = 0.3680
+
+######### 17 ##########
+
+exec(open("cl1_randomized.py").read())
+a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality', "tarea_lowerdensitythreshold17.txt", .15, 2, randomized_construction_bool=False, sort_seeds_by="weight")
+a.process()
+python2 cl1_reproducibility/reproducibility/scripts/match_standalone.py   cl1_gold_standard/gold_standard/sgd.txt cl1_datasets/datasets/tarea_lowerdensitythreshold17.txt
+310 reference complexes, 254 predicted complexes
+acc = 0.5224
+cws = 0.4778
+frac = 0.3548
+mmr = 0.1943
+ppv = 0.5713
+sep = 0.3680
+
+
+###################################################################################################
+exec(open("cl1_randomized.py").read())
+a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality', "tarea_lowerdensitythreshold18.txt", .15, 2, randomized_construction_bool=False, sort_seeds_by="weight", gold_standard_filename ="cl1_gold_standard/gold_standard/mips_3_100.txt" )
+existing = a.gold_standard_complex_appearance()
+
+
+###################################################################################################
+exec(open("cl1_randomized.py").read())
+a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality', "tarea_lowerdensitythreshold18.txt", .15, 2, randomized_construction_bool=False, sort_seeds_by="weight", gold_standard_filename ="cl1_gold_standard/gold_standard/mips_3_100.txt" )
+a.process()
+
+print("FOUND")
+found  = a.found()
+for c in found:
+    print(a.cohesiveness(c))
+print("--------------------------------------")
+
+print("NOT FOUND")
+not_found  = a.not_found()
+for c in not_found:
+    print(a.cohesiveness(c))
+print("--------------------------------------")
+
+#gsca = a.gold_standard_complex_appearance()
+#for c in gsca:
+#    print(a.cohesiveness(c))
+#print("--------------------------------------")
 
