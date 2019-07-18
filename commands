@@ -242,8 +242,12 @@ print("--------------------------------------")
 
 print("NOT FOUND")
 not_found  = a.not_found()
+total = 0
 for c in not_found:
-    print(a.cohesiveness(c))
+    c_cohesiveness = a.cohesiveness(c)
+    total+=
+    print(c_cohesiveness)
+
 print("--------------------------------------")
 
 #gsca = a.gold_standard_complex_appearance()
@@ -251,3 +255,4 @@ print("--------------------------------------")
 #    print(a.cohesiveness(c))
 #print("--------------------------------------")
 
+exec(open("commands.py").read())

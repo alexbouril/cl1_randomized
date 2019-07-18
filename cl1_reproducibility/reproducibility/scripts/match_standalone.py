@@ -212,7 +212,7 @@ class MatchApplication(object):
                 continue
 
             result = self.measures[measure](reference_complexes, predicted_complexes)
-            print "%s = %.4f" % (measure, result)
+            print ("%s = %.4f" % (measure, result))
 
         return 0
 
