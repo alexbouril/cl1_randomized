@@ -1,10 +1,10 @@
-exec(open("/home/alonzo/PycharmProjects/relinking/common.py").read())
+from common import Graph
 import numpy
 import sys
 import time
 import math
 
-DEBUG = True
+DEBUG = False
 SLEEP_DEBUG = False
 def debug(*argv):
     if DEBUG:
@@ -14,6 +14,14 @@ def debug(*argv):
 def sleep_debug(t):
     if SLEEP_DEBUG:
         time.sleep(t)
+
+def jaccard_similarity(l1:list, l2:list)->float:
+    set1 = set(l1)
+    set2 = set(l2)
+    numerator = len(set1.intersection(set2))
+    denominator = len(set1.union(set2))
+    return numerator/denominator
+
 
 class Relationship:
     def __init__(self, sum_weight_to:float, num_edges_to:int, sum_weight_from:float, num_edges_from:int):
@@ -25,17 +33,35 @@ class Relationship:
     def copy(self):
         return Relationship(self.sum_weight_to, self.num_edges_to, self.sum_weight_from, self.num_edges_from)
 
-class CL1_Randomized:
 
-    def __init__(self, base_file_path, original_graph_filename, quality_function_name, output_filename="unnamed.txt", density_threshold = .3, penalty_value_per_node = 2, randomized_construction_bool= False):
+class CL1_Randomized:
+    def __init__(self,
+                 base_file_path,
+                 original_graph_filename,
+                 quality_function_name,
+                 output_filename="unnamed.txt",
+                 density_threshold = .3,
+                 penalty_value_per_node = 2,
+                 randomized_construction_bool= False,
+                 sort_seeds_by="degree",
+                 care_about_cuts=True,
+                 seed_from_all = False,
+                 gold_standard_filename = ""):
+        self.zr = 12
         self.base_file_path = base_file_path
         self.graph = Graph(base_file_path+"/"+original_graph_filename)
         self.vertices_by_degree = self.sort_vertices_by_degree()
+        self.vertices_by_weight = self.sort_vertices_by_weight()
         self.quality_function_name = quality_function_name
         self.output_filename = output_filename
         self.density_threshold = density_threshold
         self.penalty_value_per_node = penalty_value_per_node
         self.randomized_construction_bool = randomized_construction_bool
+        self.sort_seeds_by = sort_seeds_by
+        self.care_about_cuts = care_about_cuts
+        self.seed_from_all = seed_from_all
+        self.gold_standard_filename = gold_standard_filename
+
         self.clustering = list()
         self.cluster_list = list()
         self.merged_cluster_list = list()
@@ -44,6 +70,11 @@ class CL1_Randomized:
 
     def sort_vertices_by_degree(self):
         retval = [[k, len(self.graph.hash_graph[k])] for k in self.graph.hash_graph]
+        retval.sort(key=lambda x: x[1], reverse=True)
+        return retval
+
+    def sort_vertices_by_weight(self):
+        retval = [[k, sum([self.graph.hash_graph[k][target] for target in self.graph.hash_graph[k]])] for k in self.graph.hash_graph]
         retval.sort(key=lambda x: x[1], reverse=True)
         return retval
 
@@ -69,6 +100,14 @@ class CL1_Randomized:
             counter+=1
         f.close()
 
+    def get_quality(self):
+        import subprocess
+        res = subprocess.check_output(["python2",
+                                       "cl1_reproducibility/reproducibility/scripts/match_standalone.py",
+                                       self.gold_standard_filename,
+                                       self.base_file_path +"/"+self.output_filename])
+        for line in res.splitlines():
+            print(line)
 
     def sizeThreshold(self):
         self.sizeThreshold_merged_cluster_list = [cluster for cluster in self.merged_cluster_list if len(cluster) > 2]
@@ -81,7 +120,6 @@ class CL1_Randomized:
                 for target in self.graph.hash_graph[source]:
                     if target in cluster_set:
                         in_weight+=self.graph.hash_graph[source][target]
-            in_weight/=2
             n = len(cluster_set)
             # TODO: check that authors didn't mean n* (n+1)/2
             denominator = (n * (n-1)) /2
@@ -91,8 +129,6 @@ class CL1_Randomized:
             density = checkDensity(cluster_set)
             if density>self.density_threshold:
                 self.densityThreshold_sizeThreshold_merged_cluster_list.append(cluster_set)
-            print("density: ", density)
-
         return "Dummy"
 
     def process(self):
@@ -105,6 +141,96 @@ class CL1_Randomized:
         self.sizeThreshold()
         self.densityThreshold()
         self.write_final_clusters()
+        self.found_and_unfound_details()
+        print("#######################################")
+        self.get_quality()
+
+
+    def gold_standard_complex_appearance(self,gold_standard_filename=""):
+        if gold_standard_filename:
+            gsf = gold_standard_filename
+        else:
+            gsf = self.gold_standard_filename
+
+        f = open(gsf, "r")
+        li = []
+        counter = 0
+        for line in f.readlines():
+            complex = line.split()
+            li.append(complex)
+            counter+=1
+
+        intermediate = []
+        for complex in li:
+            complex_appears = True
+            for protein in complex:
+                if protein not in self.graph.name_to_id:
+                    complex_appears=False
+            if complex_appears:
+                intermediate.append(complex)
+        print(counter," reference complexes")
+        print(len(intermediate), " appear in the dataset")
+
+        final=[]
+        for complex in intermediate:
+            current = []
+            for protein in complex:
+                current.append(self.graph.name_to_id[protein])
+            final.append(current)
+        return final
+
+
+    def found(self):
+        retval = []
+        for A in self.gold_standard_complex_appearance():
+            for B in self.densityThreshold_sizeThreshold_merged_cluster_list:
+                if jaccard_similarity(A,B) >=.75:
+                    retval.append(A)
+
+        print(len(retval)," were found by the algorithm")
+        print (retval)
+        return retval
+
+    def not_found(self):
+        retval = []
+        for A in self.gold_standard_complex_appearance():
+            found = False
+            for B in self.densityThreshold_sizeThreshold_merged_cluster_list:
+                if jaccard_similarity(A,B) >= .75:
+                    found = True
+            if not found:
+                retval.append(A)
+        print(len(retval)," were not found by the algorithm")
+        print (retval)
+        return retval
+
+
+    def cohesiveness(self, list_of_proteins):
+        weight_in = 0
+        weight_out = 0
+        for source in list_of_proteins:
+            for target in self.graph.hash_graph[source]:
+                if target in list_of_proteins:
+                    weight_in += self.graph.hash_graph[source][target] /2.0
+                else:
+                    weight_out += self.graph.hash_graph[source][target]
+        return weight_in/(weight_in + weight_out)
+
+    def density(self, list_of_proteins):
+        in_weight = 0
+        for source in list_of_proteins:
+            for target in self.graph.hash_graph[source]:
+                if target in list_of_proteins:
+                    in_weight += self.graph.hash_graph[source][target]
+        n = len(list_of_proteins)
+        # TODO: check that authors didn't mean n* (n+1)/2
+        denominator = (n * (n - 1)) / 2
+        return in_weight / denominator
+
+    def modularity(self, list_of_proteins):
+        return 1
+
+
 
     def original_construction(self):
 
@@ -363,10 +489,57 @@ class CL1_Randomized:
                 #add current_cluster to the list of clusters
                 self.clustering.append(current_cluster)
                 index += 1
-                for v in current_cluster:
-                    considered_vertices.add(v)
+                if not self.seed_from_all:
+                    for v in current_cluster:
+                        considered_vertices.add(v)
                 print("CLUSTER #%s: %s"%(str(len(self.clustering)), str([vertex for vertex in current_cluster])))
                 # time.sleep(2)
+
+    def found_and_unfound_details(self):
+        print("FOUND")
+        a = self
+        found = a.found()
+        cohesiveness_tot = 0
+        density_tot = 0
+        length_tot = 0
+        for c in found:
+            c_cohesiveness = a.cohesiveness(c)
+            cohesiveness_tot += c_cohesiveness
+            c_density = a.density(c)
+            density_tot += c_density
+            length_tot +=len(c)
+            print(c)
+            print(len(c), c_cohesiveness, c_density, len(c))
+        c1 = cohesiveness_tot / float(len(found))
+        d1 = density_tot / float(len(found))
+        l1 = length_tot / float(len(found))
+        print("--------------------------------------")
+
+        print("NOT FOUND")
+        not_found = a.not_found()
+        cohesiveness_tot = 0
+        density_tot = 0
+        length_tot = 0
+        for c in not_found:
+            c_cohesiveness = a.cohesiveness(c)
+            cohesiveness_tot += c_cohesiveness
+            c_density = a.density(c)
+            density_tot += c_density
+            length_tot += len(c)
+            print(c)
+            print(len(c), c_cohesiveness, c_density, len(c))
+        c2 = cohesiveness_tot / float(len(not_found))
+        d2 = density_tot / float(len(not_found))
+        l2 = length_tot / float(len(not_found))
+        print("--------------------------------------")
+        print("found: ", len(found))
+        print("not found: ", len(not_found))
+        print("average cohesiveness of found= ", c1)
+        print("average density of found= ", d1)
+        print("average length of found= ", l1)
+        print("average cohesiveness of NOT found= ", c2)
+        print("average density of NOT found= ", d2)
+        print("average length of NOT found= ", l2)
 
     def randomized_construction(self):
 
@@ -385,9 +558,14 @@ class CL1_Randomized:
         considered_vertices = set()
         index = 0
 
-        while index < len(self.vertices_by_degree):
-            current_seed = self.vertices_by_degree[index][0]
-            current_seed_degree = self.vertices_by_degree[index][1]
+        if self.sort_seeds_by == 'degree':
+            sorted_seeds = self.vertices_by_degree
+        else:
+            sorted_seeds = self.vertices_by_weight
+
+        while index < len(sorted_seeds):
+            current_seed = sorted_seeds[index][0]
+            current_seed_degree = sorted_seeds[index][1]
             debug("current_seed: ", current_seed)
             debug("current_seed_degree: ", current_seed_degree)
             if current_seed in considered_vertices:
@@ -537,28 +715,32 @@ class CL1_Randomized:
                             best_change_score = current_score
                             current_cluster_membership_hashset = [vertex for vertex in current_cluster]
                             for v in remove_candidates:
-                                # TODO: check if there is a cut.
-                                #   Implement more efficiently using a Dynamic Connectivity algorithm
-                                is_a_cut = True
-                                visted = set()
-                                start_point = None
-                                for potential_start_point in current_cluster_membership_hashset:
-                                    if potential_start_point != v:
-                                        start_point = potential_start_point
-                                        # consider break statement here
-                                # check that
-                                #   (2) removal of vertex under consideration will not disconnect cluster
-                                debug("DFS starting vertex: %s"%str(start_point), "DFS ignore vertex: %s"%str(v))
-                                dfs(start_point, v,  current_cluster_membership_hashset, visted)
-                                debug("=============================")
-                                if len(visted) == -1 + len(current_cluster_membership_hashset):
-                                    is_a_cut = False
-                                    debug("%s is NOT a CUT"%str(v))
-                                if is_a_cut:
-                                    debug("%s is a CUT!" % str(v))
-                                debug("cluster: %s"% str(current_cluster_membership_hashset))
-                                debug("visited by DFS: %s"%str(visted))
-                                sleep_debug(.25)
+                                if self.care_about_cuts:
+                                    # TODO: check if there is a cut.
+                                    #   Implement more efficiently using a Dynamic Connectivity algorithm
+                                    is_a_cut = True
+                                    visted = set()
+                                    start_point = None
+                                    for potential_start_point in current_cluster_membership_hashset:
+                                        if potential_start_point != v:
+                                            start_point = potential_start_point
+                                            # consider break statement here
+                                    # check that
+                                    #   (2) removal of vertex under consideration will not disconnect cluster
+                                    debug("DFS starting vertex: %s"%str(start_point), "DFS ignore vertex: %s"%str(v))
+                                    dfs(start_point, v,  current_cluster_membership_hashset, visted)
+                                    debug("=============================")
+                                    if len(visted) == -1 + len(current_cluster_membership_hashset):
+                                        is_a_cut = False
+                                        debug("%s is NOT a CUT"%str(v))
+                                    if is_a_cut:
+                                        debug("%s is a CUT!" % str(v))
+                                    debug("cluster: %s"% str(current_cluster_membership_hashset))
+                                    debug("visited by DFS: %s"%str(visted))
+                                    sleep_debug(.25)
+                                else:
+                                    is_a_cut=False
+
                                 if not is_a_cut:
                                     # TODO: check that this makes sense
                                     numerator = current_cluster_weight_in - remove_candidates[v].sum_weight_to
@@ -637,8 +819,9 @@ class CL1_Randomized:
                 #add current_cluster to the list of clusters
                 self.clustering.append(current_cluster)
                 index += 1
-                for v in current_cluster:
-                    considered_vertices.add(v)
+                if not self.seed_from_all:
+                    for v in current_cluster:
+                        considered_vertices.add(v)
                 print("CLUSTER #%s: %s"%(str(len(self.clustering)), str([vertex for vertex in current_cluster])))
                 print(last_failed_add_round, last_failed_remove_round)
                 # time.sleep(2)
@@ -692,11 +875,6 @@ class CL1_Randomized:
             new_clusters.append(new_cluster)
 
         self.merged_cluster_list =  new_clusters
-
-
-
-
-
 
 
 
