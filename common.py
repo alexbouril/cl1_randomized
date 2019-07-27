@@ -1,14 +1,29 @@
 import sys
 import heapq
 import numpy as np
+import time
+DEBUG = False
+SLEEP_DEBUG = False
 
-GLOBAL_DEBUG = False
+def debug(*argv):
+    if DEBUG:
+        for arg in argv:
+            print(arg)
 
-def debugging(*argv, debug):
-    if debug or GLOBAL_DEBUG:
-        for s in argv:
-            print(s, end="")
+def sleep_debug(t):
+    if SLEEP_DEBUG:
+        time.sleep(t)
 
+
+class Relationship:
+    def __init__(self, sum_weight_to:float, num_edges_to:int, sum_weight_from:float, num_edges_from:int):
+        self.sum_weight_to = sum_weight_to
+        self.num_edges_to = num_edges_to
+        self.sum_weight_from = sum_weight_from
+        self.num_edges_from = num_edges_from
+
+    def copy(self):
+        return Relationship(self.sum_weight_to, self.num_edges_to, self.sum_weight_from, self.num_edges_from)
 
 class Graph:
     #  expects a file with every line as:
