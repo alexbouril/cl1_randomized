@@ -6,12 +6,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1865913f-46b4-461e-9cda-61e2c58d2182" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cl1_datasets/datasets/tarea_regulardensitythreshold18.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cl1_datasets/datasets/tarea_regulardensitythreshold18.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cl1_randomized.py" beforeDir="false" afterPath="$PROJECT_DIR$/cl1_randomized.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/commands.py" beforeDir="false" afterPath="$PROJECT_DIR$/commands.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/common.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -38,26 +35,26 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/commands.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="12" column="52" selection-start-line="12" selection-start-column="52" selection-end-line="12" selection-end-column="52" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cl1_randomized.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="176" column="177" selection-start-line="176" selection-start-column="177" selection-end-line="176" selection-end-column="177" />
+            <state relative-caret-position="510">
+              <caret line="34" lean-forward="true" selection-start-line="34" selection-end-line="34" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/cl1_randomized.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="452">
+              <caret line="49" column="54" selection-start-line="49" selection-start-column="54" selection-end-line="49" selection-end-column="54" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="679">
-              <caret line="256" column="72" selection-start-line="256" selection-start-column="72" selection-end-line="256" selection-end-column="72" />
+            <state relative-caret-position="3930">
+              <caret line="262" selection-start-line="262" selection-end-line="262" />
             </state>
           </provider>
         </entry>
@@ -116,9 +113,9 @@
         <option value="$PROJECT_DIR$/commands" />
         <option value="$PROJECT_DIR$/cl1_reproducibility/reproducibility/scripts/match_standalone.py" />
         <option value="$PROJECT_DIR$/common.py" />
-        <option value="$PROJECT_DIR$/cl1_randomized.py" />
-        <option value="$PROJECT_DIR$/commands.py" />
         <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/commands.py" />
+        <option value="$PROJECT_DIR$/cl1_randomized.py" />
       </list>
     </option>
   </component>
@@ -130,51 +127,22 @@
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
-    <navigator proportions="" version="1">
+    <navigator currentView="Scope" currentSubView="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope" proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane">
-        <subPane>
+      <pane id="ProjectPane" />
+      <pane id="Scope">
+        <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
           <expand>
             <path>
-              <item name="relinking" type="b2602c69:ProjectViewProjectNode" />
-              <item name="relinking" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="relinking" type="b2602c69:ProjectViewProjectNode" />
-              <item name="relinking" type="462c0819:PsiDirectoryNode" />
-              <item name="cl1_gold_standard" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="relinking" type="b2602c69:ProjectViewProjectNode" />
-              <item name="relinking" type="462c0819:PsiDirectoryNode" />
-              <item name="cl1_gold_standard" type="462c0819:PsiDirectoryNode" />
-              <item name="gold_standard" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="relinking" type="b2602c69:ProjectViewProjectNode" />
-              <item name="relinking" type="462c0819:PsiDirectoryNode" />
-              <item name="cl1_reproducibility" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="relinking" type="b2602c69:ProjectViewProjectNode" />
-              <item name="relinking" type="462c0819:PsiDirectoryNode" />
-              <item name="cl1_reproducibility" type="462c0819:PsiDirectoryNode" />
-              <item name="reproducibility" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="relinking" type="b2602c69:ProjectViewProjectNode" />
-              <item name="relinking" type="462c0819:PsiDirectoryNode" />
-              <item name="cl1_reproducibility" type="462c0819:PsiDirectoryNode" />
-              <item name="reproducibility" type="462c0819:PsiDirectoryNode" />
-              <item name="scripts" type="462c0819:PsiDirectoryNode" />
+              <item name="relinking" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="~/PycharmProjects/relinking" type="442cc68d:ScopeViewTreeModel$RootNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -275,7 +243,8 @@
       <workItem from="1563402352241" duration="5570000" />
       <workItem from="1563455117985" duration="1117000" />
       <workItem from="1563456249790" duration="13811000" />
-      <workItem from="1564198826598" duration="951000" />
+      <workItem from="1564198826598" duration="1229000" />
+      <workItem from="1564244362731" duration="665000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1562624427613</created>
@@ -288,13 +257,13 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="252303000" />
+    <option name="totallyTimeSpent" value="253246000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="56" y="27" width="932" height="1053" extended-state="4" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.35553047" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13995485" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -309,7 +278,7 @@
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Concurrent Activities Diagram" order="11" visible="true" weight="0.3297062" />
-      <window_info anchor="bottom" id="Terminal" order="12" visible="true" weight="0.19738276" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="12" visible="true" weight="0.24209379" />
       <window_info anchor="bottom" id="Python Console" order="13" weight="0.34460196" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -365,17 +334,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/cl1_randomized.py</url>
-          <line>615</line>
+          <line>617</line>
           <option name="timeStamp" value="27" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/cl1_randomized.py</url>
-          <line>824</line>
+          <line>826</line>
           <option name="timeStamp" value="28" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/cl1_randomized.py</url>
-          <line>165</line>
+          <line>167</line>
           <option name="timeStamp" value="29" />
         </line-breakpoint>
       </breakpoints>
@@ -431,24 +400,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3930">
+          <caret line="262" selection-start-line="262" selection-end-line="262" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/commands.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="52" selection-start-line="12" selection-start-column="52" selection-end-line="12" selection-end-column="52" />
+        <state relative-caret-position="510">
+          <caret line="34" lean-forward="true" selection-start-line="34" selection-end-line="34" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/cl1_randomized.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="176" column="177" selection-start-line="176" selection-start-column="177" selection-end-line="176" selection-end-column="177" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="679">
-          <caret line="256" column="72" selection-start-line="256" selection-start-column="72" selection-end-line="256" selection-end-column="72" />
+        <state relative-caret-position="452">
+          <caret line="49" column="54" selection-start-line="49" selection-start-column="54" selection-end-line="49" selection-end-column="54" />
         </state>
       </provider>
     </entry>

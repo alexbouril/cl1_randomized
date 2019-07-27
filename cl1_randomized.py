@@ -29,6 +29,7 @@ class CL1_Randomized:
                  penalty_value_per_node = 2,
                  randomized_construction_bool= False,
                  number_of_bad_adds = 0,
+                 bad_add_probability = 0,
                  sort_seeds_by="degree",
                  care_about_cuts=True,
                  seed_from_all = False,
@@ -46,6 +47,7 @@ class CL1_Randomized:
         self.penalty_value_per_node = penalty_value_per_node
         self.randomized_construction_bool = randomized_construction_bool
         self.number_of_bad_adds = number_of_bad_adds
+        self.bad_add_probability = bad_add_probability
         self.sort_seeds_by = sort_seeds_by
         self.care_about_cuts = care_about_cuts
         self.seed_from_all = seed_from_all
