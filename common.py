@@ -2,7 +2,7 @@ import sys
 import heapq
 import numpy as np
 import time
-DEBUG = False
+DEBUG = True
 SLEEP_DEBUG = False
 
 def debug(*argv):

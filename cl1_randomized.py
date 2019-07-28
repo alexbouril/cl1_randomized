@@ -15,9 +15,6 @@ def jaccard_similarity(l1:list, l2:list)->float:
     denominator = len(set1.union(set2))
     return numerator/denominator
 
-
-
-
 class CL1_Randomized:
     def __init__(self,
                  base_file_path,
@@ -28,6 +25,7 @@ class CL1_Randomized:
                  merge_threshold = .8,
                  penalty_value_per_node = 2,
                  randomized_construction_bool= False,
+                 number_of_shakes = 0,
                  number_of_bad_adds = 0,
                  bad_add_probability = 0,
                  sort_seeds_by="degree",
@@ -46,6 +44,7 @@ class CL1_Randomized:
         self.merge_threshold = merge_threshold
         self.penalty_value_per_node = penalty_value_per_node
         self.randomized_construction_bool = randomized_construction_bool
+        self.number_of_shakes = number_of_shakes
         self.number_of_bad_adds = number_of_bad_adds
         self.bad_add_probability = bad_add_probability
         self.sort_seeds_by = sort_seeds_by
@@ -150,7 +149,6 @@ class CL1_Randomized:
         print("################ QUALITY #######################")
         self.get_quality()
 
-
     def gold_standard_complex_appearance(self,gold_standard_filename=""):
         if gold_standard_filename:
             gsf = gold_standard_filename
@@ -188,7 +186,6 @@ class CL1_Randomized:
             final.append(current)
         self.gold_standard_complexes_appearing_in_dataset = final
         return final
-
 
     def found_gsc(self):
         retval = []
@@ -281,8 +278,6 @@ class CL1_Randomized:
 
     def modularity(self, list_of_proteins):
         return 1
-
-
 
     def original_construction(self):
 
@@ -547,7 +542,6 @@ class CL1_Randomized:
                 print("CLUSTER #%s: %s"%(str(len(self.clustering)), str([vertex for vertex in current_cluster])))
                 # time.sleep(2)
 
-
     def randomized_construction(self):
 
         def dfs(current_vertex, ignore_vertex, current_cluster_membership_hashset, visited):
@@ -614,105 +608,192 @@ class CL1_Randomized:
                 last_failed_remove_round = -666
                 round = 0
 
+                def find_best_suboptimal_add():
+                    best_suboptimal_change = None
+                    best_suboptimal_change_score = -10000
+                    for v in add_candidates:
+                        numerator = current_cluster_weight_in + add_candidates[v].sum_weight_to
+                        denominator = current_cluster_weight_in + current_cluster_weight_out + add_candidates[v].sum_weight_from + self.penalty_value_per_node * (len(current_cluster)+1)
+                        proposed_score = numerator / denominator
+                        if proposed_score>best_change_score:
+                            best_suboptimal_change = v
+                            best_suboptimal_change_score = proposed_score
+                        debug("##################### ADD Consideration ########################")
+                        debug("v: %s"%str(v))
+                        debug("proposed_score: %s"% str(proposed_score))
+                        debug("best_change_score: %s"%str(best_change_score))
+                        debug("best_change: %s"%str(best_change))
+                        debug("numerator: %s" %str(numerator))
+                        debug("denominator: %s" %str(denominator))
+                        debug("current_cluster_weight_in: %s"%str(current_cluster_weight_in))
+                        debug("add_candidates[v].sum_weight_to: %s"%str(add_candidates[v].sum_weight_to))
+                        debug("current_cluster_weight_out: %s"%str(current_cluster_weight_out))
+                        debug("add_candidates[v].sum_weight_from: %s"%str(add_candidates[v].sum_weight_from))
+                        debug("len(current_cluster): %s"%str(len(current_cluster)))
+                        sleep_debug(.25)
+                    return best_suboptimal_change, best_suboptimal_change_score
 
+                def find_best_add():
+                    best_change = None
+                    best_change_score = current_score
+                    for v in add_candidates:
+                        numerator = current_cluster_weight_in + add_candidates[v].sum_weight_to
+                        denominator = current_cluster_weight_in + current_cluster_weight_out + add_candidates[v].sum_weight_from + self.penalty_value_per_node * (len(current_cluster)+1)
+                        proposed_score = numerator / denominator
+                        if proposed_score>best_change_score:
+                            best_change = v
+                            best_change_score = proposed_score
+                        debug("##################### ADD Consideration ########################")
+                        debug("v: %s"%str(v))
+                        debug("proposed_score: %s"% str(proposed_score))
+                        debug("best_change_score: %s"%str(best_change_score))
+                        debug("best_change: %s"%str(best_change))
+                        debug("numerator: %s" %str(numerator))
+                        debug("denominator: %s" %str(denominator))
+                        debug("current_cluster_weight_in: %s"%str(current_cluster_weight_in))
+                        debug("add_candidates[v].sum_weight_to: %s"%str(add_candidates[v].sum_weight_to))
+                        debug("current_cluster_weight_out: %s"%str(current_cluster_weight_out))
+                        debug("add_candidates[v].sum_weight_from: %s"%str(add_candidates[v].sum_weight_from))
+                        debug("len(current_cluster): %s"%str(len(current_cluster)))
+                        sleep_debug(.25)
+                    return best_change, best_change_score
+
+                def add(change_vertex, change_vertex_score, current_cluster_weight_in, current_cluster_weight_out):
+                    debug("\n", "ADD: %s" % str(change_vertex), "change_vertex_score: %s" % str(change_vertex_score), "\n")
+                    # update the overall weight into and out of the current_cluster
+                    current_cluster_weight_in += add_candidates[change_vertex].sum_weight_to
+                    current_cluster_weight_out += add_candidates[change_vertex].sum_weight_from
+
+                    # Move the change vertex from add_candidates to current_cluster
+                    to_add = add_candidates[change_vertex].copy()
+                    current_cluster[change_vertex] = to_add
+                    del add_candidates[change_vertex]
+
+                    # Also add the change vertex to remove_candidates if applicable
+                    if to_add.num_edges_from:
+                        remove_candidates[change_vertex] = to_add
+
+                    for v in self.graph.hash_graph[
+                        change_vertex]:  # iterate over neighbors of change_vertex, and update each Relationship
+                        edge_weight = self.graph.hash_graph[change_vertex][v]
+                        if v in add_candidates:
+                            add_candidates[v].sum_weight_to = edge_weight + add_candidates[v].sum_weight_to
+                            add_candidates[v].sum_weight_from = -1 * edge_weight + add_candidates[v].sum_weight_from
+                            add_candidates[v].num_edges_to = 1 + add_candidates[v].num_edges_to
+                            add_candidates[v].num_edges_from = -1 + add_candidates[v].num_edges_from
+                        if v in current_cluster:
+                            current_cluster[v].sum_weight_to = edge_weight + current_cluster[v].sum_weight_to
+                            current_cluster[v].sum_weight_from = -1 * edge_weight + current_cluster[v].sum_weight_from
+                            current_cluster[v].num_edges_to = 1 + current_cluster[v].num_edges_to
+                            current_cluster[v].num_edges_from = -1 + current_cluster[v].num_edges_from
+                        # note that v may be in both the current_cluster and in remove_candidates
+                        # remove_candidates is a subset of current_cluster
+                        if v in remove_candidates:
+                            remove_candidates[v].sum_weight_to = edge_weight + remove_candidates[v].sum_weight_to
+                            remove_candidates[v].sum_weight_from = -1 * edge_weight + remove_candidates[
+                                v].sum_weight_from
+                            remove_candidates[v].num_edges_to = 1 + remove_candidates[v].num_edges_to
+                            remove_candidates[v].num_edges_from = -1 + remove_candidates[v].num_edges_from
+                            # Check that a candidate for removal is still on the boundary
+                            if remove_candidates[v].num_edges_from == 0:
+                                del remove_candidates[v]
+                        # handle the case that v is on the new boundary
+                        # add v to add_candidates
+                        if v not in add_candidates and v not in current_cluster:
+                            num_edges_to = 0
+                            weight_to = 0
+                            num_edges_from = 0
+                            weight_from = 0
+                            for v_prime in self.graph.hash_graph[v]:
+                                weight_prime = self.graph.hash_graph[v][v_prime]
+                                if v_prime in current_cluster:
+                                    num_edges_to += 1
+                                    weight_to += weight_prime
+                                else:
+                                    num_edges_from += 1
+                                    weight_from += weight_prime
+                            add_candidates[v] = Relationship(weight_to, num_edges_to, weight_from, num_edges_from)
+                    return current_cluster_weight_in, current_cluster_weight_out
+
+                # def add():
+                #     debug("\n", "ADD: %s" % str(best_change), "best_change_score: %s" % str(best_change_score), "\n")
+                #     # update the current_cluster 's score
+                #     current_score = best_change_score
+                #     # update the overall weight into and out of the current_cluster
+                #     current_cluster_weight_in += add_candidates[best_change].sum_weight_to
+                #     current_cluster_weight_out += add_candidates[best_change].sum_weight_from
+                #
+                #     # Move the change vertex from add_candidates to current_cluster
+                #     to_add = add_candidates[best_change].copy()
+                #     current_cluster[best_change] = to_add
+                #     del add_candidates[best_change]
+                #
+                #     # Also add the change vertex to remove_candidates if applicable
+                #     if to_add.num_edges_from:
+                #         remove_candidates[best_change] = to_add
+                #
+                #     for v in self.graph.hash_graph[
+                #         best_change]:  # iterate over neighbors of best_change, and update each Relationship
+                #         edge_weight = self.graph.hash_graph[best_change][v]
+                #         if v in add_candidates:
+                #             add_candidates[v].sum_weight_to = edge_weight + add_candidates[v].sum_weight_to
+                #             add_candidates[v].sum_weight_from = -1 * edge_weight + add_candidates[v].sum_weight_from
+                #             add_candidates[v].num_edges_to = 1 + add_candidates[v].num_edges_to
+                #             add_candidates[v].num_edges_from = -1 + add_candidates[v].num_edges_from
+                #         if v in current_cluster:
+                #             current_cluster[v].sum_weight_to = edge_weight + current_cluster[v].sum_weight_to
+                #             current_cluster[v].sum_weight_from = -1 * edge_weight + current_cluster[v].sum_weight_from
+                #             current_cluster[v].num_edges_to = 1 + current_cluster[v].num_edges_to
+                #             current_cluster[v].num_edges_from = -1 + current_cluster[v].num_edges_from
+                #         # note that v may be in both the current_cluster and in remove_candidates
+                #         # remove_candidates is a subset of current_cluster
+                #         if v in remove_candidates:
+                #             remove_candidates[v].sum_weight_to = edge_weight + remove_candidates[v].sum_weight_to
+                #             remove_candidates[v].sum_weight_from = -1 * edge_weight + remove_candidates[
+                #                 v].sum_weight_from
+                #             remove_candidates[v].num_edges_to = 1 + remove_candidates[v].num_edges_to
+                #             remove_candidates[v].num_edges_from = -1 + remove_candidates[v].num_edges_from
+                #             # Check that a candidate for removal is still on the boundary
+                #             if remove_candidates[v].num_edges_from == 0:
+                #                 del remove_candidates[v]
+                #         # handle the case that v is on the new boundary
+                #         # add v to add_candidates
+                #         if v not in add_candidates and v not in current_cluster:
+                #             num_edges_to = 0
+                #             weight_to = 0
+                #             num_edges_from = 0
+                #             weight_from = 0
+                #             for v_prime in self.graph.hash_graph[v]:
+                #                 weight_prime = self.graph.hash_graph[v][v_prime]
+                #                 if v_prime in current_cluster:
+                #                     num_edges_to += 1
+                #                     weight_to += weight_prime
+                #                 else:
+                #                     num_edges_from += 1
+                #                     weight_from += weight_prime
+                #             add_candidates[v] = Relationship(weight_to, num_edges_to, weight_from, num_edges_from)
+
+
+
+
+
+                local_number_of_shakes_remaining = self.number_of_shakes
                 while (add_candidates or remove_candidates) and abs(last_failed_remove_round-last_failed_add_round) != 1:
                     debug("Current cluster #%s" % str(len(self.clustering)))
                     decider = numpy.random.rand()
-
                     # Consider ADDING a vertex on the boundary
-                    #
-                    #
                     #
                     if (decider <= .5 or last_failed_remove_round == round) and last_failed_add_round!=round:
                         round+=1
-                        best_change = None
-                        best_change_score = current_score
-                        for v in add_candidates:
-                            numerator = current_cluster_weight_in + add_candidates[v].sum_weight_to
-                            denominator = current_cluster_weight_in + current_cluster_weight_out + add_candidates[v].sum_weight_from + self.penalty_value_per_node * (len(current_cluster)+1)
-
-                            proposed_score = numerator / denominator
-
-                            if proposed_score>best_change_score:
-                                best_change = v
-                                best_change_score = proposed_score
-                            debug("##################### ADD Consideration ########################")
-                            debug("v: %s"%str(v))
-                            debug("proposed_score: %s"% str(proposed_score))
-                            debug("best_change_score: %s"%str(best_change_score))
-                            debug("best_change: %s"%str(best_change))
-                            debug("numerator: %s" %str(numerator))
-                            debug("denominator: %s" %str(denominator))
-                            debug("current_cluster_weight_in: %s"%str(current_cluster_weight_in))
-                            debug("add_candidates[v].sum_weight_to: %s"%str(add_candidates[v].sum_weight_to))
-                            debug("current_cluster_weight_out: %s"%str(current_cluster_weight_out))
-                            debug("add_candidates[v].sum_weight_from: %s"%str(add_candidates[v].sum_weight_from))
-                            debug("len(current_cluster): %s"%str(len(current_cluster)))
-                            sleep_debug(.25)
-
+                        best_change, best_change_score = find_best_add()
                         if best_change:
-                            debug("\n", "ADD: %s" %str(best_change), "best_change_score: %s"%str(best_change_score), "\n")
-                            # update the current_cluster 's score
                             current_score = best_change_score
-                            # update the overall weight into and out of the current_cluster
-                            current_cluster_weight_in += add_candidates[best_change].sum_weight_to
-                            current_cluster_weight_out += add_candidates[best_change].sum_weight_from
-
-                            # Move the change vertex from add_candidates to current_cluster
-                            to_add = add_candidates[best_change].copy()
-                            current_cluster[best_change] = to_add
-                            del add_candidates[best_change]
-
-                            # Also add the change vertex to remove_candidates if applicable
-                            if to_add.num_edges_from:
-                                remove_candidates[best_change] = to_add
-
-                            for v in self.graph.hash_graph[best_change]:     # iterate over neighbors of best_change, and update each Relationship
-                                edge_weight = self.graph.hash_graph[best_change][v]
-                                if v in add_candidates:
-                                    add_candidates[v].sum_weight_to = edge_weight + add_candidates[v].sum_weight_to
-                                    add_candidates[v].sum_weight_from = -1 * edge_weight + add_candidates[v].sum_weight_from
-                                    add_candidates[v].num_edges_to = 1 + add_candidates[v].num_edges_to
-                                    add_candidates[v].num_edges_from = -1 + add_candidates[v].num_edges_from
-                                if v in current_cluster:
-                                    current_cluster[v].sum_weight_to = edge_weight + current_cluster[v].sum_weight_to
-                                    current_cluster[v].sum_weight_from = -1 * edge_weight + current_cluster[v].sum_weight_from
-                                    current_cluster[v].num_edges_to = 1 + current_cluster[v].num_edges_to
-                                    current_cluster[v].num_edges_from = -1 + current_cluster[v].num_edges_from
-                                # note that v may be in both the current_cluster and in remove_candidates
-                                # remove_candidates is a subset of current_cluster
-                                if v in remove_candidates:
-                                    remove_candidates[v].sum_weight_to = edge_weight + remove_candidates[v].sum_weight_to
-                                    remove_candidates[v].sum_weight_from = -1 * edge_weight + remove_candidates[v].sum_weight_from
-                                    remove_candidates[v].num_edges_to = 1 + remove_candidates[v].num_edges_to
-                                    remove_candidates[v].num_edges_from = -1 + remove_candidates[v].num_edges_from
-                                    # Check that a candidate for removal is still on the boundary
-                                    if remove_candidates[v].num_edges_from == 0:
-                                        del remove_candidates[v]
-                                # handle the case that v is on the new boundary
-                                # add v to add_candidates
-                                if v not in add_candidates and v not in current_cluster:
-                                    num_edges_to = 0
-                                    weight_to = 0
-                                    num_edges_from = 0
-                                    weight_from = 0
-                                    for v_prime in self.graph.hash_graph[v]:
-                                        weight_prime = self.graph.hash_graph[v][v_prime]
-                                        if v_prime in current_cluster:
-                                            num_edges_to+=1
-                                            weight_to+=weight_prime
-                                        else:
-                                            num_edges_from+=1
-                                            weight_from+=weight_prime
-                                    add_candidates[v] = Relationship(weight_to, num_edges_to, weight_from, num_edges_from)
-
+                            current_cluster_weight_in, current_cluster_weight_out = add(best_change, best_change_score, current_cluster_weight_in, current_cluster_weight_out)
                         else:
                             debug("\n","No improvement by ADDING", "\n")
                             last_failed_add_round = round
 
                     # Consider REMOVING a vertex on the boundary
-                    #
-                    #
                     #
                     if (decider>.5 or last_failed_add_round == round) and  last_failed_remove_round!=round:
                         round+=1
@@ -822,9 +903,24 @@ class CL1_Randomized:
                             debug("\n", "No improvement by REMOVING, len(current_cluster) = 1", "\n")
                             last_failed_remove_round = round
 
+                    # If stuck in local optimum, consider taking a 'bad' add step
+                    #
+                    if local_number_of_shakes_remaining and add_candidates and abs(last_failed_remove_round - last_failed_add_round) == 1:
+                        local_number_of_shakes_remaining -= 1
+                        for i in range(self.number_of_bad_adds):
+                            best_suboptimal_change, best_suboptimal_score = find_best_suboptimal_add()
+                            if best_suboptimal_change:
+                                debug("suboptimal add")
+                                sleep_debug(1)
+                                round+=1
+                                last_failed_add_round=-1
+                                # TODO handle round numbers
+                                current_score = best_suboptimal_score
+                                current_cluster_weight_in, current_cluster_weight_out = add(best_suboptimal_change, best_suboptimal_score, current_cluster_weight_in, current_cluster_weight_out)
+
+
                     debug("$$$$$$$$$", last_failed_add_round, last_failed_remove_round, decider)
 
-                num_bad_adds_remaining = self.number_of_bad_adds
 
 
                 #add current_cluster to the list of clusters
