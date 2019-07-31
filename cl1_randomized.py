@@ -2,6 +2,7 @@ from common import *
 import numpy
 import pickle
 import datetime
+
 import sys
 import math
 #TODO: make the random proportional bad_adds option work for randomized_construction()
@@ -26,7 +27,6 @@ class CL1_Randomized:
                  base_file_path,
                  original_graph_filename,
                  quality_function_name,
-                 output_filename="unnamed.txt",
                  density_threshold = .3,
                  merge_threshold = .8,
                  penalty_value_per_node = 2,
@@ -42,7 +42,8 @@ class CL1_Randomized:
                  gsc_appearance_density_threshold = 0,
                  found_gsc_jaccard_threshold = 1,
                  gold_standard_filename = ""):
-        self.time_of_run = datetime.datetime.now()
+        self.time_of_run = str(datetime.datetime.now()).replace(" ","_").replace(".",":")
+        self.run_title = original_graph_filename.replace(".txt", "")+"+"+self.time_of_run
         self.argument_dict = locals()
         # Arguments
         self.base_file_path = base_file_path
@@ -50,7 +51,7 @@ class CL1_Randomized:
         self.vertices_by_degree = self.sort_vertices_by_degree()
         self.vertices_by_weight = self.sort_vertices_by_weight()
         self.quality_function_name = quality_function_name
-        self.output_filename = output_filename
+        self.output_filename = "complexes+" + self.run_title+".txt"
         self.density_threshold = density_threshold
         self.merge_threshold = merge_threshold
         self.penalty_value_per_node = penalty_value_per_node
@@ -109,7 +110,7 @@ class CL1_Randomized:
         self.cluster_list = [set(cluster) for cluster in self.get_clusters()]
 
     def write_final_clusters(self):
-        f = open(self.base_file_path+"/"+ self.output_filename, "w+")
+        f = open("complexes/"+ self.output_filename, "w+")
         counter = 1
         for cluster in self.densityThreshold_sizeThreshold_merged_cluster_list:
             s = ""
@@ -126,7 +127,7 @@ class CL1_Randomized:
         res = subprocess.check_output(["python2",
                                        "cl1_reproducibility/reproducibility/scripts/match_standalone.py",
                                        self.gold_standard_filename,
-                                       self.base_file_path +"/"+self.output_filename])
+                                       "complexes/"+self.output_filename])
         for line in res.splitlines():
             print(line)
             a = str(line)
@@ -198,10 +199,11 @@ class CL1_Randomized:
         print("################ QUALITY #######################")
         self.get_quality()
         f = open("run_log","a+")
-        f.write(str(self.time_of_run)+"\n")
+        f.write(str(self.run_title)+"\n")
         f.write(str(self.argument_dict)+"\n")
         f.write(str(self.quality_report)+"\n")
         f.close()
+        self.store_self()
 
 
     def gold_standard_complex_appearance(self, gold_standard_filename=""):
@@ -970,6 +972,16 @@ class CL1_Randomized:
             new_clusters.append(new_cluster)
 
         self.merged_cluster_list = new_clusters
+
+
+    def store_self(self):
+        f_name = "pickles/pickle+"+self.run_title
+        f = open(f_name, 'ab')
+        pickle.dump(self, f)
+        f.close()
+
+
+
 
 
 

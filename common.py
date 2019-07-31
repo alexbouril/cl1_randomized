@@ -1,9 +1,11 @@
 import sys
 import heapq
 import numpy as np
+import pickle
 import time
 DEBUG = True
 SLEEP_DEBUG = False
+
 
 def debug(*argv):
     if DEBUG:
@@ -14,6 +16,12 @@ def sleep_debug(t):
     if SLEEP_DEBUG:
         time.sleep(t)
 
+def loadData(f_name):
+    # for reading also binary mode is important
+    f = open(f_name, 'rb')
+    obj = pickle.load(f)
+    f.close()
+    return obj
 
 class Relationship:
     def __init__(self, sum_weight_to:float, num_edges_to:int, sum_weight_from:float, num_edges_from:int):
