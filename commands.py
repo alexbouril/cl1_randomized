@@ -1,4 +1,5 @@
 #exec(open("commands.py").read())
+#exec(open("commands.py").read())
 #python commands.py
 from cl1_randomized import *
 a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality',

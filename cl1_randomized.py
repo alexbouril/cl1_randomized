@@ -1,5 +1,7 @@
 from common import *
 import numpy
+import pickle
+import datetime
 import sys
 import math
 #TODO: make the random proportional bad_adds option work for randomized_construction()
@@ -17,6 +19,7 @@ def jaccard_similarity(l1:list, l2:list)->float:
     numerator = len(set1.intersection(set2))
     denominator = len(set1.union(set2))
     return numerator/denominator
+
 
 class CL1_Randomized:
     def __init__(self,
@@ -36,8 +39,12 @@ class CL1_Randomized:
                  care_about_cuts=True,
                  seed_from_all = False,
                  gsc_appearance_ratio_threshold=1,
+                 gsc_appearance_density_threshold = 0,
                  found_gsc_jaccard_threshold = 1,
                  gold_standard_filename = ""):
+        self.time_of_run = datetime.datetime.now()
+        self.argument_dict = locals()
+        # Arguments
         self.base_file_path = base_file_path
         self.graph = Graph(base_file_path+"/"+original_graph_filename)
         self.vertices_by_degree = self.sort_vertices_by_degree()
@@ -57,11 +64,17 @@ class CL1_Randomized:
         self.care_about_cuts = care_about_cuts
         self.seed_from_all = seed_from_all
         self.gsc_appearance_ratio_threshold = gsc_appearance_ratio_threshold
+        # TODO implement the density threshold
+        self.gsc_appearance_density_threshold = gsc_appearance_density_threshold
         self.found_gsc_jaccard_threshold = found_gsc_jaccard_threshold
         self.gold_standard_filename = gold_standard_filename
 
-        # the gold standard complexes whose entire set of proteins appear in the dataset
+
+
+
+        # OUTPUTS OF CALCULATIONS
         # TODO: prune gold_standard_complexes_appearing_in_dataset if it is unlikely that is "SHOULD" be detected by algorithm
+        # the gold standard complexes whose entire set of proteins appear in the dataset
         self.gold_standard_complexes_appearing_in_dataset = list()
         self.gold_standard_complexes = list()
         self.clustering = list()
@@ -73,6 +86,8 @@ class CL1_Randomized:
         self.found = []
         # the gold standard complexes appearing in the dataset that were not found by the algorithm
         self.not_found = []
+        self.quality_report = {}
+
 
     def sort_vertices_by_degree(self):
         retval = [[k, len(self.graph.hash_graph[k])] for k in self.graph.hash_graph]
@@ -114,6 +129,34 @@ class CL1_Randomized:
                                        self.base_file_path +"/"+self.output_filename])
         for line in res.splitlines():
             print(line)
+            a = str(line)
+            a = a.replace("b","").replace("=","").replace("\'","").split()
+            self.quality_report[a[0]] = float(a[1])
+
+    def cohesiveness(self, list_of_proteins):
+        weight_in = 0
+        weight_out = 0
+        for source in list_of_proteins:
+            for target in self.graph.hash_graph[source]:
+                if target in list_of_proteins:
+                    weight_in += self.graph.hash_graph[source][target] / 2.0
+                else:
+                    weight_out += self.graph.hash_graph[source][target]
+        return weight_in / (weight_in + weight_out)
+
+    def density(self, list_of_proteins):
+        in_weight = 0
+        for source in list_of_proteins:
+            for target in self.graph.hash_graph[source]:
+                if target in list_of_proteins:
+                    in_weight += self.graph.hash_graph[source][target]
+        n = len(list_of_proteins)
+        # TODO: check that authors didn't mean n* (n+1)/2
+        denominator = (n * (n - 1)) / 2
+        return in_weight / denominator
+
+    def modularity(self, list_of_proteins):
+        return 1
 
     def sizeThreshold(self):
         self.sizeThreshold_merged_cluster_list = [cluster for cluster in self.merged_cluster_list if len(cluster) > 2]
@@ -154,8 +197,14 @@ class CL1_Randomized:
         self.found_and_unfound_details()
         print("################ QUALITY #######################")
         self.get_quality()
+        f = open("run_log","a+")
+        f.write(str(self.time_of_run)+"\n")
+        f.write(str(self.argument_dict)+"\n")
+        f.write(str(self.quality_report)+"\n")
+        f.close()
 
-    def gold_standard_complex_appearance(self,gold_standard_filename=""):
+
+    def gold_standard_complex_appearance(self, gold_standard_filename=""):
         if gold_standard_filename:
             gsf = gold_standard_filename
         else:
@@ -259,31 +308,6 @@ class CL1_Randomized:
         print("average length of NOT found= ", l2)
         print(len(self.gold_standard_complexes), " reference complexes")
         print(len(self.gold_standard_complexes_appearing_in_dataset), " appear in the dataset")
-
-    def cohesiveness(self, list_of_proteins):
-        weight_in = 0
-        weight_out = 0
-        for source in list_of_proteins:
-            for target in self.graph.hash_graph[source]:
-                if target in list_of_proteins:
-                    weight_in += self.graph.hash_graph[source][target] /2.0
-                else:
-                    weight_out += self.graph.hash_graph[source][target]
-        return weight_in/(weight_in + weight_out)
-
-    def density(self, list_of_proteins):
-        in_weight = 0
-        for source in list_of_proteins:
-            for target in self.graph.hash_graph[source]:
-                if target in list_of_proteins:
-                    in_weight += self.graph.hash_graph[source][target]
-        n = len(list_of_proteins)
-        # TODO: check that authors didn't mean n* (n+1)/2
-        denominator = (n * (n - 1)) / 2
-        return in_weight / denominator
-
-    def modularity(self, list_of_proteins):
-        return 1
 
     def randomized_construction(self):
 
@@ -630,57 +654,6 @@ class CL1_Randomized:
                 print(last_failed_add_round, last_failed_remove_round)
                 # time.sleep(2)
 
-    def merger(self):# takes a list of clusters
-        threshold = self.merge_threshold
-        indices_of_considered_clusters = {}
-        hash_graph = dict()
-
-        def similarity(A, B):
-            numerator = len(A.intersection(B))**2
-            denominator = len(A) * len(B)
-            return numerator / denominator
-
-        def dfs(index, local_visited):
-            local_visited.add(index)
-            for neigbor in hash_graph[index]:
-                if neigbor not in local_visited:
-                    dfs(neigbor, local_visited)
-
-        for i in range(len(self.cluster_list)):
-            if i not in hash_graph:
-                hash_graph[i]=set()
-            for j in range(i+1, len(self.cluster_list)):
-                if similarity(self.cluster_list[i], self.cluster_list[j])>threshold:
-                    if i in hash_graph:
-                        hash_graph[i].add(j)
-                    else:
-                        hash_graph[i] = {j}
-                    if j in hash_graph:
-                        hash_graph[j].add(i)
-                    else:
-                        hash_graph[j] = {i}
-
-        global_visited = set()
-        merge_indices = list()
-        for index in range(len(self.cluster_list)):
-            if index not in global_visited:
-                local_visited = set()
-                dfs(index, local_visited)
-                # TODO: is the copy necessary?
-                merge_indices.append(local_visited.copy())
-                for reached in local_visited:
-                    global_visited.add(reached)
-
-
-        new_clusters = list()
-        for group in merge_indices:
-            new_cluster = set()
-            for cluster_index in group:
-                new_cluster = new_cluster.union(self.cluster_list[cluster_index])
-            new_clusters.append(new_cluster)
-
-        self.merged_cluster_list = new_clusters
-
     def original_construction(self):
 
         def dfs(current_vertex, ignore_vertex, current_cluster_membership_hashset, visited):
@@ -943,6 +916,61 @@ class CL1_Randomized:
                         considered_vertices.add(v)
                 print("CLUSTER #%s: %s"%(str(len(self.clustering)), str([vertex for vertex in current_cluster])))
                 # time.sleep(2)
+
+    # TODO implement the following function
+    def local_opt_after_merge(self):
+        dummy = 0
+
+    def merger(self):  # takes a list of clusters
+        threshold = self.merge_threshold
+        indices_of_considered_clusters = {}
+        hash_graph = dict()
+
+        def similarity(A, B):
+            numerator = len(A.intersection(B)) ** 2
+            denominator = len(A) * len(B)
+            return numerator / denominator
+
+        def dfs(index, local_visited):
+            local_visited.add(index)
+            for neigbor in hash_graph[index]:
+                if neigbor not in local_visited:
+                    dfs(neigbor, local_visited)
+
+        for i in range(len(self.cluster_list)):
+            if i not in hash_graph:
+                hash_graph[i] = set()
+            for j in range(i + 1, len(self.cluster_list)):
+                if similarity(self.cluster_list[i], self.cluster_list[j]) > threshold:
+                    if i in hash_graph:
+                        hash_graph[i].add(j)
+                    else:
+                        hash_graph[i] = {j}
+                    if j in hash_graph:
+                        hash_graph[j].add(i)
+                    else:
+                        hash_graph[j] = {i}
+
+        global_visited = set()
+        merge_indices = list()
+        for index in range(len(self.cluster_list)):
+            if index not in global_visited:
+                local_visited = set()
+                dfs(index, local_visited)
+                # TODO: is the copy necessary?
+                merge_indices.append(local_visited.copy())
+                for reached in local_visited:
+                    global_visited.add(reached)
+
+        new_clusters = list()
+        for group in merge_indices:
+            new_cluster = set()
+            for cluster_index in group:
+                new_cluster = new_cluster.union(self.cluster_list[cluster_index])
+            new_clusters.append(new_cluster)
+
+        self.merged_cluster_list = new_clusters
+
 
 
 
