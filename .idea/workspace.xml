@@ -3,15 +3,14 @@
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/rli2.py" line="206" />
     <bookmark url="file://$PROJECT_DIR$/rli2.py" line="490" />
+    <bookmark url="file://$PROJECT_DIR$/commands.py" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1865913f-46b4-461e-9cda-61e2c58d2182" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cl1_randomized.py" beforeDir="false" afterPath="$PROJECT_DIR$/cl1_randomized.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/commands.py" beforeDir="false" afterPath="$PROJECT_DIR$/commands.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/common.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/run_log" beforeDir="false" afterPath="$PROJECT_DIR$/run_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch.py" beforeDir="false" afterPath="$PROJECT_DIR$/scratch.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -35,20 +34,26 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/commands.py">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cl1_randomized.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" column="37" selection-start-line="9" selection-start-column="37" selection-end-line="9" selection-end-column="37" />
+            <state relative-caret-position="129">
+              <caret line="446" column="31" selection-start-line="446" selection-start-column="24" selection-end-line="446" selection-end-column="31" />
+              <folding>
+                <element signature="e#0#20#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/comparison.py">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/commands.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="28" selection-start-column="28" selection-end-column="28" />
+            <state relative-caret-position="88">
+              <caret line="10" column="12" selection-start-line="10" selection-start-column="12" selection-end-line="10" selection-end-column="12" />
+              <folding>
+                <element signature="e#88#116#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -56,49 +61,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/common.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="67">
-              <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+            <state relative-caret-position="112">
+              <caret line="8" selection-start-line="8" selection-end-line="8" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/run_log">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" selection-start-line="3" selection-end-line="3" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scratch.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="28" selection-start-column="28" selection-end-column="28" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/.gitignore">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="615">
-              <caret line="262" selection-start-line="262" selection-end-line="262" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cl1_randomized.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-412">
-              <caret line="315" selection-start-line="315" selection-end-line="315" />
-              <folding>
-                <element signature="e#0#20#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -115,11 +81,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>round</find>
-      <find>vertices_by_degree</find>
-      <find>jacca</find>
-      <find>jacc</find>
-      <find>-777</find>
       <find>get_</find>
       <find>deta</find>
       <find>impo</find>
@@ -145,6 +106,11 @@
       <find>final_clusters_stats</find>
       <find>hello</find>
       <find>x</find>
+      <find>final_</find>
+      <find>quality</find>
+      <find>yt</find>
+      <find>average</find>
+      <find>avg_cluster_density</find>
     </findStrings>
     <replaceStrings>
       <replace>sorted_seeds</replace>
@@ -153,6 +119,8 @@
       <replace>initial_cluster_list</replace>
       <replace>gsc_appearing_stats</replace>
       <replace>a</replace>
+      <replace>avg</replace>
+      <replace>avg_density</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -180,19 +148,34 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="4">
-    <option name="x" value="957" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="17" />
     <option name="y" value="27" />
-    <option name="width" value="963" />
+    <option name="width" value="1903" />
     <option name="height" value="1053" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
-    <navigator currentView="Scope" currentSubView="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope" proportions="" version="1">
+    <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="relinking" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relinking" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="relinking" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relinking" type="462c0819:PsiDirectoryNode" />
+              <item name="complexes" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
       <pane id="Scope">
         <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
           <expand>
@@ -401,7 +384,7 @@
       <workItem from="1564418737561" duration="1329000" />
       <workItem from="1564503968127" duration="7796000" />
       <workItem from="1564583348225" duration="19730000" />
-      <workItem from="1564624594849" duration="3811000" />
+      <workItem from="1564624594849" duration="9897000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1562624427613</created>
@@ -445,17 +428,24 @@
       <option name="project" value="LOCAL" />
       <updated>1564602786510</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="reorganized process, calculating and storing more run information and statistics">
+      <created>1564628819260</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1564628819260</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="305104000" />
+    <option name="totallyTimeSpent" value="311190000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="957" y="27" width="963" height="1053" extended-state="4" />
+    <frame x="48" y="27" width="1872" height="1053" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1995638" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20700985" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -476,7 +466,7 @@
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.24972497" />
       <window_info anchor="right" id="Database" order="3" weight="0.32893288" />
-      <window_info anchor="right" id="SciView" order="4" weight="0.32803944" />
+      <window_info anchor="right" id="SciView" order="4" visible="true" weight="0.39594743" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -488,7 +478,8 @@
     <MESSAGE value="moved original_construction(), added some todos" />
     <MESSAGE value="made shake add into a local function within randomized_construction" />
     <MESSAGE value="adding logging" />
-    <option name="LAST_COMMIT_MESSAGE" value="adding logging" />
+    <MESSAGE value="reorganized process, calculating and storing more run information and statistics" />
+    <option name="LAST_COMMIT_MESSAGE" value="reorganized process, calculating and storing more run information and statistics" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -525,7 +516,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/commands.py</url>
-          <line>4</line>
+          <line>20</line>
           <option name="timeStamp" value="25" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -546,7 +537,7 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/relinking$commands.coverage" NAME="commands Coverage Results" MODIFIED="1564627956989" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/relinking$commands.coverage" NAME="commands Coverage Results" MODIFIED="1564639108534" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/relinking$rli2.coverage" NAME="rli2 Coverage Results" MODIFIED="1559582187782" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/relinking$scratch.coverage" NAME="scratch Coverage Results" MODIFIED="1564626512011" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/relinking$cl1_randomized.coverage" NAME="cl1_randomized Coverage Results" MODIFIED="1564612874127" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -594,10 +585,10 @@
     <entry file="file://$PROJECT_DIR$/cl1_datasets/datasets/tarea_regulardensitythreshold18.txt" />
     <entry file="file://$PROJECT_DIR$/cl1_datasets/datasets/tarea_higherdensitythreshold.txt" />
     <entry file="file://$PROJECT_DIR$/cl1_datasets/datasets/tarea.txt" />
-    <entry file="file://$PROJECT_DIR$/.gitignore">
+    <entry file="file://$PROJECT_DIR$/comparison.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="615">
-          <caret line="262" selection-start-line="262" selection-end-line="262" />
+        <state>
+          <caret column="28" selection-start-column="28" selection-end-column="28" />
         </state>
       </provider>
     </entry>
@@ -608,16 +599,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cl1_randomized.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-412">
-          <caret line="315" selection-start-line="315" selection-end-line="315" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scratch.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -625,17 +606,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/comparison.py">
+    <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="28" selection-start-column="28" selection-end-column="28" />
+        <state relative-caret-position="615">
+          <caret line="262" selection-start-line="262" selection-end-line="262" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cl1_randomized.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="129">
+          <caret line="446" column="31" selection-start-line="446" selection-start-column="24" selection-end-line="446" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/common.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="67">
-          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+        <state relative-caret-position="112">
+          <caret line="8" selection-start-line="8" selection-end-line="8" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
@@ -644,8 +635,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/commands.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="37" selection-start-line="9" selection-start-column="37" selection-end-line="9" selection-end-column="37" />
+        <state relative-caret-position="88">
+          <caret line="10" column="12" selection-start-line="10" selection-start-column="12" selection-end-line="10" selection-end-column="12" />
+          <folding>
+            <element signature="e#88#116#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
