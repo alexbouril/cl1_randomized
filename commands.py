@@ -2,13 +2,55 @@
 #exec(open("commands.py").read())
 #python commands.py
 from cl1_randomized import *
+from common import *
 import matplotlib.pyplot as plt
 plt.style.use('seaborn-whitegrid')
 import numpy as np
+import pprint as pp
+
+def convert_cluster_list_to_subgraph_text(cl1_obj, cluster_list,output_file_name = "test.txt"):
+    f = open(output_file_name, "w+")
+    print(cluster_list)
+    retval = []
+    for cluster in cluster_list:
+        new_string = ""
+        considered =set()
+        for p1 in cluster:
+            for p2 in cl1_obj.graph.hash_graph[p1]:
+                key = tuple(sorted([p1, p2]))
+                if p2 in cluster and key not in considered:
+                    considered.add(key)
+                    new_string+=cl1_obj.graph.id_to_name[key[0]] + "\t"+ cl1_obj.graph.id_to_name[key[1]]+"\t"+ str(cl1_obj.graph.hash_graph[p1][p2])+ "\n"
+                    f.write(new_string)
+        retval.append(new_string)
+    f.close()
+    print(retval)
+    return retval
 
 
-def convert_cluster_list_to_subgraph(cluster_list):
-    return 1
+
+
+a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality',
+                   density_threshold=.3,
+                   merge_threshold=.8,
+                   penalty_value_per_node=2,
+                   randomized_construction_bool=True,
+                   number_of_shakes=1,
+                   number_of_bad_adds=2,
+                   sort_seeds_by="degree",
+                   care_about_cuts=True,
+                   seed_from_all=False,
+                   gsc_appearance_ratio_threshold=.8,
+                   found_gsc_jaccard_threshold=.8,
+                   gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
+
+a.process()
+convert_cluster_list_to_subgraph_text(a, a.densityThreshold_sizeThreshold_merged_cluster_list)
+
+
+
+
+
 
 def graph_average_over_multiple_runs(number_of_runs):
     def namestr(obj, namespace=locals()):
@@ -109,4 +151,4 @@ def graph_average_over_multiple_runs(number_of_runs):
 
 
 
-graph_average_over_multiple_runs(5)
+# graph_average_over_multiple_runs(5)
