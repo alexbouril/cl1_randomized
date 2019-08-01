@@ -9,7 +9,7 @@ a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.
                    randomized_construction_bool=True,
                    number_of_shakes=1,
                    number_of_bad_adds=2,
-                   sort_seeds_by="weight",
+                   sort_seeds_by="degree",
                    care_about_cuts=True,
                    seed_from_all=False,
                    gsc_appearance_ratio_threshold=.8,
@@ -19,8 +19,16 @@ a.process()
 
 
 
-
-
+print(a.run_title)
+print(a.quality_report)
+print(a.initial_clustering)
+print(a.final_clusters_stats)
+print(a.found)
+print(a.gsc_appearing_found_stats)
+print(a.gsc_appearing_notFound_stats)
+print(a.gsc_appearing_stats)
+for d in [a.final_clusters_stats, a.gsc_appearing_stats, a.gsc_appearing_found_stats, a.gsc_appearing_notFound_stats]:
+    print(d['average_cohesiveness'], d['average_density'], d['average_size'])
 
 
 

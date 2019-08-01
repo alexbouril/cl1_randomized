@@ -3,7 +3,7 @@ import heapq
 import numpy as np
 import pickle
 import time
-DEBUG = True
+DEBUG = False
 SLEEP_DEBUG = False
 
 
