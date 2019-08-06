@@ -35,9 +35,9 @@ a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.
                    merge_threshold=.8,
                    penalty_value_per_node=2,
                    randomized_construction_bool=True,
-                   number_of_shakes=1,
+                   number_of_shakes=2,
                    number_of_bad_adds=2,
-                   sort_seeds_by="degree",
+                   sort_seeds_by="weight",
                    care_about_cuts=True,
                    seed_from_all=False,
                    gsc_appearance_ratio_threshold=.8,
@@ -45,7 +45,7 @@ a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.
                    gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
 
 a.process()
-convert_cluster_list_to_subgraph_text(a, a.densityThreshold_sizeThreshold_merged_cluster_list)
+# convert_cluster_list_to_subgraph_text(a, a.densityThreshold_sizeThreshold_merged_cluster_list)
 
 
 
