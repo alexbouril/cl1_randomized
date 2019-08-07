@@ -3,9 +3,11 @@ import heapq
 import numpy as np
 import pickle
 import time
+import pickle
+import datetime
 DEBUG = False
 SLEEP_DEBUG = False
-
+import numpy
 
 
 def debug(*argv):
@@ -23,6 +25,14 @@ def loadData(f_name):
     obj = pickle.load(f)
     f.close()
     return obj
+
+def jaccard_similarity(l1:list, l2:list)->float:
+    set1 = set(l1)
+    set2 = set(l2)
+    numerator = len(set1.intersection(set2))
+    denominator = len(set1.union(set2))
+    return numerator/denominator
+
 
 class Relationship:
     def __init__(self, sum_weight_to:float, num_edges_to:int, sum_weight_from:float, num_edges_from:int):
