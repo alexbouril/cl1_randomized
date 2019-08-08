@@ -1,7 +1,7 @@
 from common import *
 from graph import *
 
-def initialize_cluster(self, current_seed):
+def initialize_complex(self, current_seed):
     current_cluster = dict()
     weight_to = 0
     num_edges_to = 0

@@ -68,8 +68,6 @@ class CL1_Randomized:
         self.found_gsc_jaccard_threshold = found_gsc_jaccard_threshold
         self.gold_standard_filename = gold_standard_filename
 
-
-
         ############################################################
         # OUTPUTS OF CALCULATIONS
         ############################################################
@@ -231,7 +229,6 @@ class CL1_Randomized:
 
         write_final_clusters()
 
-
         ############################################################
         # DETERMINE WHICH GOLD STANDARD COMPLEXES APPEAR IN CURRENT DATASET
         ############################################################
@@ -289,8 +286,6 @@ class CL1_Randomized:
 
         found_gsc()
 
-
-
         ############################################################
         # DETERMINE WHICH GSC APPEARING IN DATASET ARE NOT FOUND BY ALGORITHM
         ############################################################
@@ -331,7 +326,6 @@ class CL1_Randomized:
             output_map['average_cohesiveness'] = total_cohesiveness /float(len(cluster_list))
             output_map['average_density'] = total_density /float(len(cluster_list))
             output_map['average_size'] = total_size /float(len(cluster_list))
-
 
         ############################################################
         # CALCULATE STATS ABOUT THE FINAL RESULT
