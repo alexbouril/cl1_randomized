@@ -2,7 +2,7 @@ from common import *
 from graph import Graph
 from randomized_construction import randomized_construction
 from original_construction import original_construction, original_construction_2
-from complex_similarity import jaccard_similarity
+from complex_similarity import jaccard_similarity, overlap_similarity
 import sys
 import math
 #TODO: make the random proportional bad_adds option work for randomized_construction()
@@ -127,17 +127,6 @@ class CL1_Randomized:
             threshold = self.merge_threshold
             hash_graph = dict()
 
-            def similarity(A, B):
-                """Implements the overlap score described in the paper
-
-                :param A: a set
-                :param B: a set
-                :return: the overlap score
-                """
-                numerator = len(A.intersection(B)) ** 2
-                denominator = len(A) * len(B)
-                return numerator / denominator
-
             def dfs(index, local_visited):
                 local_visited.add(index)
                 for neigbor in hash_graph[index]:
@@ -148,7 +137,7 @@ class CL1_Randomized:
                 if i not in hash_graph:
                     hash_graph[i] = set()
                 for j in range(i + 1, len(self.initial_cluster_list)):
-                    if similarity(self.initial_cluster_list[i], self.initial_cluster_list[j]) > threshold:
+                    if overlap_similarity(self.initial_cluster_list[i], self.initial_cluster_list[j]) > threshold:
                         if i in hash_graph:
                             hash_graph[i].add(j)
                         else:
