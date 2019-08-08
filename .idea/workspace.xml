@@ -3,20 +3,11 @@
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/rli2.py" line="206" />
     <bookmark url="file://$PROJECT_DIR$/rli2.py" line="490" />
-    <bookmark url="file://$PROJECT_DIR$/commands.py" />
-    <bookmark url="file://$PROJECT_DIR$/original_construction.py" line="31" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1865913f-46b4-461e-9cda-61e2c58d2182" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/cluster_quality.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/construction_operations.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/graph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cl1_randomized.py" beforeDir="false" afterPath="$PROJECT_DIR$/cl1_randomized.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/commands.py" beforeDir="false" afterPath="$PROJECT_DIR$/commands.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/common.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/original_construction.py" beforeDir="false" afterPath="$PROJECT_DIR$/original_construction.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/randomized_construction.py" beforeDir="false" afterPath="$PROJECT_DIR$/randomized_construction.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/run_log" beforeDir="false" afterPath="$PROJECT_DIR$/run_log" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -42,70 +33,28 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/randomized_construction.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" column="34" lean-forward="true" selection-start-line="3" selection-start-column="34" selection-end-line="3" selection-end-column="34" />
-              <folding>
-                <element signature="e#1#21#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cl1_randomized.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3529">
-              <caret line="409" column="42" selection-start-line="409" selection-start-column="42" selection-end-line="409" selection-end-column="42" />
-              <folding>
-                <element signature="e#0#20#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/commands.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="44" column="85" selection-start-line="44" selection-start-column="75" selection-end-line="44" selection-end-column="85" />
-              <folding>
-                <element signature="e#88#116#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="74">
+              <caret line="5" column="14" selection-start-line="5" selection-start-column="14" selection-end-line="5" selection-end-column="14" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/cluster_quality.py">
+        <entry file="file://$PROJECT_DIR$/cl1_randomized.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="17" column="37" selection-start-line="17" selection-start-column="37" selection-end-line="17" selection-end-column="37" />
+            <state relative-caret-position="225">
+              <caret line="98" column="22" selection-start-line="98" selection-start-column="22" selection-end-line="98" selection-end-column="22" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/common.py">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="11" selection-start-line="11" selection-end-line="11" />
-              <folding>
-                <element signature="e#0#10#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/original_construction.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-435">
-              <caret line="270" column="87" selection-start-line="270" selection-start-column="75" selection-end-line="270" selection-end-column="87" />
-              <folding>
-                <element signature="e#0#20#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="3930">
+              <caret line="262" selection-start-line="262" selection-end-line="262" />
             </state>
           </provider>
         </entry>
@@ -121,47 +70,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
+      <find>best_choice</find>
+      <find>bestSolnOnPath</find>
+      <find>MoveInfo</find>
+      <find>best_solution</find>
+      <find>protein_names_to_id</find>
+      <find>debug</find>
+      <find>time</find>
+      <find>&quot;density</find>
+      <find>round</find>
+      <find>vertices_by_degree</find>
+      <find>jacca</find>
+      <find>jacc</find>
+      <find>-777</find>
+      <find>get_</find>
+      <find>deta</find>
+      <find>impo</find>
+      <find>density:</find>
+      <find>$$$$$$$$$</find>
+      <find>found_and_unfound_details</find>
+      <find>True</find>
+      <find>found_and</find>
+      <find>process</find>
       <find>self.oun</find>
       <find>debugging</find>
       <find>GLOBAL_DEBUG</find>
       <find>referen</find>
       <find>found_gs</find>
-      <find>best_change</find>
-      <find>merger</find>
-      <find>write_fina</find>
-      <find>&quot;comples</find>
-      <find>run_log</find>
-      <find>self.clustering</find>
-      <find>get_clu</find>
-      <find>cluster_list</find>
-      <find>final_clusters_stats</find>
-      <find>hello</find>
-      <find>x</find>
-      <find>final_</find>
-      <find>quality</find>
-      <find>yt</find>
-      <find>average</find>
-      <find>avg_cluster_density</find>
-      <find>self.vertices_by_degree</find>
-      <find>improvement_flag=</find>
-      <find>improvement_flag</find>
-      <find>dfs</find>
-      <find>pickle</find>
-      <find>add(</find>
-      <find>dfs(</find>
-      <find>round</find>
-      <find>cohesiveness</find>
     </findStrings>
     <replaceStrings>
-      <replace>change_vertex</replace>
-      <replace>self.initial_clustering</replace>
-      <replace>initial_cluster_list</replace>
-      <replace>gsc_appearing_stats</replace>
-      <replace>a</replace>
-      <replace>avg</replace>
-      <replace>avg_density</replace>
       <replace>sorted_seeds</replace>
-      <replace>round_no</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -179,30 +117,22 @@
         <option value="$PROJECT_DIR$/__init__.py" />
         <option value="$PROJECT_DIR$/commands" />
         <option value="$PROJECT_DIR$/cl1_reproducibility/reproducibility/scripts/match_standalone.py" />
-        <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/comparison.py" />
-        <option value="$PROJECT_DIR$/run_log" />
-        <option value="$PROJECT_DIR$/scratch.py" />
-        <option value="$PROJECT_DIR$/graph.py" />
-        <option value="$PROJECT_DIR$/construction_operations.py" />
-        <option value="$PROJECT_DIR$/original_construction.py" />
-        <option value="$PROJECT_DIR$/cluster_quality.py" />
         <option value="$PROJECT_DIR$/common.py" />
+        <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/commands.py" />
         <option value="$PROJECT_DIR$/cl1_randomized.py" />
-        <option value="$PROJECT_DIR$/randomized_construction.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="48" />
+    <option name="x" value="56" />
     <option name="y" value="27" />
-    <option name="width" value="857" />
+    <option name="width" value="932" />
     <option name="height" value="1053" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
-    <navigator proportions="" version="1">
+    <navigator currentView="Scope" currentSubView="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope" proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
@@ -210,63 +140,21 @@
         <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
           <expand>
             <path>
-              <item name="relinking" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="~/PycharmProjects/relinking" type="442cc68d:ScopeViewTreeModel$RootNode" />
-            </path>
-            <path>
-              <item name="relinking" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="~/PycharmProjects/relinking" type="442cc68d:ScopeViewTreeModel$RootNode" />
-              <item name="cl1_datasets" type="9f88c78c:ScopeViewTreeModel$FileNode" />
-            </path>
-            <path>
-              <item name="relinking" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="~/PycharmProjects/relinking" type="442cc68d:ScopeViewTreeModel$RootNode" />
-              <item name="cl1_datasets" type="9f88c78c:ScopeViewTreeModel$FileNode" />
-              <item name="datasets" type="9f88c78c:ScopeViewTreeModel$FileNode" />
-            </path>
-            <path>
-              <item name="relinking" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="~/PycharmProjects/relinking" type="442cc68d:ScopeViewTreeModel$RootNode" />
-              <item name="complexes" type="9f88c78c:ScopeViewTreeModel$FileNode" />
-            </path>
-            <path>
-              <item name="relinking" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="~/PycharmProjects/relinking" type="442cc68d:ScopeViewTreeModel$RootNode" />
-              <item name="pickles" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+              <item name="cl1_randomized" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="~/PycharmProjects/cl1_randomized" type="442cc68d:ScopeViewTreeModel$RootNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="relinking" type="b2602c69:ProjectViewProjectNode" />
-              <item name="relinking" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="relinking" type="b2602c69:ProjectViewProjectNode" />
-              <item name="relinking" type="462c0819:PsiDirectoryNode" />
-              <item name="cl1_gold_standard" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="relinking" type="b2602c69:ProjectViewProjectNode" />
-              <item name="relinking" type="462c0819:PsiDirectoryNode" />
-              <item name="cl1_gold_standard" type="462c0819:PsiDirectoryNode" />
-              <item name="gold_standard" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
+      <pane id="ProjectPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="MANAGE_IGNORE_FILES_PROPERTY" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$USER_HOME$/public_html" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -290,28 +178,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Python.commands">
-    <configuration name="cl1_randomized" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="relinking" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/cl1_randomized.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="commands" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="relinking" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -356,33 +222,9 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="scratch" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="relinking" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scratch.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Python.commands" />
-        <item itemvalue="Python.scratch" />
-        <item itemvalue="Python.cl1_randomized" />
         <item itemvalue="Python.rli2" />
       </list>
     </recent_temporary>
@@ -430,19 +272,10 @@
       <workItem from="1563455117985" duration="1117000" />
       <workItem from="1563456249790" duration="13811000" />
       <workItem from="1564198826598" duration="1229000" />
-      <workItem from="1564244362731" duration="13373000" />
-      <workItem from="1564329613145" duration="5998000" />
-      <workItem from="1564411990260" duration="486000" />
-      <workItem from="1564418737561" duration="1329000" />
-      <workItem from="1564503968127" duration="7796000" />
-      <workItem from="1564583348225" duration="19730000" />
-      <workItem from="1564624594849" duration="9897000" />
-      <workItem from="1564664609667" duration="370000" />
-      <workItem from="1564665979599" duration="4366000" />
-      <workItem from="1565041925226" duration="14000" />
-      <workItem from="1565064627068" duration="1685000" />
-      <workItem from="1565099519378" duration="17333000" />
-      <workItem from="1565186481018" duration="13461000" />
+      <workItem from="1564244362731" duration="665000" />
+      <workItem from="1565032593734" duration="697000" />
+      <workItem from="1565199849403" duration="410000" />
+      <workItem from="1565266225308" duration="1778000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1562624427613</created>
@@ -451,93 +284,28 @@
       <option name="project" value="LOCAL" />
       <updated>1562624427613</updated>
     </task>
-    <task id="LOCAL-00002" summary="added the idea of shakes, and number of bad adds per shake">
-      <created>1564276269582</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1564276269582</updated>
-    </task>
-    <task id="LOCAL-00003" summary="moved original_construction(), added some todos">
-      <created>1564330071773</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1564330071773</updated>
-    </task>
-    <task id="LOCAL-00004" summary="made shake add into a local function within randomized_construction">
-      <created>1564358929101</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1564358929101</updated>
-    </task>
-    <task id="LOCAL-00005" summary="adding logging">
-      <created>1564589139895</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1564589139895</updated>
-    </task>
-    <task id="LOCAL-00006" summary="adding logging">
-      <created>1564602786510</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1564602786510</updated>
-    </task>
-    <task id="LOCAL-00007" summary="reorganized process, calculating and storing more run information and statistics">
-      <created>1564628819260</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1564628819260</updated>
-    </task>
-    <task id="LOCAL-00008" summary="reorganized process, calculating and storing more run information and statistics">
-      <created>1564673729648</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1564673729648</updated>
-    </task>
-    <task id="LOCAL-00009" summary="checking default jar algo's performance on the gavin dataset">
-      <created>1565066309083</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1565066309083</updated>
-    </task>
-    <option name="localTasksCounter" value="10" />
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="348419000" />
-  </component>
-  <component name="TodoView">
-    <todo-panel id="selected-file">
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
-    <todo-panel id="all">
-      <are-packages-shown value="true" />
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
+    <option name="totallyTimeSpent" value="256414000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="48" y="27" width="1872" height="1053" extended-state="6" />
+    <frame x="70" y="27" width="1850" height="1053" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1237678" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.11031042" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.3293348" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.25736097" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3297062" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.40676117" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3991276" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.3293348" />
+      <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" weight="0.3293348" />
+      <window_info anchor="bottom" id="Version Control" order="8" weight="0.28135222" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Concurrent Activities Diagram" order="11" visible="true" weight="0.3297062" />
@@ -545,47 +313,17 @@
       <window_info anchor="bottom" id="Python Console" order="13" weight="0.34460196" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.24972497" />
-      <window_info anchor="right" id="SciView" order="3" weight="0.39594743" />
-      <window_info anchor="right" id="Database" order="4" weight="0.32858709" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Database" order="3" weight="0.32893288" />
+      <window_info anchor="right" id="SciView" order="4" weight="0.32838285" />
     </layout>
-    <layout-to-restore>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.09912377" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.3293348" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.30970556" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.3991276" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.3293348" />
-      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" weight="0.3293348" />
-      <window_info anchor="bottom" id="Database Changes" order="9" />
-      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Concurrent Activities Diagram" order="11" visible="true" weight="0.3297062" />
-      <window_info anchor="bottom" id="Terminal" order="12" weight="0.24209379" />
-      <window_info anchor="bottom" id="Python Console" order="13" weight="0.34460196" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.24972497" />
-      <window_info anchor="right" id="SciView" order="3" weight="0.39594743" />
-      <window_info anchor="right" id="Database" order="4" weight="0.32858709" />
-    </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="initial commit" />
-    <MESSAGE value="added the idea of shakes, and number of bad adds per shake" />
-    <MESSAGE value="moved original_construction(), added some todos" />
-    <MESSAGE value="made shake add into a local function within randomized_construction" />
-    <MESSAGE value="adding logging" />
-    <MESSAGE value="reorganized process, calculating and storing more run information and statistics" />
-    <MESSAGE value="checking default jar algo's performance on the gavin dataset" />
-    <option name="LAST_COMMIT_MESSAGE" value="checking default jar algo's performance on the gavin dataset" />
+    <option name="LAST_COMMIT_MESSAGE" value="initial commit" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -622,36 +360,26 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/commands.py</url>
-          <line>61</line>
+          <line>32</line>
           <option name="timeStamp" value="25" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/cl1_randomized.py</url>
-          <line>81</line>
-          <option name="timeStamp" value="39" />
+          <line>463</line>
+          <option name="timeStamp" value="27" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/cl1_randomized.py</url>
-          <option name="timeStamp" value="40" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/cl1_randomized.py</url>
-          <line>472</line>
-          <option name="timeStamp" value="42" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/construction_operations.py</url>
-          <line>230</line>
-          <option name="timeStamp" value="43" />
+          <line>454</line>
+          <option name="timeStamp" value="29" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/relinking$commands.coverage" NAME="commands Coverage Results" MODIFIED="1565227193748" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/relinking$commands.coverage" NAME="commands Coverage Results" MODIFIED="1563475029966" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/relinking$rli2.coverage" NAME="rli2 Coverage Results" MODIFIED="1559582187782" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/relinking$scratch.coverage" NAME="scratch Coverage Results" MODIFIED="1564626512011" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/relinking$cl1_randomized.coverage" NAME="cl1_randomized Coverage Results" MODIFIED="1564612874127" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/cl1_randomized$commands.coverage" NAME="commands Coverage Results" MODIFIED="1565274728577" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/cl1_gold_standard/gold_standard/mips_3_100.txt">
@@ -692,127 +420,31 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cl1_datasets/datasets/complexes_2019-07-31+12:48:41:191256.txt" />
-    <entry file="file://$PROJECT_DIR$/cl1_datasets/datasets/tarea_regulardensitythreshold18.txt" />
-    <entry file="file://$PROJECT_DIR$/cl1_datasets/datasets/tarea_higherdensitythreshold.txt" />
-    <entry file="file://$PROJECT_DIR$/cl1_datasets/datasets/tarea.txt" />
-    <entry file="file://$PROJECT_DIR$/comparison.py">
+    <entry file="file://$PROJECT_DIR$/common.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="28" selection-start-column="28" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scratch.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="28" selection-start-column="28" selection-end-column="28" />
+        <state relative-caret-position="15">
+          <caret line="1" column="12" lean-forward="true" selection-start-line="1" selection-start-column="12" selection-end-line="1" selection-end-column="12" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="615">
+        <state relative-caret-position="3930">
           <caret line="262" selection-start-line="262" selection-end-line="262" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dummy" />
-    <entry file="file://$PROJECT_DIR$/cl1_nepusz-jar_output.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="44" lean-forward="true" selection-start-line="1" selection-end-line="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/run_log">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8820">
-          <caret line="588" selection-start-line="588" selection-end-line="588" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/original_algo_findings.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/graph.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="1" selection-start-line="1" selection-end-line="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="9" column="24" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/construction_operations.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="44">
-          <caret line="238" column="15" selection-end-line="260" selection-end-column="97" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" selection-start-line="11" selection-end-line="11" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/commands.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="44" column="85" selection-start-line="44" selection-start-column="75" selection-end-line="44" selection-end-column="85" />
-          <folding>
-            <element signature="e#88#116#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/randomized_construction.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="34" lean-forward="true" selection-start-line="3" selection-start-column="34" selection-end-line="3" selection-end-column="34" />
-          <folding>
-            <element signature="e#1#21#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/original_construction.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-435">
-          <caret line="270" column="87" selection-start-line="270" selection-start-column="75" selection-end-line="270" selection-end-column="87" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="74">
+          <caret line="5" column="14" selection-start-line="5" selection-start-column="14" selection-end-line="5" selection-end-column="14" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/cl1_randomized.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3529">
-          <caret line="409" column="42" selection-start-line="409" selection-start-column="42" selection-end-line="409" selection-end-column="42" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cluster_quality.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="37" selection-start-line="17" selection-start-column="37" selection-end-line="17" selection-end-column="37" />
+        <state relative-caret-position="225">
+          <caret line="98" column="22" selection-start-line="98" selection-start-column="22" selection-end-line="98" selection-end-column="22" />
         </state>
       </provider>
     </entry>

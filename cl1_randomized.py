@@ -11,11 +11,6 @@ import math
 #TODO: figure out how sensitive the clusters are to the choice of seeds
 #TODO: figure out which complexes are missed by my algo
 
-
-
-
-
-
 class CL1_Randomized:
     def __init__(self,
                  base_file_path,
@@ -45,8 +40,14 @@ class CL1_Randomized:
         ############################################################
         self.base_file_path = base_file_path
         self.graph = Graph(base_file_path+"/"+original_graph_filename)
-        self.vertices_by_degree = self.sort_vertices_by_degree()
-        self.vertices_by_weight = self.sort_vertices_by_weight()
+        self.vertices_by_degree = \
+            sorted([[k, len(self.graph.hash_graph[k])] for k in self.graph.hash_graph],
+                   key=lambda x: x[1],
+                   reverse=True)
+        self.vertices_by_weight = \
+            sorted([[k, sum([self.graph.hash_graph[k][target] for target in self.graph.hash_graph[k]])] for k in self.graph.hash_graph],
+                   key=lambda x: x[1],
+                   reverse=True)
         self.quality_function_name = quality_function_name
         self.output_filename = "complexes+" + self.run_title+".txt"
         self.density_threshold = density_threshold
@@ -96,23 +97,6 @@ class CL1_Randomized:
         # RUN THE ALGORITHM
         ############################################################
         self.process()
-
-    def sort_vertices_by_degree(self) -> list:
-        """
-        :return: a sorted list of tuples corresponding to (vertex id, vertex degree)
-        """
-        retval = [[k, len(self.graph.hash_graph[k])] for k in self.graph.hash_graph]
-        retval.sort(key=lambda x: x[1], reverse=True)
-        return retval
-
-    def sort_vertices_by_weight(self) -> list:
-        """
-        :return: a sorted list of tuples corresponding to (vertex id, weight)
-        """
-        retval = [[k, sum([self.graph.hash_graph[k][target] for target in self.graph.hash_graph[k]])] for k in self.graph.hash_graph]
-        retval.sort(key=lambda x: x[1], reverse=True)
-        return retval
-
 
     def process(self):
         ############################################################
