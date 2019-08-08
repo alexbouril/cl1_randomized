@@ -1,5 +1,5 @@
 from common import *
-
+from graph import Graph
 from randomized_construction import randomized_construction
 from original_construction import original_construction, original_construction_2
 import sys
@@ -113,57 +113,6 @@ class CL1_Randomized:
         retval.sort(key=lambda x: x[1], reverse=True)
         return retval
 
-    def cohesiveness(self, list_of_proteins) -> float:
-        """Returns the cohesiveness of a potential complex.
-
-        Searches the neighbors of each protein in the list, keeping track of weights of
-        edges with both endpoints being internal to the complex, as well as weights of
-        edges with one endpoint external to proposed complex.
-        Then calculate cohesiveness of potential complex.
-
-        :param list_of_proteins: list of protein id's (int) representing a potential complex
-        :return: (float) the cohesiveness of the potential complex
-        """
-        weight_in = 0
-        weight_out = 0
-        for source in list_of_proteins:
-            for target in self.graph.hash_graph[source]:
-                if target in list_of_proteins:
-                    weight_in += self.graph.hash_graph[source][target] / 2.0
-                else:
-                    weight_out += self.graph.hash_graph[source][target]
-        #TODO: check that all is good with the calculation
-        return weight_in / (weight_in + weight_out)
-
-    def density(self, list_of_proteins):
-        #TODO: check that density is calculated with degree, not weights
-        """Returns the density of a potential complex.
-
-        Searches the neighbors of each protein in the list, keeping track of weights of
-        edges with both endpoints being internal to the complex.
-        Then calculate density of potential complex.
-
-        :param list_of_proteins: list of protein id's (int) representing a potential complex
-        :return: (float) the density of the potential complex
-        """
-        in_weight = 0
-        for source in list_of_proteins:
-            for target in self.graph.hash_graph[source]:
-                if target in list_of_proteins:
-                    in_weight += self.graph.hash_graph[source][target]
-        n = len(list_of_proteins)
-        # TODO: check that authors didn't mean n* (n+1)/2
-        # TODO: check that authors want to double count edges
-        denominator = (n * (n - 1)) / 2
-        return in_weight / denominator
-
-    def modularity(self, list_of_proteins):
-        """NOT YET IMPLEMENTED
-
-        :param list_of_proteins:
-        :return:
-        """
-        return 1
 
     def process(self):
         ############################################################
@@ -172,7 +121,7 @@ class CL1_Randomized:
         if self.randomized_construction_bool:
             randomized_construction(self)
         else:
-            original_construction_2(self)
+            original_construction(self)
 
         ############################################################
         # GET THE INITIAL CLUSTER LIST
@@ -193,7 +142,6 @@ class CL1_Randomized:
         ############################################################
         def merger():  # takes a list of clusters
             threshold = self.merge_threshold
-            indices_of_considered_clusters = {}
             hash_graph = dict()
 
             def similarity(A, B):
@@ -387,9 +335,9 @@ class CL1_Randomized:
             for cluster in cluster_list:
                 key = tuple([self.graph.id_to_name[id] for id in cluster])
                 output_map['clusters'][key] = dict()
-                _cohesiveness = self.cohesiveness(list(cluster))
+                _cohesiveness = cohesiveness(self, list(cluster))
                 _size = len(cluster)
-                _density = self.density(list(cluster))
+                _density = density(self, list(cluster))
                 output_map['clusters'][key]['cohesiveness'] = _cohesiveness
                 output_map['clusters'][key]['size'] = _size
                 output_map['clusters'][key]['density'] = _density
@@ -440,9 +388,9 @@ class CL1_Randomized:
             density_tot = 0
             length_tot = 0
             for c in self.found:
-                c_cohesiveness = self.cohesiveness(c)
+                c_cohesiveness = cohesiveness(self, c)
                 cohesiveness_tot += c_cohesiveness
-                c_density = self.density(c)
+                c_density = density(self, c)
                 density_tot += c_density
                 length_tot += len(c)
                 print(c)
@@ -457,9 +405,9 @@ class CL1_Randomized:
             density_tot = 0
             length_tot = 0
             for c in self.not_found:
-                c_cohesiveness = self.cohesiveness(c)
+                c_cohesiveness = cohesiveness(self, c)
                 cohesiveness_tot += c_cohesiveness
-                c_density = self.density(c)
+                c_density = density(self, c)
                 density_tot += c_density
                 length_tot += len(c)
                 print(c)
