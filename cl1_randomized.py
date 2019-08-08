@@ -2,6 +2,7 @@ from common import *
 from graph import Graph
 from randomized_construction import randomized_construction
 from original_construction import original_construction, original_construction_2
+from complex_similarity import jaccard_similarity
 import sys
 import math
 #TODO: make the random proportional bad_adds option work for randomized_construction()
