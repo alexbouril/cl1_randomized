@@ -5,13 +5,6 @@ from randomized_construction import randomized_construction
 from original_construction import original_construction, original_construction_2
 import sys
 import math
-#TODO get 1,2,3 neighborhoods of current cluster
-#TODO graph them well
-#TODO make bad add work again
-#TODO add metashake
-#TODO implement 2 view cohesiveness based add
-
-
 #TODO: make the random proportional bad_adds option work for randomized_construction()
 #TODO: check if Cl1 are always connected, in original implementation, and in my implementation
 #TODO: check if Cl1 found are similar to my found
