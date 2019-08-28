@@ -84,8 +84,8 @@ def randomized_construction(self):
                 ############################################################
                 # IF STUCK IN LOCAL OPTIMUM, CONSIDER TAKING A 'BAD' ADD STEP
                 ############################################################
-                # if local_number_of_shakes_remaining and add_candidates and abs(last_failed_remove_round_no - last_failed_add_round_no) == 1:
-                #     local_number_of_shakes_remaining -= 1
+                if local_number_of_shakes_remaining and add_candidates and abs(last_failed_remove_round_no - last_failed_add_round_no) == 1:
+                    local_number_of_shakes_remaining -= 1
                 #
                 #     current_score, \
                 #     current_cluster_weight_in, \
