@@ -50,7 +50,6 @@ def original_construction(self):
                     should_add = True
                 elif best_remove_change:
                     should_remove = True
-
                 if should_add:
                     improvement_flag = True
                     current_score = best_add_change_score
@@ -64,6 +63,7 @@ def original_construction(self):
             self.initial_clustering.append(current_cluster)
             index += 1
             if not self.seed_from_all:
+                considered_vertices.add(current_seed)
                 for v in current_cluster:
                     considered_vertices.add(v)
             print("CLUSTER #%s: %s" % (str(len(self.initial_clustering)), str([vertex for vertex in current_cluster])))
@@ -328,6 +328,7 @@ def original_construction_2(self):
             self.initial_clustering.append(current_cluster)
             index += 1
             if not self.seed_from_all:
+                considered_vertices.add(current_seed)
                 for v in current_cluster:
                     considered_vertices.add(v)
             print("CLUSTER #%s: %s" % (str(len(self.initial_clustering)), str([vertex for vertex in current_cluster])))

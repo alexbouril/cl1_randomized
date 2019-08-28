@@ -2,12 +2,23 @@ from common import *
 from construction_operations import *
 
 def randomized_construction(self):
+    """
+    :param self:
+    :return:
+    """
     considered_vertices = set()
     index = 0
     if self.sort_seeds_by == 'degree':
         sorted_seeds = self.vertices_by_degree
     else:
         sorted_seeds = self.vertices_by_weight
+
+    ############################################################
+    # set the state of the random number generator
+    ############################################################
+    numpy.random.set_state(self.rng_initial_state)
+    self.logger.info(f'(RUN:{self.run_title}) rng_seed is {self.rng_seed}')
+
     while index < len(sorted_seeds):
         current_seed = sorted_seeds[index][0]
         current_seed_degree = sorted_seeds[index][1]
@@ -34,6 +45,7 @@ def randomized_construction(self):
             round_no = 0
 
             local_number_of_shakes_remaining = self.number_of_shakes
+
             while (add_candidates or remove_candidates) and abs(last_failed_remove_round_no - last_failed_add_round_no) != 1:
                 debug("Current cluster #%s" % str(len(self.initial_clustering)))
                 decider = numpy.random.rand()
@@ -87,6 +99,7 @@ def randomized_construction(self):
             self.initial_clustering.append(current_cluster)
             index += 1
             if not self.seed_from_all:
+                considered_vertices.add(current_seed)
                 for v in current_cluster:
                     considered_vertices.add(v)
             print("CLUSTER #%s: %s" % (str(len(self.initial_clustering)), str([vertex for vertex in current_cluster])))

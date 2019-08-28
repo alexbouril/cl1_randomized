@@ -9,7 +9,24 @@ DEBUG = False
 SLEEP_DEBUG = False
 import numpy
 from cluster_quality import cohesiveness, density
+import os
+import logging
 
+def setup_custom_logger(name):
+    """ Setup logger """
+    LOGGING_FILE_PATH = './logs/cl1_randomized.log'
+
+    if not os.path.exists(os.path.dirname(LOGGING_FILE_PATH)):
+        os.makedirs(os.path.dirname(LOGGING_FILE_PATH), exist_ok=True)
+
+    logging.basicConfig(
+        format='[%(asctime)s] %(name)s %(levelname)s (%(funcName)s) %(message)s',
+        level=logging.DEBUG,
+        handlers=[logging.StreamHandler(),
+                  logging.FileHandler(LOGGING_FILE_PATH, encoding='UTF-8')]
+    )
+
+    return logging.getLogger(name)
 
 
 def debug(*argv):
@@ -36,6 +53,22 @@ def jaccard_similarity(l1:list, l2:list)->float:
     denominator = len(set1.union(set2))
     return numerator/denominator
 
+
+def sort_vertices_by_degree(self) -> list:
+    """
+    :return: a sorted list of tuples corresponding to (vertex id, vertex degree)
+    """
+    retval = [[k, len(self.graph.hash_graph[k])] for k in self.graph.hash_graph]
+    retval.sort(key=lambda x: x[1], reverse=True)
+    return retval
+
+def sort_vertices_by_weight(self) -> list:
+    """
+    :return: a sorted list of tuples corresponding to (vertex id, weight)
+    """
+    retval = [[k, sum([self.graph.hash_graph[k][target] for target in self.graph.hash_graph[k]])] for k in self.graph.hash_graph]
+    retval.sort(key=lambda x: x[1], reverse=True)
+    return retval
 
 class Relationship:
     def __init__(self, sum_weight_to:float, num_edges_to:int, sum_weight_from:float, num_edges_from:int):

@@ -1,3 +1,4 @@
+from __init__ import *
 from common import *
 from graph import Graph
 from randomized_construction import randomized_construction
@@ -10,10 +11,7 @@ import math
 #TODO: figure out why found and not_found have added cardinality larger than gsc_appearing_in_dataset when the threshold is less than 1
 #TODO: figure out how sensitive the clusters are to the choice of seeds
 #TODO: figure out which complexes are missed by my algo
-
-
-
-
+#TODO: multi-pass merger
 
 
 class CL1_Randomized:
@@ -25,6 +23,7 @@ class CL1_Randomized:
                  merge_threshold = .8,
                  penalty_value_per_node = 2,
                  randomized_construction_bool= False,
+                 rng_seed = None,
                  number_of_shakes = 0,
                  number_of_bad_adds = 0,
                  bad_add_probability = 0,
@@ -45,14 +44,17 @@ class CL1_Randomized:
         ############################################################
         self.base_file_path = base_file_path
         self.graph = Graph(base_file_path+"/"+original_graph_filename)
-        self.vertices_by_degree = self.sort_vertices_by_degree()
-        self.vertices_by_weight = self.sort_vertices_by_weight()
+        self.vertices_by_degree = sort_vertices_by_degree(self)
+        self.vertices_by_weight = sort_vertices_by_weight(self)
         self.quality_function_name = quality_function_name
         self.output_filename = "complexes+" + self.run_title+".txt"
         self.density_threshold = density_threshold
         self.merge_threshold = merge_threshold
         self.penalty_value_per_node = penalty_value_per_node
         self.randomized_construction_bool = randomized_construction_bool
+        self.rng_seed = rng_seed
+        numpy.random.seed(rng_seed)
+        self.rng_initial_state = numpy.random.get_state()
         self.number_of_shakes = number_of_shakes
         self.number_of_bad_adds = number_of_bad_adds
         self.bad_add_probability = bad_add_probability
@@ -62,12 +64,16 @@ class CL1_Randomized:
         self.care_about_cuts = care_about_cuts
         self.seed_from_all = seed_from_all
         self.gsc_appearance_ratio_threshold = gsc_appearance_ratio_threshold
-        # TODO implement the density threshold
+        # TODO implement the density threshold for gsc appearance
         self.gsc_appearance_density_threshold = gsc_appearance_density_threshold
         self.found_gsc_jaccard_threshold = found_gsc_jaccard_threshold
         self.gold_standard_filename = gold_standard_filename
 
-
+        ############################################################
+        # SET UP THE LOGGER
+        ############################################################
+        self.logger = setup_custom_logger('cl1_randomized')
+        self.logger.info(f'(RUN:{self.run_title}) Starting cl1_randomized v{__version__} ({__status__}) [{__website__}]')
 
         ############################################################
         # OUTPUTS OF CALCULATIONS
@@ -97,22 +103,6 @@ class CL1_Randomized:
         ############################################################
         self.process()
 
-    def sort_vertices_by_degree(self) -> list:
-        """
-        :return: a sorted list of tuples corresponding to (vertex id, vertex degree)
-        """
-        retval = [[k, len(self.graph.hash_graph[k])] for k in self.graph.hash_graph]
-        retval.sort(key=lambda x: x[1], reverse=True)
-        return retval
-
-    def sort_vertices_by_weight(self) -> list:
-        """
-        :return: a sorted list of tuples corresponding to (vertex id, weight)
-        """
-        retval = [[k, sum([self.graph.hash_graph[k][target] for target in self.graph.hash_graph[k]])] for k in self.graph.hash_graph]
-        retval.sort(key=lambda x: x[1], reverse=True)
-        return retval
-
 
     def process(self):
         ############################################################
@@ -126,6 +116,7 @@ class CL1_Randomized:
         ############################################################
         # GET THE INITIAL CLUSTER LIST
         ############################################################
+        #TODO document better what the point of this step is
         def make_initial_cluster_list():
             # TODO: rid redundant work
             def get_initial_clusters():
@@ -474,6 +465,21 @@ class CL1_Randomized:
 
 
 
+if __name__ == "__main__":
+    a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality',
+                       density_threshold=.3,
+                       merge_threshold=.8,
+                       penalty_value_per_node=2,
+                       randomized_construction_bool=True,
+                       rng_seed=None,
+                       number_of_shakes=3,
+                       number_of_bad_adds=5,
+                       sort_seeds_by="weight",
+                       care_about_cuts=False,
+                       seed_from_all=False,
+                       gsc_appearance_ratio_threshold=.8,
+                       found_gsc_jaccard_threshold=.8,
+                       gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
 
 
 
