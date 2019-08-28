@@ -38,7 +38,7 @@ def randomized_construction(self):
             # INITIALIZE THE CURRENT CLUSTER STARTING WITH THE SELECTED SEED
             ############################################################
             current_cluster, remove_candidates, add_candidates, current_score, current_cluster_weight_in, current_cluster_weight_out = \
-                initialize_cluster(self, current_seed)
+                initialize_complex(self, current_seed)
 
             last_failed_add_round_no = -777
             last_failed_remove_round_no = -666

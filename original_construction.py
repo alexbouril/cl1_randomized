@@ -21,7 +21,7 @@ def original_construction(self):
             # INITIALIZE THE CURRENT CLUSTER STARTING WITH THE SELECTED SEED
             ############################################################
             current_cluster, remove_candidates, add_candidates, current_score, current_cluster_weight_in, current_cluster_weight_out = \
-                initialize_cluster(self, current_seed)
+                initialize_complex(self, current_seed)
 
             improvement_flag = True
             while improvement_flag and (add_candidates or remove_candidates):
