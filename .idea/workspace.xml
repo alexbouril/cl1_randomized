@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/commands.py" />
-    <bookmark url="file://$PROJECT_DIR$/original_construction.py" line="31" />
+    <bookmark url="file://$PROJECT_DIR$/../cl1_randomized/commands.py" />
+    <bookmark url="file://$PROJECT_DIR$/../cl1_randomized/original_construction.py" line="31" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1865913f-46b4-461e-9cda-61e2c58d2182" name="Default Changelist" comment="added framework for logging">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/randomized_construction.py" beforeDir="false" afterPath="$PROJECT_DIR$/randomized_construction.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rli2.py" beforeDir="false" />
-    </list>
+    <list default="true" id="1865913f-46b4-461e-9cda-61e2c58d2182" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,7 +29,7 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/randomized_construction.py">
+        <entry file="file://$PROJECT_DIR$/../cl1_randomized/randomized_construction.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="322">
               <caret line="86" selection-start-line="86" selection-end-line="87" selection-end-column="57" />
@@ -42,7 +38,7 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/construction_operations.py">
+        <entry file="file://$PROJECT_DIR$/../cl1_randomized/construction_operations.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-95">
               <caret line="3" selection-start-line="3" selection-end-line="3" />
@@ -60,15 +56,27 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/original_algo_findings.txt">
+        <entry file="file://$PROJECT_DIR$/../cl1_randomized/original_algo_findings.txt">
           <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/merging">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../cl1_randomized/merging">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="6" column="31" lean-forward="true" selection-start-line="6" selection-start-column="31" selection-end-line="6" selection-end-column="31" />
+            <state relative-caret-position="420">
+              <caret line="28" column="35" selection-start-line="28" selection-end-line="28" selection-end-column="35" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/../cl1_randomized/test_networkx.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="17" column="28" selection-start-line="17" selection-start-column="28" selection-end-line="17" selection-end-column="28" />
+              <folding>
+                <element signature="e#0#33#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -155,6 +163,7 @@
         <option value="$PROJECT_DIR$/commands.py" />
         <option value="$PROJECT_DIR$/cl1_randomized.py" />
         <option value="$PROJECT_DIR$/randomized_construction.py" />
+        <option value="$PROJECT_DIR$/../cl1_randomized/test_networkx.py" />
       </list>
     </option>
   </component>
@@ -175,22 +184,22 @@
           <expand>
             <path>
               <item name="relinking" type="b2602c69:ProjectViewProjectNode" />
-              <item name="relinking" type="462c0819:PsiDirectoryNode" />
+              <item name="cl1_randomized" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="relinking" type="b2602c69:ProjectViewProjectNode" />
-              <item name="relinking" type="462c0819:PsiDirectoryNode" />
+              <item name="cl1_randomized" type="462c0819:PsiDirectoryNode" />
               <item name="cl1_gold_standard" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="relinking" type="b2602c69:ProjectViewProjectNode" />
-              <item name="relinking" type="462c0819:PsiDirectoryNode" />
+              <item name="cl1_randomized" type="462c0819:PsiDirectoryNode" />
               <item name="cl1_gold_standard" type="462c0819:PsiDirectoryNode" />
               <item name="gold_standard" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="relinking" type="b2602c69:ProjectViewProjectNode" />
-              <item name="relinking" type="462c0819:PsiDirectoryNode" />
+              <item name="cl1_randomized" type="462c0819:PsiDirectoryNode" />
               <item name="logs" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -416,7 +425,7 @@
       <workItem from="1566250149773" duration="1021000" />
       <workItem from="1566310956037" duration="6062000" />
       <workItem from="1566397393471" duration="45000" />
-      <workItem from="1567003101597" duration="7175000" />
+      <workItem from="1567003101597" duration="7457000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1562624427613</created>
@@ -495,11 +504,18 @@
       <option name="project" value="LOCAL" />
       <updated>1567019377425</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="added framework for logging">
+      <created>1567020846056</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1567020846056</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="366661000" />
+    <option name="totallyTimeSpent" value="366943000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -512,9 +528,8 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="48" y="27" width="1872" height="1053" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15279299" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15279299" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -529,7 +544,7 @@
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Concurrent Activities Diagram" order="11" visible="true" weight="0.3297062" />
-      <window_info anchor="bottom" id="Terminal" order="12" visible="true" weight="0.24209379" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="12" visible="true" weight="0.24209379" />
       <window_info anchor="bottom" id="Python Console" order="13" weight="0.34460196" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -581,27 +596,27 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/commands.py</url>
+          <url>file://$PROJECT_DIR$/../cl1_randomized/commands.py</url>
           <line>62</line>
           <option name="timeStamp" value="25" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/cl1_randomized.py</url>
+          <url>file://$PROJECT_DIR$/../cl1_randomized/cl1_randomized.py</url>
           <line>78</line>
           <option name="timeStamp" value="39" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/cl1_randomized.py</url>
+          <url>file://$PROJECT_DIR$/../cl1_randomized/cl1_randomized.py</url>
           <line>1</line>
           <option name="timeStamp" value="40" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/cl1_randomized.py</url>
+          <url>file://$PROJECT_DIR$/../cl1_randomized/cl1_randomized.py</url>
           <line>463</line>
           <option name="timeStamp" value="42" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/construction_operations.py</url>
+          <url>file://$PROJECT_DIR$/../cl1_randomized/construction_operations.py</url>
           <line>278</line>
           <option name="timeStamp" value="43" />
         </line-breakpoint>
@@ -615,15 +630,15 @@
     <SUITE FILE_PATH="coverage/relinking$cl1_randomized.coverage" NAME="cl1_randomized Coverage Results" MODIFIED="1567019288387" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/cl1_gold_standard/gold_standard/mips_3_100.txt">
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/cl1_gold_standard/gold_standard/mips_3_100.txt">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/cl1_reproducibility/reproducibility/scripts/mwmatching.py">
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/cl1_reproducibility/reproducibility/scripts/mwmatching.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-116" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cl1_reproducibility/reproducibility/scripts/match_standalone.py">
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/cl1_reproducibility/reproducibility/scripts/match_standalone.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="309">
           <caret line="205" column="67" lean-forward="true" selection-start-line="205" selection-start-column="67" selection-end-line="205" selection-end-column="67" />
@@ -644,21 +659,21 @@
     <entry file="file://$PROJECT_DIR$/cl1_datasets/datasets/tarea_regulardensitythreshold18.txt" />
     <entry file="file://$PROJECT_DIR$/cl1_datasets/datasets/tarea_higherdensitythreshold.txt" />
     <entry file="file://$PROJECT_DIR$/cl1_datasets/datasets/tarea.txt" />
-    <entry file="file://$PROJECT_DIR$/comparison.py">
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/comparison.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <caret column="28" selection-start-column="28" selection-end-column="28" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scratch.py">
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/scratch.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <caret column="28" selection-start-column="28" selection-end-column="28" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="615">
           <caret line="262" selection-start-line="262" selection-end-line="262" />
@@ -666,35 +681,35 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/dummy" />
-    <entry file="file://$PROJECT_DIR$/cl1_nepusz-jar_output.txt">
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/cl1_nepusz-jar_output.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
           <caret line="1" column="44" lean-forward="true" selection-start-line="1" selection-end-line="2" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/run_log">
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/run_log">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="8820">
           <caret line="588" selection-start-line="588" selection-end-line="588" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/graph.py">
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/graph.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <caret line="1" selection-start-line="1" selection-end-line="1" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test.txt">
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/test.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
           <caret line="9" column="24" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="24" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/original_construction.py">
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/original_construction.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="835">
           <caret line="309" column="133" selection-start-line="309" selection-start-column="133" selection-end-line="309" selection-end-column="133" />
@@ -704,7 +719,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cluster_quality.py">
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/cluster_quality.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
           <caret line="17" column="37" selection-start-line="17" selection-start-column="37" selection-end-line="17" selection-end-column="37" />
@@ -714,7 +729,7 @@
     <entry file="file://$PROJECT_DIR$/logs/fb2cal.log">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/commands.py">
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/commands.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="555">
           <caret line="37" column="33" selection-start-line="37" selection-start-column="33" selection-end-line="37" selection-end-column="33" />
@@ -724,7 +739,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/common.py">
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/common.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="268">
           <caret line="23" column="27" selection-start-line="23" selection-start-column="27" selection-end-line="23" selection-end-column="27" />
@@ -734,17 +749,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/logs/cl1_randomized.log">
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/logs/cl1_randomized.log">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
           <caret line="8" selection-start-line="8" selection-end-line="8" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/complexes/complexes+gavin2006_socioaffinities_rescaled+2019-07-31_15:54:28:150784.txt">
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/complexes/complexes+gavin2006_socioaffinities_rescaled+2019-07-31_15:54:28:150784.txt">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/cl1_randomized.py">
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/cl1_randomized.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="735">
           <caret line="49" column="38" selection-start-line="49" selection-start-column="38" selection-end-line="49" selection-end-column="38" />
@@ -754,28 +769,28 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/_version.py">
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/_version.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <caret column="6" selection-start-column="6" selection-end-column="6" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/__init__.py">
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
           <caret line="8" column="32" selection-start-line="8" selection-start-column="32" selection-end-line="8" selection-end-column="32" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/randomized_construction.py">
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/randomized_construction.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="322">
           <caret line="86" selection-start-line="86" selection-end-line="87" selection-end-column="57" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/construction_operations.py">
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/construction_operations.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-95">
           <caret line="3" selection-start-line="3" selection-end-line="3" />
@@ -801,13 +816,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/original_algo_findings.txt">
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/original_algo_findings.txt">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/merging">
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/merging">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="31" lean-forward="true" selection-start-line="6" selection-start-column="31" selection-end-line="6" selection-end-column="31" />
+        <state relative-caret-position="420">
+          <caret line="28" column="35" selection-start-line="28" selection-end-line="28" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../cl1_randomized/test_networkx.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="28" selection-start-line="17" selection-start-column="28" selection-end-line="17" selection-end-column="28" />
+          <folding>
+            <element signature="e#0#33#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
