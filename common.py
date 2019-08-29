@@ -73,3 +73,7 @@ class Relationship:
     def copy(self):
         return Relationship(self.sum_weight_to, self.num_edges_to, self.sum_weight_from, self.num_edges_from)
 
+def jaccard_similarity(a,b):
+    a = set(a.copy())
+    b = set(b.copy())
+    return len(a.intersection(b)) / len(a.union(b))

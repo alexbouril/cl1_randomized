@@ -9,6 +9,7 @@ import math
 #TODO implement find 1, 2, 3 neighborhood of current cluster
 #TODO implement add based on cohesiveness of 2 neighborhood
 #TODO graph cluster with their 1,2,3 neighborhoods in the background
+#TODO Fix object saving
 
 
 #TODO: make the random proportional bad_adds option work for randomized_construction()
