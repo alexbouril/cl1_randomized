@@ -11,6 +11,7 @@ import numpy
 from cluster_quality import cohesiveness, density
 import os
 import logging
+import pprint as pp
 
 def setup_custom_logger(name):
     """ Setup logger """
