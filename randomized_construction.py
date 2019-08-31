@@ -28,7 +28,9 @@ def randomized_construction(self):
             index += 1
             continue
         else:
+            current_cluster_construction_log = []
             self.initial_clustering_seeds.append(current_seed)
+            current_cluster_construction_log.append(Action("seed", current_seed))
             debug("Starting cluster #%s" % str(len(self.initial_clustering)))
             # time.sleep(3)
             # TODO: ignore vertices that have been removed before during construction of current cluster
@@ -39,6 +41,8 @@ def randomized_construction(self):
             ############################################################
             current_cluster, remove_candidates, add_candidates, current_score, current_cluster_weight_in, current_cluster_weight_out = \
                 initialize_complex(self, current_seed)
+
+            current_cluster_construction_log.append(ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
 
             last_failed_add_round_no = -777
             last_failed_remove_round_no = -666
@@ -61,6 +65,9 @@ def randomized_construction(self):
                         current_score = best_change_score
                         current_cluster_weight_in, current_cluster_weight_out = \
                             add(self, add_candidates, current_cluster, remove_candidates, best_change, best_change_score, current_cluster_weight_in, current_cluster_weight_out)
+                        current_cluster_construction_log.append(Action("add", best_change))
+                        current_cluster_construction_log.append(
+                            ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
 
                     else:
                         debug("\n", "No improvement by ADDING", "\n")
@@ -77,6 +84,9 @@ def randomized_construction(self):
                         current_score = best_change_score
                         current_cluster_weight_in, current_cluster_weight_out = \
                             remove(self, remove_candidates, add_candidates, current_cluster, best_change, best_change_score, current_cluster_weight_in, current_cluster_weight_out)
+                        current_cluster_construction_log.append(Action("remove", best_change))
+                        current_cluster_construction_log.append(
+                            ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
                     else:
                         debug("\n", "No improvement by REMOVING", "\n")
                         last_failed_remove_round_no = round_no
@@ -95,8 +105,10 @@ def randomized_construction(self):
                 #         add_shake(self, add_candidates, remove_candidates, current_cluster, current_cluster_weight_in, current_cluster_weight_out, round_no, last_failed_add_round_no)
                 debug("$$$$$$$$$", last_failed_add_round_no, last_failed_remove_round_no, decider)
 
+
             # add current_cluster to the list of clusters
             self.initial_clustering.append(current_cluster)
+            self.construction_log[tuple([protein for protein in current_cluster])] = current_cluster_construction_log
             index += 1
             if not self.seed_from_all:
                 considered_vertices.add(current_seed)

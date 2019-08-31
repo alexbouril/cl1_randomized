@@ -106,6 +106,11 @@ class CL1_Randomized:
         self.gsc_appearing_notFound_stats = dict()
 
         ############################################################
+        # STORE INFORMATION ABOUT STATES OF CLUSTER DURING CONSTRUCTION
+        ############################################################
+        self.construction_log = dict()
+
+        ############################################################
         # RUN THE ALGORITHM
         ############################################################
         self.process()
@@ -444,6 +449,8 @@ class CL1_Randomized:
                 a = str(line)
                 a = a.replace("b", "").replace("=", "").replace("\'", "").split()
                 self.quality_report[a[0]] = float(a[1])
+
+            print(self.run_title)
 
         get_quality()
 

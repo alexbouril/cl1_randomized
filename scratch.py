@@ -1,11 +1,14 @@
 from cl1_randomized import *
-from common import loadData
+from common import *
 from graph import *
+n = "gavin2006_socioaffinities_rescaled+2019-08-31_17:14:11:720422"
 name = \
-"pickles/pickle+gavin2006_socioaffinities_rescaled+2019-08-29_01:37:29:650865"
+"pickles/pickle+"+n
 
 
-
+x = loadData(name)
+print(stringify_construction_log(x.construction_log))
+exit(0)
 
 x = loadData(name)
 my_data = loadData(name)
@@ -32,8 +35,6 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import networkx as nx
 
-G = nx.Graph()
-G.add_weighted_edges_from(edgelist)
 # G.add_edge('a', 'b', weight=0.6)
 # G.add_edge('a', 'c', weight=0.2)
 # G.add_edge('c', 'd', weight=0.1)
@@ -74,8 +75,9 @@ G.add_weighted_edges_from(edgelist)
 #
 # G = nx.random_geometric_graph(200, 0.125)
 G = nx.Graph()
-G.add_edges_from(e_unweighted)
+G.add_weighted_edges_from(edgelist)
 
+# G.add_edges_from(e_unweighted)
 
 # Create Edges
 # Add edges as disconnected lines in a single trace and nodes as a scatter trace
