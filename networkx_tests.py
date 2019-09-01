@@ -36,7 +36,7 @@ for cs in [entry for entry in current_cluster_construction_log if type(entry)==C
     for id in [name for name in cs.current_cluster] + [name for name in cs.add_candidates] + [name for name in cs.remove_candidates]:
         all_nodes.add(id)
 all_nodes = list(all_nodes)
-print(all_nodes)
+# print(all_nodes)
 ##############################################
 # Find all the edges involved in this cluster's construction
 ##############################################
@@ -47,7 +47,7 @@ for i in all_nodes:
             a, b = sorted([i, j])
             all_edges.add(tuple([a, b, x.graph.hash_graph[i][j]]))
 all_edges = list(all_edges)
-print(all_edges)
+# print(all_edges)
 ##############################################
 # Create a graph G_plus will all the edges and nodes involved in this cluster's construction
 ##############################################
@@ -63,14 +63,10 @@ pos_dict = nx.spring_layout(G_plus)
 ##############################################
 ##############################################
 ##############################################
-
-for entry in current_cluster_construction_log:
-    if type(entry)==ClusterState:
-        print('e')
 cluster_states = [entry for entry in current_cluster_construction_log if type(entry)==ClusterState]
 
 # cs = cluster_states[3]
-for cs in cluster_states[:10]:
+for cs in cluster_states:
     cs_add_candidates=cs.add_candidates
     cs_remove_candidates=cs.remove_candidates
     cs_current_cluster = cs.current_cluster
@@ -78,6 +74,8 @@ for cs in cluster_states[:10]:
 
     nodes_inside_cluster = [key for key in cs_current_cluster]
     nodes_outside_cluster = [key for key in cs_add_candidates]
+    # print(len(nodes_inside_cluster))
+    # print(len(nodes_outside_cluster))
 
     all_involved_edges = set()
     for i in nodes_inside_cluster+nodes_outside_cluster:
@@ -100,6 +98,7 @@ for cs in cluster_states[:10]:
     # pos_dict = nx.spring_layout(G)
     edge_x = []
     edge_y = []
+
     for edge in G.edges():
         x0, y0 = pos_dict[edge[0]]
         x1, y1 = pos_dict[edge[1]]
@@ -133,6 +132,8 @@ for cs in cluster_states[:10]:
 
     node_x = []
     node_y = []
+
+    # print(len(G.nodes))
     for node in G.nodes():
         # x, y = G.node[node]['pos']
         pos_x, pos_y = pos_dict[node]#['pos']
@@ -160,16 +161,14 @@ for cs in cluster_states[:10]:
                 titleside='right'
             ),
             line_width=2))
-    # Color Node Points
-    # Color node points by the number of connections.
-    #
-    # Another option would be to size points by the number of connections i.e. node_trace.marker.size = node_adjacencies
+
 
     node_adjacencies = []
     node_text = []
     for node, adjacencies in enumerate(G.adjacency()):
+        # print(node, adjacencies)
         node_adjacencies.append(len(adjacencies[1]))
-        node_text.append('%s # of connections: '%id_to_name[node] +str(len(adjacencies[1])))
+        node_text.append('%s # of connections: '%id_to_name[adjacencies[0]] +str(len(adjacencies[1])))
 
 
 
@@ -201,4 +200,4 @@ for cs in cluster_states[:10]:
                     yaxis=dict(showgrid=False, zeroline=False, showticklabels=False))
                     )
     fig.show()
-    time.sleep(3)
+    # time.sleep(3)
