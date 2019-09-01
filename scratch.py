@@ -8,7 +8,7 @@ name = \
 
 x = loadData(name)
 print(stringify_construction_log(x.construction_log))
-exit(0)
+# exit(0)
 
 x = loadData(name)
 my_data = loadData(name)
@@ -23,14 +23,7 @@ for d in [x.final_clusters_stats, x.gsc_appearing_stats, x.gsc_appearing_found_s
     print(d['average_cohesiveness'], d['average_density'], d['average_size'])
     print()
 # pp.pprint(x.graph.hash_graph)
-e_unweighted = []
-edgelist = []
-for source in x.graph.hash_graph:
-    for target in x.graph.hash_graph[source]:
-        edgelist.append(tuple([source, target, x.graph.hash_graph[source][target]]))
-        e_unweighted.append(tuple([source, target]))
-for edge in edgelist:
-    print( edge)
+
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import networkx as nx
@@ -62,36 +55,22 @@ import networkx as nx
 # plt.axis('off')
 # plt.show()
 
-
-#################################
-#################################
-#################################
-#################################
-#################################
-
-# import plotly.graph_objects as go
-#
-# import networkx as nx
-#
-# G = nx.random_geometric_graph(200, 0.125)
+edgelist = []
+for source in x.graph.hash_graph:
+    for target in x.graph.hash_graph[source]:
+        edgelist.append(tuple([source, target, x.graph.hash_graph[source][target]]))
 G = nx.Graph()
 G.add_weighted_edges_from(edgelist)
-
-# G.add_edges_from(e_unweighted)
-
-# Create Edges
-# Add edges as disconnected lines in a single trace and nodes as a scatter trace
-
-pos_dict  = {}
-for node in G.node:
-    pos_dict[node]={'pos':[numpy.random.rand(), numpy.random.rand()]}
+'''
+Create Edges
+Add edges as disconnected lines in a single trace and nodes as a scatter trace
+'''
+pos_dict = nx.spring_layout(G)
 edge_x = []
 edge_y = []
 for edge in G.edges():
-    # x0, y0 = G.node[edge[0]]['pos']
-    # x1, y1 = G.node[edge[1]]['pos']
-    x0, y0 = pos_dict[edge[0]]['pos']
-    x1, y1 = pos_dict[edge[1]]['pos']
+    x0, y0 = pos_dict[edge[0]]
+    x1, y1 = pos_dict[edge[1]]
     edge_x.append(x0)
     edge_x.append(x1)
     edge_x.append(None)
@@ -99,17 +78,31 @@ for edge in G.edges():
     edge_y.append(y1)
     edge_y.append(None)
 
-edge_trace = go.Scatter(
-    x=edge_x, y=edge_y,
+edge_trace1 = go.Scatter(
+    x=edge_x[:2000], y=edge_y[:2000],
     line=dict(width=0.5, color='#888'),
     hoverinfo='none',
     mode='lines')
+
+edge_trace2 = go.Scatter(
+    x=edge_x[2000:], y=edge_y[2000:],
+    line=dict(width=0.5, color='#888', dash="dash"),
+    hoverinfo='none',
+    mode='lines')
+
+# edge_styles = []
+# for i in range(len(edgelist)):
+#     if i%2 ==0:
+#         edge_styles.append("dash")
+#     else:
+#         edge_styles.append("solid")
+# edge_trace.line.dash = edge_styles
 
 node_x = []
 node_y = []
 for node in G.nodes():
     # x, y = G.node[node]['pos']
-    x, y = pos_dict[node]['pos']
+    x, y = pos_dict[node]#['pos']
     node_x.append(x)
     node_y.append(y)
 
@@ -126,7 +119,7 @@ node_trace = go.Scatter(
         colorscale='YlGnBu',
         reversescale=True,
         color=[],
-        size=10,
+        size=100,
         colorbar=dict(
             thickness=15,
             title='Node Connections',
@@ -145,10 +138,21 @@ for node, adjacencies in enumerate(G.adjacency()):
     node_adjacencies.append(len(adjacencies[1]))
     node_text.append('%s # of connections: '%my_data.graph.id_to_name[node] +str(len(adjacencies[1])))
 
+
+
+node_colorings = []
+for i in range(len(node_adjacencies)):
+    if i%2 ==0:
+        node_colorings.append(1)
+    else:
+        node_colorings.append(2)
+
 node_trace.marker.color = node_adjacencies
+node_trace.marker.size = node_adjacencies
+pp.pprint(node_adjacencies)
 node_trace.text = node_text
 # Create Network Graph
-fig = go.Figure(data=[edge_trace, node_trace],
+fig = go.Figure(data=[edge_trace1,edge_trace2, node_trace],
              layout=go.Layout(
                 title='<br>Network graph made with Python',
                 titlefont_size=16,
@@ -164,3 +168,4 @@ fig = go.Figure(data=[edge_trace, node_trace],
                 yaxis=dict(showgrid=False, zeroline=False, showticklabels=False))
                 )
 fig.show()
+time.sleep(3)
