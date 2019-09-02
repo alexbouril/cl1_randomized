@@ -110,35 +110,32 @@ def add(self, add_candidates, current_cluster, remove_candidates, change_vertex,
 
     # Move the change vertex from add_candidates to current_cluster
     to_add = add_candidates[change_vertex].copy()
-    current_cluster[change_vertex] = to_add
     del add_candidates[change_vertex]
-
+    current_cluster[change_vertex] = to_add
     # Also add the change vertex to remove_candidates if applicable
     if to_add.num_edges_from:
         remove_candidates[change_vertex] = to_add
+
+    s = current_cluster[change_vertex].stringify()
+    dummy = -1
+    def update_v(v, edge_weight, collection):
+        collection[v].sum_weight_to = edge_weight + collection[v].sum_weight_to
+        collection[v].sum_weight_from = -1 * edge_weight + collection[v].sum_weight_from
+        collection[v].num_edges_to = 1 + collection[v].num_edges_to
+        collection[v].num_edges_from = -1 + collection[v].num_edges_from
 
     for v in self.graph.hash_graph[
         change_vertex]:  # iterate over neighbors of change_vertex, and update each Relationship
         edge_weight = self.graph.hash_graph[change_vertex][v]
         if v in add_candidates:
-            add_candidates[v].sum_weight_to = edge_weight + add_candidates[v].sum_weight_to
-            add_candidates[v].sum_weight_from = -1 * edge_weight + add_candidates[v].sum_weight_from
-            add_candidates[v].num_edges_to = 1 + add_candidates[v].num_edges_to
-            add_candidates[v].num_edges_from = -1 + add_candidates[v].num_edges_from
+            update_v(v, edge_weight, add_candidates)
         if v in current_cluster:
-            current_cluster[v].sum_weight_to = edge_weight + current_cluster[v].sum_weight_to
-            current_cluster[v].sum_weight_from = -1 * edge_weight + current_cluster[v].sum_weight_from
-            current_cluster[v].num_edges_to = 1 + current_cluster[v].num_edges_to
-            current_cluster[v].num_edges_from = -1 + current_cluster[v].num_edges_from
+            update_v(v, edge_weight, current_cluster)
         # note that v may be in both the current_cluster and in remove_candidates
         # remove_candidates is a subset of current_cluster
         if v in remove_candidates:
-            remove_candidates[v].sum_weight_to = edge_weight + remove_candidates[v].sum_weight_to
-            remove_candidates[v].sum_weight_from = -1 * edge_weight + remove_candidates[
-                v].sum_weight_from
-            remove_candidates[v].num_edges_to = 1 + remove_candidates[v].num_edges_to
-            remove_candidates[v].num_edges_from = -1 + remove_candidates[v].num_edges_from
-            # Check that a candidate for removal is still on the boundary
+            update_v(v, edge_weight, remove_candidates)
+            # Check that a candidate for removal+ is still on the boundary
             if remove_candidates[v].num_edges_from == 0:
                 del remove_candidates[v]
         # handle the case that v is on the new boundary
@@ -238,30 +235,26 @@ def remove(self, remove_candidates, add_candidates, current_cluster, change_vert
     # Also add the change vertex to add_candidates
     add_candidates[change_vertex] = to_remove
 
+    def update_v(v, edge_weight, collection):
+        collection[v].sum_weight_to = -1 * edge_weight + collection[v].sum_weight_to
+        collection[v].sum_weight_from = edge_weight + collection[v].sum_weight_from
+        collection[v].num_edges_to = -1 + collection[v].num_edges_to
+        collection[v].num_edges_from = 1 + collection[v].num_edges_from
+
     # AFTER this is done, THEN do the following
     for v in self.graph.hash_graph[
         change_vertex]:  # iterate over neighbors of change_vertex, and update each Relationship
         edge_weight = self.graph.hash_graph[change_vertex][v]
         # note that v may be in both the current_cluster and in remove_candidates
         if v in remove_candidates:
-            remove_candidates[v].sum_weight_to = -1 * edge_weight + remove_candidates[v].sum_weight_to
-            remove_candidates[v].sum_weight_from = edge_weight + remove_candidates[v].sum_weight_from
-            remove_candidates[v].num_edges_to = -1 + remove_candidates[v].num_edges_to
-            remove_candidates[v].num_edges_from = 1 + remove_candidates[v].num_edges_from
+            update_v(v, edge_weight, remove_candidates)
         if v in current_cluster:
-            current_cluster[v].sum_weight_to = -1 * edge_weight + current_cluster[v].sum_weight_to
-            current_cluster[v].sum_weight_from = edge_weight + current_cluster[v].sum_weight_from
-            current_cluster[v].num_edges_to = -1 + current_cluster[v].num_edges_to
-            current_cluster[v].num_edges_from = 1 + current_cluster[v].num_edges_from
+            update_v(v, edge_weight, current_cluster)
             # TODO: if v is in the current cluster, and is newly also on the boundary, add v to remove_candidates
             if current_cluster[v].num_edges_from == 1:
                 remove_candidates[v] = current_cluster[v].copy()
         if v in add_candidates:
-            # update the relationship
-            add_candidates[v].sum_weight_to = -1 * edge_weight + add_candidates[v].sum_weight_to
-            add_candidates[v].sum_weight_from = edge_weight + add_candidates[v].sum_weight_from
-            add_candidates[v].num_edges_to = - 1 + add_candidates[v].num_edges_to
-            add_candidates[v].num_edges_from = 1 + add_candidates[v].num_edges_from
+            update_v(v, edge_weight, add_candidates)
             # TODO: if v in no longer on the boundary after change_vertex is removed from current_cluster, remove v from add_candidates
             if add_candidates[v].num_edges_to == 0:
                 del add_candidates[v]

@@ -71,6 +71,7 @@ def randomized_construction(self):
 
                     else:
                         debug("\n", "No improvement by ADDING", "\n")
+                        current_cluster_construction_log.append(Action("failed to add"))
                         last_failed_add_round_no = round_no
 
                 ############################################################
@@ -89,6 +90,7 @@ def randomized_construction(self):
                             ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
                     else:
                         debug("\n", "No improvement by REMOVING", "\n")
+                        current_cluster_construction_log.append(Action("failed to remove"))
                         last_failed_remove_round_no = round_no
 
                 ############################################################

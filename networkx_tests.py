@@ -4,14 +4,15 @@ from graph import *
 import plotly.graph_objects as go
 import networkx as nx
 
-n = "gavin2006_socioaffinities_rescaled+2019-08-31_17:14:11:720422"
+n = "gavin2006_socioaffinities_rescaled+2019-09-02_13:09:59:728355"
 name = \
 "pickles/pickle+"+n
 
 
 x = loadData(name)
+# print(len(x.graph.hash_graph[49]))
+# exit()
 id_to_name = x.graph.id_to_name
-print(stringify_construction_log(x.construction_log))
 
 
 edgelist = []
@@ -23,6 +24,8 @@ for source in x.graph.hash_graph:
 cluster_names = [key for key in x.construction_log]
 current_cluster = cluster_names[0]
 current_cluster_construction_log = x.construction_log[current_cluster]
+print(stringify_single_cluster_construction_log(x.construction_log, current_cluster, verbose=True))
+exit()
 '''
 Create Edges
 Add edges as disconnected lines in a single trace and nodes as a scatter trace
@@ -123,9 +126,10 @@ for cs in cluster_states:
         hoverinfo='none',
         mode='lines')
 
+#dash="dash"),
     edge_trace2_outside_cluster = go.Scatter(
         x=edges_outside_cluster_x, y=edges_outside_cluster_y,
-        line=dict(width=0.5, color='red', dash="dash"),
+        line=dict(width=1, color='red'),
         hoverinfo='none',
         mode='lines')
 
@@ -168,7 +172,25 @@ for cs in cluster_states:
     for node, adjacencies in enumerate(G.adjacency()):
         # print(node, adjacencies)
         node_adjacencies.append(len(adjacencies[1]))
-        node_text.append('%s # of connections: '%id_to_name[adjacencies[0]] +str(len(adjacencies[1])))
+        node_id = adjacencies[0]
+        s = "\n"
+        if node_id in cs.add_candidates:
+            s += "<<< WEIGHT IN: %s>>>\n" \
+            "<<< WEIGHT OUT: %s>>>\n" \
+            "<<< CONNECTIONS IN: %s>>>\n" \
+            "<<< CONNECTIONS OUT: %s>>>\n"%(str(cs_add_candidates[node_id].sum_weight_to),
+                                                str(cs_add_candidates[node_id].sum_weight_from),
+                                                str(cs.add_candidates[node_id].num_edges_to),
+                                                str(cs.add_candidates[node_id].num_edges_from))
+        else:
+            s += "<<< WEIGHT IN: %s>>>\n" \
+            "<<< WEIGHT OUT: %s>>>\n" \
+            "<<< CONNECTIONS IN: %s>>>\n" \
+            "<<< CONNECTIONS OUT: %s>>>\n"%(str(cs.current_cluster[node_id].sum_weight_to),
+                                                str(cs.current_cluster[node_id].sum_weight_from),
+                                                str(cs.current_cluster[node_id].num_edges_to),
+                                                str(cs.current_cluster[node_id].num_edges_from))
+        node_text.append(('%s # of connections: '%id_to_name[adjacencies[0]]) +str(len(adjacencies[1])) + s)
 
 
 

@@ -92,8 +92,11 @@ class Relationship:
 class ClusterState:
     def __init__(self, current_cluster, add_candidates, remove_candidates, cohesiveness, neighborhood_2=None, neighborhood_3=None):
         self.current_cluster = current_cluster.copy()
+        self.current_cluster = copy_relationship_dictionary(current_cluster)
         self.add_candidates = add_candidates.copy()
+        self.add_candidates = {rel:add_candidates[rel].copy() for rel in add_candidates}
         self.remove_candidates = remove_candidates.copy()
+        self.remove_candidates = {rel:remove_candidates[rel].copy() for rel in remove_candidates}
         self.cohesiveness = cohesiveness
         self.neighborhood_2 = neighborhood_2
         self.neighborhood_3 = neighborhood_3
@@ -150,18 +153,38 @@ class Action:
 
 
 
-def stringify_construction_log(construction_log):
+def stringify_construction_log(construction_log, verbose = False):
     s = ""
     for key in construction_log:
         s += "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ NEW CLUSTER @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"
         s+=str(key)+"\n"
         for entry in construction_log[key]:
             if type(entry) == ClusterState:
-                s+=entry.stringify_lite()
+                if verbose:
+                    s += entry.stringify_heavy()
+                else:
+                    s += entry.stringify_lite()
             if type(entry) == Action:
                 s+=entry.stringify()
-                dummy = 0
         s+= "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ END CLUSTER @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"
 
     return s
 
+def stringify_single_cluster_construction_log(construction_log, cluster_key, verbose = False):
+    s = ""
+    s += "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ NEW CLUSTER @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"
+    s += str(cluster_key) + "\n"
+    for entry in construction_log[cluster_key]:
+        if type(entry) == ClusterState:
+            if verbose:
+                s+= entry.stringify_heavy()
+            else:
+                s += entry.stringify_lite()
+        if type(entry) == Action:
+            s += entry.stringify()
+    s += "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ END CLUSTER @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"
+    return s
+
+
+def copy_relationship_dictionary(rd):
+    return {rel:rd[rel].copy() for rel in rd}
