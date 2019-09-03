@@ -119,14 +119,30 @@ def add(self, add_candidates, current_cluster, remove_candidates, change_vertex,
     s = current_cluster[change_vertex].stringify()
     dummy = -1
     def update_v(v, edge_weight, collection):
+        a = collection[v].sum_weight_to < 0
+        b = collection[v].sum_weight_from < 0
+        c = collection[v].num_edges_to < 0
+        d = collection[v].num_edges_from < 0
+        if a or b or c or d:
+            print("darn %s"%str(v))
+            # exit()
+
         collection[v].sum_weight_to = edge_weight + collection[v].sum_weight_to
         collection[v].sum_weight_from = -1 * edge_weight + collection[v].sum_weight_from
         collection[v].num_edges_to = 1 + collection[v].num_edges_to
         collection[v].num_edges_from = -1 + collection[v].num_edges_from
 
+        a = collection[v].sum_weight_to < 0
+        b = collection[v].sum_weight_from < 0
+        c = collection[v].num_edges_to < 0
+        d = collection[v].num_edges_from < 0
+        if a or b or c or d:
+            print("oh no %s"%str(v))
+            # exit()
+
     for v in self.graph.hash_graph[
         change_vertex]:  # iterate over neighbors of change_vertex, and update each Relationship
-        edge_weight = self.graph.hash_graph[change_vertex][v]
+        edge_weight = self.graph.hash_graph[v][change_vertex]
         if v in add_candidates:
             update_v(v, edge_weight, add_candidates)
         if v in current_cluster:
@@ -153,6 +169,14 @@ def add(self, add_candidates, current_cluster, remove_candidates, change_vertex,
                 else:
                     num_edges_from += 1
                     weight_from += weight_prime
+            a = num_edges_to < 0
+            b = weight_to < 0
+            c = num_edges_from < 0
+            d = weight_from < 0
+            if a or b or c or d:
+                print("shoot")
+                exit()
+
             add_candidates[v] = Relationship(weight_to, num_edges_to, weight_from, num_edges_from)
     return cc_weight_in, cc_weight_out
 

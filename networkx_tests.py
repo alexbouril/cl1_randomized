@@ -24,8 +24,8 @@ for source in x.graph.hash_graph:
 cluster_names = [key for key in x.construction_log]
 current_cluster = cluster_names[0]
 current_cluster_construction_log = x.construction_log[current_cluster]
-print(stringify_single_cluster_construction_log(x.construction_log, current_cluster, verbose=True))
-exit()
+print(stringify_single_cluster_construction_log(x.construction_log, current_cluster, verbose=True, graph = x.graph))
+
 '''
 Create Edges
 Add edges as disconnected lines in a single trace and nodes as a scatter trace
@@ -190,7 +190,7 @@ for cs in cluster_states:
                                                 str(cs.current_cluster[node_id].sum_weight_from),
                                                 str(cs.current_cluster[node_id].num_edges_to),
                                                 str(cs.current_cluster[node_id].num_edges_from))
-        node_text.append(('%s # of connections: '%id_to_name[adjacencies[0]]) +str(len(adjacencies[1])) + s)
+        node_text.append(('%s, %s # of connections: '%(adjacencies[0], id_to_name[adjacencies[0]])) +str(len(adjacencies[1])) + s)
 
 
 

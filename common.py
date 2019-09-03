@@ -82,9 +82,9 @@ class Relationship:
 
     def stringify(self):
         s=""
-        s+="weight_to: "+ str(self.sum_weight_to) +"\n"
+        s+="weight_to: "+ str(self.sum_weight_to) +"\t"
         s+="weight_from: "+ str(self.sum_weight_from)+"\n"
-        s+="num_edges_to: "+ str(self.num_edges_to)+"\n"
+        s+="num_edges_to: "+ str(self.num_edges_to)+"\t"
         s+="num_edges_from: "+ str(self.num_edges_from)+"\n"
         return s
 
@@ -101,20 +101,20 @@ class ClusterState:
         self.neighborhood_2 = neighborhood_2
         self.neighborhood_3 = neighborhood_3
 
-    def stringify_heavy(self):
+    def stringify_heavy(self, graph):
         s=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
         s+=f"CURRENT_COHESIVENESS: {self.cohesiveness}\n"
         s += "CURRENT CLUSTER:\n"
         for protein in self.current_cluster:
-            s+=str(protein)+"\n"
+            s+=str(protein)+", "+graph.id_to_name[protein]+"\n"
             s+=self.current_cluster[protein].stringify()
         s+="ADD CANDIDATES:\n"
         for protein in self.add_candidates:
-            s+=str(protein)+"\n"
+            s+=str(protein)+", "+graph.id_to_name[protein]+"\n"
             s+=self.add_candidates[protein].stringify()
         s+="REMOVE CANDIDATES:\n"
         for protein in self.remove_candidates:
-            s+=str(protein)+"\n"
+            s+=str(protein)+", "+graph.id_to_name[protein]+"\n"
             s+=self.remove_candidates[protein].stringify()
         s+="<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n"
         return s
@@ -153,7 +153,7 @@ class Action:
 
 
 
-def stringify_construction_log(construction_log, verbose = False):
+def stringify_construction_log(construction_log, verbose = False, graph = None):
     s = ""
     for key in construction_log:
         s += "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ NEW CLUSTER @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"
@@ -161,7 +161,7 @@ def stringify_construction_log(construction_log, verbose = False):
         for entry in construction_log[key]:
             if type(entry) == ClusterState:
                 if verbose:
-                    s += entry.stringify_heavy()
+                    s += entry.stringify_heavy(graph)
                 else:
                     s += entry.stringify_lite()
             if type(entry) == Action:
@@ -170,14 +170,14 @@ def stringify_construction_log(construction_log, verbose = False):
 
     return s
 
-def stringify_single_cluster_construction_log(construction_log, cluster_key, verbose = False):
+def stringify_single_cluster_construction_log(construction_log, cluster_key, verbose = False, graph = None):
     s = ""
     s += "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ NEW CLUSTER @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"
     s += str(cluster_key) + "\n"
     for entry in construction_log[cluster_key]:
         if type(entry) == ClusterState:
             if verbose:
-                s+= entry.stringify_heavy()
+                s+= entry.stringify_heavy(graph)
             else:
                 s += entry.stringify_lite()
         if type(entry) == Action:
