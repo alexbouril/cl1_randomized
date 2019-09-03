@@ -4,7 +4,7 @@ from graph import *
 import plotly.graph_objects as go
 import networkx as nx
 
-n = "gavin2006_socioaffinities_rescaled+2019-09-02_13:09:59:728355"
+n = "gavin2006_socioaffinities_rescaled+2019-09-03_10:55:16:851591"
 name = \
 "pickles/pickle+"+n
 
@@ -129,7 +129,7 @@ for cs in cluster_states:
 #dash="dash"),
     edge_trace2_outside_cluster = go.Scatter(
         x=edges_outside_cluster_x, y=edges_outside_cluster_y,
-        line=dict(width=1, color='red'),
+        line=dict(width=.7, color='red'),
         hoverinfo='none',
         mode='lines')
 

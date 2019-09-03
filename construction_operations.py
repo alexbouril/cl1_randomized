@@ -2,34 +2,54 @@ from common import *
 from graph import *
 
 def initialize_complex(self, current_seed):
+    ###########################################
+    # initalize the current cluster
+    ###########################################
     current_cluster = dict()
-    weight_to = 0
-    num_edges_to = 0
-    weight_from = sum([self.graph.hash_graph[current_seed][tar] for tar in self.graph.hash_graph[current_seed]])
-    num_edges_from = len(self.graph.hash_graph[current_seed])
-    current_cluster[current_seed] = Relationship(weight_to, num_edges_to, weight_from, num_edges_from)
+    seed_weight_to = 0
+    seed_num_edges_to = 0
+    seed_weight_from = sum([self.graph.hash_graph[current_seed][tar] for tar in self.graph.hash_graph[current_seed]])
+    seed_num_edges_from = len(self.graph.hash_graph[current_seed])
+    current_cluster[current_seed] = Relationship(seed_weight_to,
+                                                 seed_num_edges_to,
+                                                 seed_weight_from,
+                                                 seed_num_edges_from)
     current_score = 0
     current_cluster_weight_in = 0
-    current_cluster_weight_out = weight_from
-    # initalize the candidates for removal
-    remove_candidates = dict()
-    remove_candidates[current_seed] = Relationship(weight_to, num_edges_to, weight_from, num_edges_from)
+    current_cluster_weight_out = seed_weight_from
 
+    ###########################################
+    # initalize the candidates for removal
+    ###########################################
+    remove_candidates = dict()
+    remove_candidates[current_seed] = current_cluster[current_seed].copy()
+
+    ###########################################
     # initialize the candidates for addition
+    ###########################################
     add_candidates = dict()
     for target in self.graph.hash_graph[current_seed]:
-        weight_to = self.graph.hash_graph[current_seed][target]
-        num_edges = len(self.graph.hash_graph[target])
-        num_edges_to = 1
-        num_edges_from = num_edges - 1
-        weight_from = sum([self.graph.hash_graph[target][tar] for tar in self.graph.hash_graph[target] if
+        target_weight_to = self.graph.hash_graph[target][current_seed]
+        target_num_edges = len(self.graph.hash_graph[target])
+        target_num_edges_to = 1
+        target_num_edges_from = target_num_edges - 1
+        target_weight_from = sum([self.graph.hash_graph[target][tar] for tar in self.graph.hash_graph[target] if
                            tar != current_seed])
-        add_candidates[target] = Relationship(weight_to, num_edges_to, weight_from, num_edges_from)
-    return current_cluster, remove_candidates, add_candidates, current_score, current_cluster_weight_in, current_cluster_weight_out
+        add_candidates[target] = Relationship(target_weight_to,
+                                              target_num_edges_to,
+                                              target_weight_from,
+                                              target_num_edges_from)
+    return current_cluster,   \
+           remove_candidates, \
+           add_candidates,    \
+           current_score,     \
+           current_cluster_weight_in, \
+           current_cluster_weight_out
 
-# maybe if we add vertex that is best in terms of 2 neighborhood but may or may not be the best in terms of 1 neighborhood
-#   after we add this vertex, we add the helpful neighbor vertices, without considering the whole boundary
 
+# maybe if we add vertex that is best in terms of 2 neighborhood
+#       but may or may not be the best in terms of 1 neighborhood
+# after we add this vertex, we add the helpful neighbor vertices, without considering the whole boundary
 def find_best_2neighborhood_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out):
     best_change = None
     best_change_score = current_score
@@ -175,7 +195,7 @@ def add(self, add_candidates, current_cluster, remove_candidates, change_vertex,
             d = weight_from < 0
             if a or b or c or d:
                 print("shoot")
-                exit()
+                exit(0)
 
             add_candidates[v] = Relationship(weight_to, num_edges_to, weight_from, num_edges_from)
     return cc_weight_in, cc_weight_out
