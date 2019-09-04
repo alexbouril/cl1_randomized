@@ -4,11 +4,11 @@ from graph import *
 import plotly.graph_objects as go
 import networkx as nx
 
-n = "gavin2006_socioaffinities_rescaled+2019-09-03_20:36:40:296953"
-name = \
-"pickles/pickle+"+n
-
-
+# n = "gavin2006_socioaffinities_rescaled+2019-09-04_00:46:11:351892"
+# name = \
+# "pickles/pickle+"+n
+name = loadData('pickles/most_recent')['title']
+print(name)
 x = loadData(name)
 # print(len(x.graph.hash_graph[49]))
 # exit()

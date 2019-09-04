@@ -71,7 +71,7 @@ def randomized_construction(self):
 
                     else:
                         debug("\n", "No improvement by ADDING", "\n")
-                        current_cluster_construction_log.append(Action("failed to add"))
+                        current_cluster_construction_log.append(Action("failed to add, current cohesiveness: %s"%str(current_score)))
                         last_failed_add_round_no = round_no
 
                 ############################################################
@@ -94,21 +94,34 @@ def randomized_construction(self):
                             ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
                     else:
                         debug("\n", "No improvement by REMOVING", "\n")
-                        current_cluster_construction_log.append(Action("failed to remove"))
+                        current_cluster_construction_log.append(Action("failed to remove, current cohesiveness: %s"%str(current_score)))
                         last_failed_remove_round_no = round_no
 
                 ############################################################
                 # IF STUCK IN LOCAL OPTIMUM, CONSIDER TAKING A 'BAD' ADD STEP
                 ############################################################
-                # if local_number_of_shakes_remaining and add_candidates and abs(last_failed_remove_round_no - last_failed_add_round_no) == 1:
-                #     local_number_of_shakes_remaining -= 1
-                #
-                #     current_score, \
-                #     current_cluster_weight_in, \
-                #     current_cluster_weight_out, \
-                #     round_no, \
-                #     last_failed_add_round_no = \
-                #         add_shake(self, add_candidates, remove_candidates, current_cluster, current_cluster_weight_in, current_cluster_weight_out, round_no, last_failed_add_round_no)
+                if local_number_of_shakes_remaining and add_candidates and abs(last_failed_remove_round_no - last_failed_add_round_no) == 1:
+                    local_number_of_shakes_remaining -= 1
+                    current_cluster_construction_log.append(Action("trying add_shake, current cohesiveness: %s"%str(current_score)))
+                    current_score, \
+                    current_cluster_weight_in, \
+                    current_cluster_weight_out, \
+                    round_no, \
+                    last_failed_add_round_no = \
+                        add_shake(self,
+                                  add_candidates,
+                                  remove_candidates,
+                                  current_cluster,
+                                  current_cluster_weight_in,
+                                  current_cluster_weight_out,
+                                  round_no,
+                                  last_failed_add_round_no)
+                    current_cluster_construction_log.append(
+                        ClusterState(current_cluster,
+                                     add_candidates,
+                                     remove_candidates,
+                                     current_score))
+
                 debug("$$$$$$$$$", last_failed_add_round_no, last_failed_remove_round_no, decider)
 
 

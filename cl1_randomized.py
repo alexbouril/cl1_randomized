@@ -474,6 +474,11 @@ class CL1_Randomized:
 
         store_self()
 
+        f_name = "pickles/most_recent"
+        f = open(f_name, 'wb')
+        title = {'title': "pickles/pickle+"+self.run_title}
+        pickle.dump(title, f)
+
 
 
 
@@ -485,15 +490,16 @@ if __name__ == "__main__":
                        merge_threshold=.8,
                        penalty_value_per_node=2,
                        randomized_construction_bool=True,
-                       rng_seed=None,
-                       number_of_shakes=3,
-                       number_of_bad_adds=5,
+                       rng_seed=20,
+                       number_of_shakes=1,
+                       number_of_bad_adds=2,
                        sort_seeds_by="weight",
                        care_about_cuts=False,
                        seed_from_all=False,
                        gsc_appearance_ratio_threshold=.8,
                        found_gsc_jaccard_threshold=.8,
                        gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
+    # exec("networkx_tests.py")
 
 
 

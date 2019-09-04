@@ -158,15 +158,14 @@ def add(self, add_candidates, current_cluster, remove_candidates,
         collection[v].num_edges_to += 1
         collection[v].num_edges_from -= 1
 
-        # a = collection[v].sum_weight_to < 0
-        # b = collection[v].sum_weight_from < 0
-        # c = collection[v].num_edges_to < 0
-        # d = collection[v].num_edges_from < 0
-        # if a or b or c or d:
-        #     print("oh no %s; %s%s%s%s"%(str(v), a, b, c, d))
-        #     if v == 595:
-        #         print(collection[v].stringify())
-        #     # exit()
+        thresh = -.001
+        a = collection[v].sum_weight_to < thresh
+        b = collection[v].sum_weight_from < thresh
+        c = collection[v].num_edges_to < thresh
+        d = collection[v].num_edges_from < thresh
+        if a or b or c or d:
+            print("oh no %s; %s%s%s%s"%(str(v), a, b, c, d))
+            exit()
 
 
     #######################################################################
@@ -361,5 +360,11 @@ def add_shake(self, add_candidates, remove_candidates, current_cluster, cc_weigh
             round_no += 1
             last_failed_add_round_no = -5
             # TODO handle round_no numbers
-            cc_weight_in, cc_weight_out = add(self, add_candidates, current_cluster, remove_candidates, best_suboptimal_change, best_suboptimal_score, cc_weight_in, cc_weight_out)
-    return best_suboptimal_score, cc_weight_in, cc_weight_out, round_no, last_failed_add_round_no
+            cc_weight_in, cc_weight_out = add(self, add_candidates, current_cluster, remove_candidates,
+                                              best_suboptimal_change, best_suboptimal_score, cc_weight_in,
+                                              cc_weight_out)
+    return best_suboptimal_score, \
+           cc_weight_in, \
+           cc_weight_out, \
+           round_no, \
+           last_failed_add_round_no
