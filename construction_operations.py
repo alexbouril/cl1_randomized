@@ -29,7 +29,7 @@ def initialize_complex(self, current_seed):
     ###########################################
     add_candidates = dict()
     for target in self.graph.hash_graph[current_seed]:
-        target_weight_to = self.graph.hash_graph[target][current_seed]
+        target_weight_to = self.graph.hash_graph[current_seed][target]
         target_num_edges = len(self.graph.hash_graph[target])
         target_num_edges_to = 1
         target_num_edges_from = target_num_edges - 1
@@ -122,46 +122,57 @@ def find_best_add(self, add_candidates, current_cluster, current_score, current_
     return best_change, best_change_score
 
 
-def add(self, add_candidates, current_cluster, remove_candidates, change_vertex, change_vertex_score, cc_weight_in, cc_weight_out):
+def add(self, add_candidates, current_cluster, remove_candidates,
+        change_vertex, change_vertex_score, cc_weight_in, cc_weight_out):
     debug("\n", "ADD: %s" % str(change_vertex), "change_vertex_score: %s" % str(change_vertex_score), "\n")
     # update the overall weight into and out of the current_cluster
     cc_weight_in += add_candidates[change_vertex].sum_weight_to
     cc_weight_out += add_candidates[change_vertex].sum_weight_from
 
+    ###################################
     # Move the change vertex from add_candidates to current_cluster
+    ###################################
     to_add = add_candidates[change_vertex].copy()
     del add_candidates[change_vertex]
-    current_cluster[change_vertex] = to_add
-    # Also add the change vertex to remove_candidates if applicable
+    current_cluster[change_vertex] = to_add.copy()
+
+    ###################################
+    # Change vertex to remove_candidates if applicable
+    ###################################
     if to_add.num_edges_from:
-        remove_candidates[change_vertex] = to_add
+        remove_candidates[change_vertex] = to_add.copy()
 
     s = current_cluster[change_vertex].stringify()
-    dummy = -1
     def update_v(v, edge_weight, collection):
-        a = collection[v].sum_weight_to < 0
-        b = collection[v].sum_weight_from < 0
-        c = collection[v].num_edges_to < 0
-        d = collection[v].num_edges_from < 0
-        if a or b or c or d:
-            print("darn %s"%str(v))
-            # exit()
+        # a = collection[v].sum_weight_to < 0
+        # b = collection[v].sum_weight_from < 0
+        # c = collection[v].num_edges_to < 0
+        # d = collection[v].num_edges_from < 0
+        #
+        # if a or b or c or d:
+        #     print("darn %s; %s%s%s%s"%(str(v), a, b, c, d))
+        #     # exit()
 
-        collection[v].sum_weight_to = edge_weight + collection[v].sum_weight_to
-        collection[v].sum_weight_from = -1 * edge_weight + collection[v].sum_weight_from
-        collection[v].num_edges_to = 1 + collection[v].num_edges_to
-        collection[v].num_edges_from = -1 + collection[v].num_edges_from
+        collection[v].sum_weight_to += edge_weight
+        collection[v].sum_weight_from -= edge_weight
+        collection[v].num_edges_to += 1
+        collection[v].num_edges_from -= 1
 
-        a = collection[v].sum_weight_to < 0
-        b = collection[v].sum_weight_from < 0
-        c = collection[v].num_edges_to < 0
-        d = collection[v].num_edges_from < 0
-        if a or b or c or d:
-            print("oh no %s"%str(v))
-            # exit()
+        # a = collection[v].sum_weight_to < 0
+        # b = collection[v].sum_weight_from < 0
+        # c = collection[v].num_edges_to < 0
+        # d = collection[v].num_edges_from < 0
+        # if a or b or c or d:
+        #     print("oh no %s; %s%s%s%s"%(str(v), a, b, c, d))
+        #     if v == 595:
+        #         print(collection[v].stringify())
+        #     # exit()
 
-    for v in self.graph.hash_graph[
-        change_vertex]:  # iterate over neighbors of change_vertex, and update each Relationship
+
+    #######################################################################
+    # iterate over neighbors of change_vertex, and update each Relationship
+    #######################################################################
+    for v in self.graph.hash_graph[change_vertex]:
         edge_weight = self.graph.hash_graph[v][change_vertex]
         if v in add_candidates:
             update_v(v, edge_weight, add_candidates)
@@ -181,6 +192,9 @@ def add(self, add_candidates, current_cluster, remove_candidates, change_vertex,
             weight_to = 0
             num_edges_from = 0
             weight_from = 0
+            ###################################
+            # iterate over the neighbors of v
+            ###################################
             for v_prime in self.graph.hash_graph[v]:
                 weight_prime = self.graph.hash_graph[v][v_prime]
                 if v_prime in current_cluster:
@@ -189,15 +203,20 @@ def add(self, add_candidates, current_cluster, remove_candidates, change_vertex,
                 else:
                     num_edges_from += 1
                     weight_from += weight_prime
-            a = num_edges_to < 0
-            b = weight_to < 0
-            c = num_edges_from < 0
-            d = weight_from < 0
-            if a or b or c or d:
-                print("shoot")
-                exit(0)
 
-            add_candidates[v] = Relationship(weight_to, num_edges_to, weight_from, num_edges_from)
+            add_candidates[v] = Relationship(weight_to,
+                                             num_edges_to,
+                                             weight_from,
+                                             num_edges_from)
+            # a = num_edges_to < 0
+            # b = weight_to < 0
+            # c = num_edges_from < 0
+            # d = weight_from < 0
+            # if a or b or c or d:
+            #     print("shoot")
+            #     # exit(0)
+
+
     return cc_weight_in, cc_weight_out
 
 
@@ -277,13 +296,13 @@ def remove(self, remove_candidates, add_candidates, current_cluster, change_vert
     del current_cluster[change_vertex]
 
     # Also add the change vertex to add_candidates
-    add_candidates[change_vertex] = to_remove
+    add_candidates[change_vertex] = to_remove.copy()
 
     def update_v(v, edge_weight, collection):
-        collection[v].sum_weight_to = -1 * edge_weight + collection[v].sum_weight_to
-        collection[v].sum_weight_from = edge_weight + collection[v].sum_weight_from
-        collection[v].num_edges_to = -1 + collection[v].num_edges_to
-        collection[v].num_edges_from = 1 + collection[v].num_edges_from
+        collection[v].sum_weight_to -= edge_weight
+        collection[v].sum_weight_from += edge_weight
+        collection[v].num_edges_to -= 1
+        collection[v].num_edges_from += 1
 
     # AFTER this is done, THEN do the following
     for v in self.graph.hash_graph[

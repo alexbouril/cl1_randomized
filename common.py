@@ -36,8 +36,8 @@ def debug(*argv):
             print(arg)
 
 def sleep_debug(t, m = ""):
-    print(m)
     if SLEEP_DEBUG:
+        print(m)
         time.sleep(t)
 
 def loadData(f_name):
@@ -102,34 +102,48 @@ class ClusterState:
         self.neighborhood_3 = neighborhood_3
 
     def stringify_heavy(self, graph):
-        s=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
+        s=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
         s+=f"CURRENT_COHESIVENESS: {self.cohesiveness}\n"
-        s += "CURRENT CLUSTER:\n"
+        s += "\n"
+        s+="**************************************\n"
+        s += "********** CURRENT CLUSTER: **********\n"
+        s+="**************************************\n"
+        s += "\n"
         for protein in self.current_cluster:
             s+=str(protein)+", "+graph.id_to_name[protein]+"\n"
             s+=self.current_cluster[protein].stringify()
-        s+="ADD CANDIDATES:\n"
+        s += "\n"
+        s += "*************************************\n"
+        s+="********** ADD CANDIDATES: **********\n"
+        s+="*************************************\n"
+        s += "\n"
+
         for protein in self.add_candidates:
             s+=str(protein)+", "+graph.id_to_name[protein]+"\n"
             s+=self.add_candidates[protein].stringify()
-        s+="REMOVE CANDIDATES:\n"
+        s+="\n"
+        s+="****************************************\n"
+        s+="********** REMOVE CANDIDATES: **********\n"
+        s+="****************************************\n"
+        s += "\n"
+
         for protein in self.remove_candidates:
             s+=str(protein)+", "+graph.id_to_name[protein]+"\n"
             s+=self.remove_candidates[protein].stringify()
-        s+="<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n"
+        s+=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
         return s
 
 
     def stringify_lite(self):
-        s=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
+        s=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
         s+=f"CURRENT_COHESIVENESS: {self.cohesiveness}\n"
-        s += "CURRENT CLUSTER:\n"
+        s += "********** CURRENT CLUSTER: **********\n"
         s+= str([protein for protein in self.current_cluster])+"\n"
-        s+="ADD CANDIDATES:\n"
+        s+="********** ADD CANDIDATES : **********\n"
         s+= str([protein for protein in self.add_candidates]) +"\n"
-        s+="REMOVE CANDIDATES:\n"
+        s+="********** REMOVE CANDIDATES: **********\n"
         s+= str([protein for protein in self.remove_candidates]) +"\n"
-        s+="<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n"
+        s+=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
         return s
 
 
@@ -142,12 +156,12 @@ class Action:
         self.involved_node  = involved_node
 
     def stringify(self):
-        s=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
+        s=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
         if self.action_name:
             s+=f"ACTION: {str(self.action_name)}\n"
         if self.involved_node:
             s+=f"INVOLVED NODE: {str(self.involved_node)}\n"
-        s+="<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n"
+        s+=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
 
         return s
 

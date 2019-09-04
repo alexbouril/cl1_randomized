@@ -65,7 +65,7 @@ def randomized_construction(self):
                         current_score = best_change_score
                         current_cluster_weight_in, current_cluster_weight_out = \
                             add(self, add_candidates, current_cluster, remove_candidates, best_change, best_change_score, current_cluster_weight_in, current_cluster_weight_out)
-                        current_cluster_construction_log.append(Action("add", best_change))
+                        current_cluster_construction_log.append(Action("adding", best_change))
                         current_cluster_construction_log.append(
                             ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
 
@@ -82,10 +82,14 @@ def randomized_construction(self):
                     best_change, best_change_score = \
                         find_best_remove(self, remove_candidates, current_cluster, current_cluster_weight_in, current_cluster_weight_out, current_score)
                     if best_change:
+                        print("========================================================================================================")
+                        print("==================================================== REMOVING =====================================================")
+                        print("============================================================================================================================")
+
                         current_score = best_change_score
                         current_cluster_weight_in, current_cluster_weight_out = \
                             remove(self, remove_candidates, add_candidates, current_cluster, best_change, best_change_score, current_cluster_weight_in, current_cluster_weight_out)
-                        current_cluster_construction_log.append(Action("remove", best_change))
+                        current_cluster_construction_log.append(Action("removing", best_change))
                         current_cluster_construction_log.append(
                             ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
                     else:

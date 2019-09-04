@@ -4,7 +4,7 @@ from graph import *
 import plotly.graph_objects as go
 import networkx as nx
 
-n = "gavin2006_socioaffinities_rescaled+2019-09-03_10:55:16:851591"
+n = "gavin2006_socioaffinities_rescaled+2019-09-03_20:36:40:296953"
 name = \
 "pickles/pickle+"+n
 

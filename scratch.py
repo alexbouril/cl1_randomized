@@ -1,14 +1,29 @@
 from cl1_randomized import *
 from common import *
 from graph import *
-n = "gavin2006_socioaffinities_rescaled+2019-08-31_17:14:11:720422"
+n = "gavin2006_socioaffinities_rescaled+2019-09-03_20:36:40:296953"
 name = \
 "pickles/pickle+"+n
 
 
 x = loadData(name)
-print(stringify_construction_log(x.construction_log))
-# exit(0)
+# pp.pprint(x.graph.hash_graph[54])
+# rb = [x.graph.hash_graph[481][tar] for tar in x.graph.hash_graph[481]]
+# print(rb)
+# print(sum(rb)-x.graph.hash_graph[481][54])
+
+# print(len(x.graph.hash_graph[595]))
+# print(x.graph.hash_graph[595])
+# print(sum(x.graph.hash_graph[595]))
+# exit()
+
+
+cluster_names = [key for key in x.construction_log]
+current_cluster = cluster_names[0]
+current_cluster_construction_log = x.construction_log[current_cluster]
+print(stringify_single_cluster_construction_log(x.construction_log, current_cluster, verbose=True, graph = x.graph))
+# print(stringify_construction_log(x.construction_log))
+
 
 x = loadData(name)
 my_data = loadData(name)
