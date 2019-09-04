@@ -48,7 +48,18 @@ def randomized_construction(self):
             last_failed_remove_round_no = -666
             round_no = 0
 
+            ############################################################
+            # Set the number of shakes available to the current cluster construction
+            ############################################################
             local_number_of_shakes_remaining = self.number_of_shakes
+
+            ############################################################
+            # initialize the backup in case add_shake gets us stuck in a lower local optima
+            ############################################################
+            backup_current_cluster = current_cluster.copy()
+            backup_add_candidates = add_candidates.copy()
+            backup_remove_candidates = remove_candidates.copy()
+            backup_current_score = current_score
 
             while (add_candidates or remove_candidates) and abs(last_failed_remove_round_no - last_failed_add_round_no) != 1:
                 debug("Current cluster #%s" % str(len(self.initial_clustering)))
@@ -68,6 +79,15 @@ def randomized_construction(self):
                         current_cluster_construction_log.append(Action("adding", best_change))
                         current_cluster_construction_log.append(
                             ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
+                        #################################################
+                        # update the backup
+                        #################################################
+                        if current_score > backup_current_score:
+                            backup_current_cluster = current_cluster.copy()
+                            backup_add_candidates = add_candidates.copy()
+                            backup_remove_candidates = remove_candidates.copy()
+                            backup_current_score = current_score
+
 
                     else:
                         debug("\n", "No improvement by ADDING", "\n")
@@ -82,16 +102,21 @@ def randomized_construction(self):
                     best_change, best_change_score = \
                         find_best_remove(self, remove_candidates, current_cluster, current_cluster_weight_in, current_cluster_weight_out, current_score)
                     if best_change:
-                        print("========================================================================================================")
                         print("==================================================== REMOVING =====================================================")
-                        print("============================================================================================================================")
-
                         current_score = best_change_score
                         current_cluster_weight_in, current_cluster_weight_out = \
                             remove(self, remove_candidates, add_candidates, current_cluster, best_change, best_change_score, current_cluster_weight_in, current_cluster_weight_out)
                         current_cluster_construction_log.append(Action("removing", best_change))
                         current_cluster_construction_log.append(
                             ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
+                        #################################################
+                        # update the backup
+                        #################################################
+                        if current_score > backup_current_score:
+                            backup_current_cluster = current_cluster.copy()
+                            backup_add_candidates = add_candidates.copy()
+                            backup_remove_candidates = remove_candidates.copy()
+                            backup_current_score = current_score
                     else:
                         debug("\n", "No improvement by REMOVING", "\n")
                         current_cluster_construction_log.append(Action("failed to remove, current cohesiveness: %s"%str(current_score)))
@@ -121,8 +146,30 @@ def randomized_construction(self):
                                      add_candidates,
                                      remove_candidates,
                                      current_score))
+                    #TODO: improve the granularity of the backup for add_shake
+                    #   what if in the middle of add shake we see an improvement that is lost by the end of add_shake
+                    #################################################
+                    # update the backup
+                    #################################################
+                    if current_score > backup_current_score:
+                        backup_current_cluster = current_cluster.copy()
+                        backup_add_candidates = add_candidates.copy()
+                        backup_remove_candidates = remove_candidates.copy()
+                        backup_current_score = current_score
 
                 debug("$$$$$$$$$", last_failed_add_round_no, last_failed_remove_round_no, decider)
+
+            ##########################################
+            # in the case that the current_cluster is not the best one that we saw, revert to the best one that we saw
+            ##########################################
+            # if backup_current_score > current_score:
+            #     current_cluster_construction_log.append(Action("reverting to previous state"))
+            #     current_cluster = backup_current_cluster.copy()
+            #     add_candidates = backup_add_candidates.copy()
+            #     remove_candidates = backup_remove_candidates.copy()
+            #     current_score = backup_current_score
+            #     current_cluster_construction_log.append(
+            #         ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
 
 
             # add current_cluster to the list of clusters

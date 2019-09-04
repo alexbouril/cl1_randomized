@@ -11,6 +11,8 @@ import math
 #TODO graph cluster with their 1,2,3 neighborhoods in the background
 #TODO Fix object saving
 
+#TODO try merging a run of add_shake enabled with a run of add_shake disabled
+
 
 #TODO: make the random proportional bad_adds option work for randomized_construction()
 #TODO: check if Cl1 are always connected, in original implementation, and in my implementation
@@ -491,8 +493,8 @@ if __name__ == "__main__":
                        penalty_value_per_node=2,
                        randomized_construction_bool=True,
                        rng_seed=20,
-                       number_of_shakes=1,
-                       number_of_bad_adds=2,
+                       number_of_shakes=0,
+                       number_of_bad_adds=5,
                        sort_seeds_by="weight",
                        care_about_cuts=False,
                        seed_from_all=False,

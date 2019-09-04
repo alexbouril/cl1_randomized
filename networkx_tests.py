@@ -22,9 +22,12 @@ for source in x.graph.hash_graph:
 
 
 cluster_names = [key for key in x.construction_log]
-current_cluster = cluster_names[0]
+current_cluster = cluster_names[4]
 current_cluster_construction_log = x.construction_log[current_cluster]
-print(stringify_single_cluster_construction_log(x.construction_log, current_cluster, verbose=True, graph = x.graph))
+str_construction_log_single = stringify_single_cluster_construction_log(x.construction_log, current_cluster, verbose=True, graph = x.graph)
+print(str_construction_log_single)
+
+exit()
 
 '''
 Create Edges
@@ -206,6 +209,7 @@ for cs in cluster_states:
     # pp.pprint(node_adjacencies)
     node_trace.text = node_text
     # Create Network Graph
+    #                         text="Python code: <a href='https://plot.ly/ipython-notebooks/network-graphs/'> https://plot.ly/ipython-notebooks/network-graphs/</a>",
     fig = go.Figure(data=[edge_trace_inside_cluster,edge_trace2_outside_cluster, node_trace],
                  layout=go.Layout(
                     title='<br>Network graph made with Python',
@@ -214,7 +218,7 @@ for cs in cluster_states:
                     hovermode='closest',
                     margin=dict(b=20,l=5,r=5,t=40),
                     annotations=[ dict(
-                        text="Python code: <a href='https://plot.ly/ipython-notebooks/network-graphs/'> https://plot.ly/ipython-notebooks/network-graphs/</a>",
+                        text="",
                         showarrow=False,
                         xref="paper", yref="paper",
                         x=0.005, y=-0.002 ) ],
