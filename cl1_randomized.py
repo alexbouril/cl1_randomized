@@ -487,6 +487,16 @@ class CL1_Randomized:
 
 
 if __name__ == "__main__":
+    # To beat: my implementation of the original
+    # ORIGINAL
+    # 189 reference complexes, 254 predicted complexes
+    # b'acc = 0.3698'
+    # b'cws = 0.3388'
+    # b'frac = 0.4074'
+    # b'mmr = 0.2116'
+    # b'ppv = 0.4035'
+    # b'sep = 0.2429'
+
     a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality',
                        density_threshold=.3,
                        merge_threshold=.9,
