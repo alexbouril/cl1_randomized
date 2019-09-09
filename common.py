@@ -202,3 +202,17 @@ def stringify_single_cluster_construction_log(construction_log, cluster_key, ver
 
 def copy_relationship_dictionary(rd):
     return {rel:rd[rel].copy() for rel in rd}
+
+
+def get_quality(gold_standard_filename, output_filename):
+    import subprocess
+    res = subprocess.check_output(["python2",
+                                   "cl1_reproducibility/reproducibility/scripts/match_standalone.py",
+                                   gold_standard_filename,
+                                   output_filename])
+    for line in res.splitlines():
+        print(line)
+        # a = str(line)
+        # a = a.replace("b", "").replace("=", "").replace("\'", "").split()
+
+

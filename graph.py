@@ -11,7 +11,7 @@ def dfs(self, current_vertex, ignore_vertex, current_cluster_membership_hashset,
         elif neighbor == ignore_vertex:
             continue
         else:
-            dfs(neighbor, ignore_vertex, current_cluster_membership_hashset, visited)
+            dfs(self, neighbor, ignore_vertex, current_cluster_membership_hashset, visited)
 
 
 class Graph:
