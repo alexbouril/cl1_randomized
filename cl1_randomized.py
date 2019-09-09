@@ -521,6 +521,17 @@ if __name__ == "__main__":
 
 
 
+# to beat
+# 189 reference complexes, 196 predicted complexes
+# b'acc = 0.3783'
+# b'cws = 0.3283'
+# b'frac = 0.4286'
+# b'mmr = 0.2197'
+# b'ppv = 0.4360'
+# b'sep = 0.2874'
+#
+#
+#
 
 
 

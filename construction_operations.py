@@ -100,9 +100,14 @@ def find_best_add(self, add_candidates, current_cluster, current_score, current_
     best_change_score = current_score
     for v in add_candidates:
         numerator = current_cluster_weight_in + add_candidates[v].sum_weight_to
-        denominator = current_cluster_weight_in + current_cluster_weight_out + add_candidates[
-            v].sum_weight_from + self.penalty_value_per_node * (len(current_cluster) + 1)
+        denominator = current_cluster_weight_in + \
+                      current_cluster_weight_out + \
+                      add_candidates[v].sum_weight_from + \
+                      self.penalty_value_per_node * (len(current_cluster) + 1)
         proposed_score = numerator / denominator
+        if proposed_score == best_change_score:
+            print("oh wait, there was a removal tie")
+            time.sleep(5)
         if proposed_score > best_change_score:
             best_change = v
             best_change_score = proposed_score
@@ -255,11 +260,16 @@ def find_best_remove(self, remove_candidates, current_cluster, current_cluster_w
 
             if not is_a_cut:
                 # TODO: check that this makes sense
-                numerator = current_cluster_weight_in - remove_candidates[v].sum_weight_to
-                denominator = current_cluster_weight_in + current_cluster_weight_out - \
-                              remove_candidates[v].sum_weight_from + self.penalty_value_per_node * (
-                                      len(current_cluster) - 1)
+                numerator = current_cluster_weight_in - \
+                            remove_candidates[v].sum_weight_to
+                denominator = current_cluster_weight_in + \
+                              current_cluster_weight_out - \
+                              remove_candidates[v].sum_weight_from + \
+                              self.penalty_value_per_node * (len(current_cluster) - 1)
                 proposed_score = numerator / denominator
+                if proposed_score==best_change_score:
+                    print("oh wait, there was a removal tie")
+                    time.sleep(5)
                 if proposed_score > best_change_score:
                     best_change = v
                     best_change_score = proposed_score
