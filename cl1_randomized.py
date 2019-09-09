@@ -501,6 +501,115 @@ if __name__ == "__main__":
                        gsc_appearance_ratio_threshold=.9,
                        found_gsc_jaccard_threshold=.8,
                        gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
+    # above, without reverting to best seen
+    # 189
+    # reference
+    # complexes, 301
+    # predicted
+    # complexes
+    # b'acc = 0.3741'
+    # b'cws = 0.3511'
+    # b'frac = 0.4074'
+    # b'mmr = 0.2135'
+    # b'ppv = 0.3985'
+    # b'sep = 0.2182'
+    # 189
+    # reference
+    # complexes, 300
+    # predicted
+    # complexes
+    # b'acc = 0.3759'
+    # b'cws = 0.3545'
+    # b'frac = 0.4180'
+    # b'mmr = 0.2175'
+    # b'ppv = 0.3985'
+    # b'sep = 0.2206'
+    # 189
+    # reference
+    # complexes, 301
+    # predicted
+    # complexes
+    # b'acc = 0.3756'
+    # b'cws = 0.3545'
+    # b'frac = 0.4180'
+    # b'mmr = 0.2173'
+    # b'ppv = 0.3979'
+    # b'sep = 0.2211'
+    # 189
+    # reference
+    # complexes, 298
+    # predicted
+    # complexes
+    # b'acc = 0.3750'
+    # b'cws = 0.3537'
+    # b'frac = 0.4127'
+    # b'mmr = 0.2147'
+    # b'ppv = 0.3977'
+    # b'sep = 0.2222'
+    # gavin2006_socioaffinities_rescaled + 2019 - 0
+    # 9 - 0
+    # 9_11: 43:34: 255366
+    # 189
+    # reference
+    # complexes, 300
+    # predicted
+    # complexes
+    # b'acc = 0.3760'
+    # b'cws = 0.3541'
+    # b'frac = 0.4180'
+    # b'mmr = 0.2176'
+    # b'ppv = 0.3992'
+    # b'sep = 0.2232'
+    # gavin2006_socioaffinities_rescaled + 2019 - 0
+    # 9 - 0
+    # 9_11: 45:03: 468226
+
+
+    # ABOVE, with reverting to best seen
+    # 189
+    # reference
+    # complexes, 378
+    # predicted
+    # complexes
+    # b'acc = 0.3780'
+    # b'cws = 0.3520'
+    # b'frac = 0.4127'
+    # b'mmr = 0.2378'
+    # b'ppv = 0.4059'
+    # b'sep = 0.2016'
+    # 189
+    # reference
+    # complexes, 372
+    # predicted
+    # complexes
+    # b'acc = 0.3772'
+    # b'cws = 0.3499'
+    # b'frac = 0.4127'
+    # b'mmr = 0.2377'
+    # b'ppv = 0.4068'
+    # b'sep = 0.2034'
+    # 189
+    # reference
+    # complexes, 377
+    # predicted
+    # complexes
+    # b'acc = 0.3786'
+    # b'cws = 0.3520'
+    # b'frac = 0.4127'
+    # b'mmr = 0.2380'
+    # b'ppv = 0.4073'
+    # b'sep = 0.2021'
+
+
+
+
+
+
+
+
+
+
+
 
     # a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality',
     #                    density_threshold=.3,

@@ -161,7 +161,7 @@ def randomized_construction(self):
 
             ##########################################
             # in the case that the current_cluster is not the best one that we saw, revert to the best one that we saw
-            ##########################################
+            # ##########################################
             # if backup_current_score > current_score:
             #     current_cluster_construction_log.append(Action("reverting to previous state"))
             #     current_cluster = backup_current_cluster.copy()
