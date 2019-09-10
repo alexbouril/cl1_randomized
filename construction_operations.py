@@ -98,6 +98,7 @@ def find_best_2neighborhood_add(self, add_candidates, current_cluster, current_s
 def find_best_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out):
     best_change = None
     best_change_score = current_score
+    best_change_list = []
     for v in add_candidates:
         numerator = current_cluster_weight_in + add_candidates[v].sum_weight_to
         denominator = current_cluster_weight_in + current_cluster_weight_out + add_candidates[
@@ -106,6 +107,9 @@ def find_best_add(self, add_candidates, current_cluster, current_score, current_
         if proposed_score > best_change_score:
             best_change = v
             best_change_score = proposed_score
+            best_change_list = [v]
+        elif proposed_score == best_change_score:
+            best_change_list.append(v)
         debug("##################### ADD Consideration ########################")
         debug("v: %s" % str(v))
         debug("proposed_score: %s" % str(proposed_score))
@@ -119,6 +123,10 @@ def find_best_add(self, add_candidates, current_cluster, current_score, current_
         debug("add_candidates[v].sum_weight_from: %s" % str(add_candidates[v].sum_weight_from))
         debug("len(current_cluster): %s" % str(len(current_cluster)))
         sleep_debug(.25)
+    if len( best_change_list)>1:
+        print(best_change_list)
+        for tie in best_change_list:
+            print(add_candidates[tie].stringify())
     return best_change, best_change_score
 
 
