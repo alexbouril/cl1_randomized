@@ -27,7 +27,7 @@ current_cluster_construction_log = x.construction_log[current_cluster]
 str_construction_log_single = stringify_single_cluster_construction_log(x.construction_log, current_cluster, verbose=True, graph = x.graph)
 print(str_construction_log_single)
 
-exit()
+# exit()
 
 '''
 Create Edges
@@ -226,4 +226,4 @@ for cs in cluster_states:
                     yaxis=dict(showgrid=False, zeroline=False, showticklabels=False))
                     )
     fig.show()
-    # time.sleep(3)
+    time.sleep(3)

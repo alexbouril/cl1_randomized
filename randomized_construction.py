@@ -75,7 +75,8 @@ def randomized_construction(self):
                     if best_change:
                         current_score = best_change_score
                         current_cluster_weight_in, current_cluster_weight_out = \
-                            add(self, add_candidates, current_cluster, remove_candidates, best_change, best_change_score, current_cluster_weight_in, current_cluster_weight_out)
+                            add(self, add_candidates, current_cluster, remove_candidates, best_change,
+                                best_change_score, current_cluster_weight_in, current_cluster_weight_out)
                         current_cluster_construction_log.append(Action("adding", best_change))
                         current_cluster_construction_log.append(
                             ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
@@ -87,6 +88,25 @@ def randomized_construction(self):
                             backup_add_candidates = add_candidates.copy()
                             backup_remove_candidates = remove_candidates.copy()
                             backup_current_score = current_score
+
+
+                    # UNFINISHED BEST_CHANGE_LIST
+                    # if best_change_list:
+                    #     for change_ in best_change_list[0:1]:
+                    #         current_cluster_weight_in, current_cluster_weight_out = \
+                    #             add(self, add_candidates, current_cluster, remove_candidates, change_, best_change_score, current_cluster_weight_in, current_cluster_weight_out)
+                    #         current_cluster_construction_log.append(Action("adding", change_))
+                    #         current_score = cohesiveness(self, [key for key in current_cluster])
+                    #         current_cluster_construction_log.append(
+                    #             ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
+                    #         #################################################
+                    #         # update the backup
+                    #         #################################################
+                    #         if current_score > backup_current_score:
+                    #             backup_current_cluster = current_cluster.copy()
+                    #             backup_add_candidates = add_candidates.copy()
+                    #             backup_remove_candidates = remove_candidates.copy()
+                    #             backup_current_score = current_score
 
 
                     else:
@@ -159,17 +179,17 @@ def randomized_construction(self):
 
                 debug("$$$$$$$$$", last_failed_add_round_no, last_failed_remove_round_no, decider)
 
-            ##########################################
+            #########################################
             # in the case that the current_cluster is not the best one that we saw, revert to the best one that we saw
-            # ##########################################
-            # if backup_current_score > current_score:
-            #     current_cluster_construction_log.append(Action("reverting to previous state"))
-            #     current_cluster = backup_current_cluster.copy()
-            #     add_candidates = backup_add_candidates.copy()
-            #     remove_candidates = backup_remove_candidates.copy()
-            #     current_score = backup_current_score
-            #     current_cluster_construction_log.append(
-            #         ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
+            ##########################################
+            if backup_current_score > current_score:
+                current_cluster_construction_log.append(Action("reverting to previous state"))
+                current_cluster = backup_current_cluster.copy()
+                add_candidates = backup_add_candidates.copy()
+                remove_candidates = backup_remove_candidates.copy()
+                current_score = backup_current_score
+                current_cluster_construction_log.append(
+                    ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
 
 
             # add current_cluster to the list of clusters
