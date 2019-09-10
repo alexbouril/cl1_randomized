@@ -70,8 +70,10 @@ def randomized_construction(self):
                 ############################################################
                 if (decider <= .5 or last_failed_remove_round_no == round_no) and last_failed_add_round_no != round_no:
                     round_no += 1
+                    # best_change, best_change_score = \
+                    #     find_best_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
                     best_change, best_change_score = \
-                        find_best_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
+                        find_best_2neighborhood_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
                     if best_change:
                         current_score = best_change_score
                         current_cluster_weight_in, current_cluster_weight_out = \

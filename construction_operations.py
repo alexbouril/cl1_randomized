@@ -53,6 +53,7 @@ def initialize_complex(self, current_seed):
 def find_best_2neighborhood_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out):
     best_change = None
     best_change_score = current_score
+    factor = .3
     for v in add_candidates:
         numerator = current_cluster_weight_in + add_candidates[v].sum_weight_to
         denominator = current_cluster_weight_in + current_cluster_weight_out + add_candidates[
@@ -61,19 +62,19 @@ def find_best_2neighborhood_add(self, add_candidates, current_cluster, current_s
         # CONSIDER WHAT COULD BE GAINED ON THE NEWLY EXPOSED BOUNDARY
         #####################
         # find the neighbors of v
-        neighbors = self.graph.hash_graph[v]
-        for neighbor in neighbors:
-            # find out who the neighbor is connected to
-            distance_two_neighbors = self.graph.hash_graph[neighbor]
-            for d2n in distance_two_neighbors:
-                distance_three_neighbors = self.graph.hash_graph[d2n]
-                for d3n in distance_three_neighbors:
-                    # weight to {current cluster, weight to v, weight to neighbors}
-
-                    numerator+=0
-
-                    #weight from {current cluster, weight to v, weight to neighbors}
-                    denominator+=0
+        distance_2_neighbors = self.graph.hash_graph[v]
+        for d2n in distance_2_neighbors:
+            if d2n in current_cluster:
+                numerator += factor * self.graph.hash_graph[v][d2n]
+            else:
+                distance_3_neighbors = self.graph.hash_graph[d2n]
+                for d3n in distance_3_neighbors:
+                    if d3n in current_cluster:
+                        numerator += factor * self.graph.hash_graph[d2n][d3n]
+                    # elif d3n in add_candidates:
+                    #     numerator += self.graph.hash_graph[d2n][d3n]
+                    else:
+                        denominator += factor * self.graph.hash_graph[d2n][d3n]
 
         proposed_score = numerator / denominator
         if proposed_score > best_change_score:

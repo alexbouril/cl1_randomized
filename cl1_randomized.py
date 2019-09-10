@@ -349,6 +349,12 @@ class CL1_Randomized:
                 total_cohesiveness+=_cohesiveness
                 total_density += _density
                 total_size +=_size
+            if len(cluster_list)==0:
+                print("the current cluster list has length 0")
+                output_map['average_cohesiveness'] = 0
+                output_map['average_density'] = 0
+                output_map['average_size'] = 0
+                return
             output_map['average_cohesiveness'] = total_cohesiveness /float(len(cluster_list))
             output_map['average_density'] = total_density /float(len(cluster_list))
             output_map['average_size'] = total_size /float(len(cluster_list))
@@ -371,6 +377,7 @@ class CL1_Randomized:
         ############################################################
         # CALCULATE STATS ABOUT THE GSC APPEARING IN DATASET FOUND BY ALGORITHM
         ############################################################
+        print(len(self.found))
         calculate_clusters_stats(
             self.found,
             self.gsc_appearing_found_stats)
@@ -433,7 +440,8 @@ class CL1_Randomized:
             print(len(self.gold_standard_complexes), " reference complexes")
             print(len(self.gold_standard_complexes_appearing_in_dataset), " appear in the dataset")
 
-        found_and_unfound_details()
+        if len(self.found):
+            found_and_unfound_details()
 
         ############################################################
         # DETERMINE THE QUALITY OF THE RESULT USING ORIGINAL AUTHORS' MEASURES
