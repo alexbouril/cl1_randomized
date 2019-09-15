@@ -2,14 +2,13 @@
 <project version="4">
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/commands.py" />
-    <bookmark url="file://$PROJECT_DIR$/original_construction.py" line="31" />
+    <bookmark url="file://$PROJECT_DIR$/original_construction.py" line="139" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1865913f-46b4-461e-9cda-61e2c58d2182" name="Default Changelist" comment="">
+    <list default="true" id="1865913f-46b4-461e-9cda-61e2c58d2182" name="Default Changelist" comment="about to implement best_change_list for the find_best_add()">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cl1_randomized.py" beforeDir="false" afterPath="$PROJECT_DIR$/cl1_randomized.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/construction_operations.py" beforeDir="false" afterPath="$PROJECT_DIR$/construction_operations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/networkx_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/networkx_tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/original_construction.py" beforeDir="false" afterPath="$PROJECT_DIR$/original_construction.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/randomized_construction.py" beforeDir="false" afterPath="$PROJECT_DIR$/randomized_construction.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/run_log" beforeDir="false" afterPath="$PROJECT_DIR$/run_log" afterDir="false" />
     </list>
@@ -35,11 +34,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/cl1_randomized.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="7560">
-              <caret line="510" column="57" selection-start-line="510" selection-start-column="57" selection-end-line="510" selection-end-column="57" />
+            <state relative-caret-position="260">
+              <caret line="511" column="57" selection-start-line="511" selection-start-column="57" selection-end-line="511" selection-end-column="57" />
               <folding>
                 <element signature="e#0#22#0" expanded="true" />
               </folding>
@@ -48,19 +47,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/randomized_construction.py">
+        <entry file="file://$PROJECT_DIR$/original_construction.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="92" column="28" selection-start-line="92" selection-end-line="93" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/construction_operations.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="332">
-              <caret line="129" column="38" lean-forward="true" selection-start-line="129" selection-start-column="38" selection-end-line="129" selection-end-column="38" />
+            <state relative-caret-position="440">
+              <caret line="111" selection-start-line="111" selection-end-line="111" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
               </folding>
@@ -69,37 +59,22 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/networkx_tests.py">
+        <entry file="file://$PROJECT_DIR$/construction_operations.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="24" column="34" selection-start-line="24" selection-start-column="34" selection-end-line="24" selection-end-column="34" />
+            <state relative-caret-position="-50">
+              <caret line="97" selection-start-line="97" selection-end-line="97" />
               <folding>
-                <element signature="e#0#28#0" expanded="true" />
+                <element signature="e#0#20#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scratch.py">
+        <entry file="file://$PROJECT_DIR$/randomized_construction.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="390">
-              <caret line="28" column="25" selection-start-line="28" selection-start-column="25" selection-end-line="28" selection-end-column="25" />
-              <folding>
-                <element signature="e#0#28#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/common.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1365">
-              <caret line="97" column="57" selection-start-line="97" selection-start-column="57" selection-end-line="97" selection-end-column="57" />
-              <folding>
-                <element signature="e#0#10#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="1140">
+              <caret line="77" selection-start-line="77" selection-end-line="77" />
             </state>
           </provider>
         </entry>
@@ -115,7 +90,11 @@
       </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cluster_quality.py">
-          <provider selected="true" editor-type-id="text-editor" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-129">
+              <caret line="8" column="57" selection-start-line="8" selection-start-column="57" selection-end-line="8" selection-end-column="57" />
+            </state>
+          </provider>
         </entry>
       </file>
     </leaf>
@@ -129,8 +108,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>cluster_list</find>
-      <find>final_clusters_stats</find>
       <find>hello</find>
       <find>x</find>
       <find>final_</find>
@@ -159,6 +136,8 @@
       <find>-</find>
       <find>time.sleep</find>
       <find>change_vertex_score</find>
+      <find>F</find>
+      <find>last_failed_remove_round_no</find>
     </findStrings>
     <replaceStrings>
       <replace>change_vertex</replace>
@@ -191,16 +170,16 @@
         <option value="$PROJECT_DIR$/run_log" />
         <option value="$PROJECT_DIR$/graph.py" />
         <option value="$PROJECT_DIR$/cluster_quality.py" />
-        <option value="$PROJECT_DIR$/original_construction.py" />
         <option value="$PROJECT_DIR$/_version.py" />
         <option value="$PROJECT_DIR$/__init__.py" />
         <option value="$PROJECT_DIR$/commands.py" />
         <option value="$PROJECT_DIR$/common.py" />
         <option value="$PROJECT_DIR$/scratch.py" />
-        <option value="$PROJECT_DIR$/cl1_randomized.py" />
         <option value="$PROJECT_DIR$/networkx_tests.py" />
-        <option value="$PROJECT_DIR$/randomized_construction.py" />
         <option value="$PROJECT_DIR$/construction_operations.py" />
+        <option value="$PROJECT_DIR$/randomized_construction.py" />
+        <option value="$PROJECT_DIR$/original_construction.py" />
+        <option value="$PROJECT_DIR$/cl1_randomized.py" />
       </list>
     </option>
   </component>
@@ -216,28 +195,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="cl1_randomized" type="b2602c69:ProjectViewProjectNode" />
-              <item name="cl1_randomized" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="cl1_randomized" type="b2602c69:ProjectViewProjectNode" />
-              <item name="cl1_randomized" type="462c0819:PsiDirectoryNode" />
-              <item name="cl1_datasets" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="cl1_randomized" type="b2602c69:ProjectViewProjectNode" />
-              <item name="cl1_randomized" type="462c0819:PsiDirectoryNode" />
-              <item name="cl1_datasets" type="462c0819:PsiDirectoryNode" />
-              <item name="datasets" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
       <pane id="Scope">
         <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
           <expand>
@@ -265,6 +222,28 @@
               <item name="relinking" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
               <item name="~/PycharmProjects/relinking" type="442cc68d:ScopeViewTreeModel$RootNode" />
               <item name="pickles" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="cl1_randomized" type="b2602c69:ProjectViewProjectNode" />
+              <item name="cl1_randomized" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="cl1_randomized" type="b2602c69:ProjectViewProjectNode" />
+              <item name="cl1_randomized" type="462c0819:PsiDirectoryNode" />
+              <item name="cl1_datasets" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="cl1_randomized" type="b2602c69:ProjectViewProjectNode" />
+              <item name="cl1_randomized" type="462c0819:PsiDirectoryNode" />
+              <item name="cl1_datasets" type="462c0819:PsiDirectoryNode" />
+              <item name="datasets" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -488,6 +467,8 @@
       <workItem from="1568082938970" duration="224000" />
       <workItem from="1568083178022" duration="4798000" />
       <workItem from="1568114925293" duration="478000" />
+      <workItem from="1568520685913" duration="120000" />
+      <workItem from="1568558867480" duration="4877000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1562624427613</created>
@@ -598,7 +579,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="419091000" />
+    <option name="totallyTimeSpent" value="424088000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -610,15 +591,15 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="70" y="27" width="1850" height="1053" extended-state="6" />
+    <frame x="54" y="27" width="1866" height="1053" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.23447894" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.23406594" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32932165" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.35441658" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.39803708" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.23413567" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -739,12 +720,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/randomized_construction.py</url>
-          <line>94</line>
+          <line>96</line>
           <option name="timeStamp" value="73" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/randomized_construction.py</url>
-          <line>93</line>
+          <line>95</line>
           <option name="timeStamp" value="75" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -763,7 +744,7 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/cl1_randomized$cl1_randomized.coverage" NAME="cl1_randomized Coverage Results" MODIFIED="1568115086725" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/cl1_randomized$cl1_randomized.coverage" NAME="cl1_randomized Coverage Results" MODIFIED="1568576354930" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/cl1_randomized$networkx_tests.coverage" NAME="networkx_tests Coverage Results" MODIFIED="1568089558101" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/relinking$commands.coverage" NAME="commands Coverage Results" MODIFIED="1565230953840" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/relinking$rli2.coverage" NAME="rli2 Coverage Results" MODIFIED="1559582187782" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -827,16 +808,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/original_construction.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="835">
-          <caret line="309" column="133" selection-start-line="309" selection-start-column="133" selection-end-line="309" selection-end-column="133" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/logs/fb2cal.log" />
     <entry file="file://$PROJECT_DIR$/logs/cl1_randomized.log" />
     <entry file="file://$PROJECT_DIR$/complexes/complexes+gavin2006_socioaffinities_rescaled+2019-07-31_15:54:28:150784.txt">
@@ -877,19 +848,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cl1_randomized.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="7560">
-          <caret line="510" column="57" selection-start-line="510" selection-start-column="57" selection-end-line="510" selection-end-column="57" />
-          <folding>
-            <element signature="e#0#22#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/networkx_tests.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
+        <state relative-caret-position="360">
           <caret line="24" column="34" selection-start-line="24" selection-start-column="34" selection-end-line="24" selection-end-column="34" />
           <folding>
             <element signature="e#0#28#0" expanded="true" />
@@ -899,7 +860,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/scratch.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
+        <state relative-caret-position="420">
           <caret line="28" column="25" selection-start-line="28" selection-start-column="25" selection-end-line="28" selection-end-column="25" />
           <folding>
             <element signature="e#0#28#0" expanded="true" />
@@ -909,11 +870,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/common.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1365">
+        <state relative-caret-position="510">
           <caret line="97" column="57" selection-start-line="97" selection-start-column="57" selection-end-line="97" selection-end-column="57" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cluster_quality.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-129">
+          <caret line="8" column="57" selection-start-line="8" selection-start-column="57" selection-end-line="8" selection-end-column="57" />
         </state>
       </provider>
     </entry>
@@ -924,22 +892,39 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cluster_quality.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/randomized_construction.py">
+    <entry file="file://$PROJECT_DIR$/construction_operations.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="92" column="28" selection-start-line="92" selection-end-line="93" />
+        <state relative-caret-position="-50">
+          <caret line="97" selection-start-line="97" selection-end-line="97" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/construction_operations.py">
+    <entry file="file://$PROJECT_DIR$/original_construction.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="332">
-          <caret line="129" column="38" lean-forward="true" selection-start-line="129" selection-start-column="38" selection-end-line="129" selection-end-column="38" />
+        <state relative-caret-position="440">
+          <caret line="111" selection-start-line="111" selection-end-line="111" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/randomized_construction.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1140">
+          <caret line="77" selection-start-line="77" selection-end-line="77" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cl1_randomized.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="260">
+          <caret line="511" column="57" selection-start-line="511" selection-start-column="57" selection-end-line="511" selection-end-column="57" />
+          <folding>
+            <element signature="e#0#22#0" expanded="true" />
           </folding>
         </state>
       </provider>

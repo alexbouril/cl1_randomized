@@ -2,7 +2,7 @@ from __init__ import *
 from common import *
 from graph import Graph
 from randomized_construction import randomized_construction
-from original_construction import original_construction, original_construction_2
+from original_construction import oc
 import sys
 import math
 
@@ -125,7 +125,7 @@ class CL1_Randomized:
         if self.randomized_construction_bool:
             randomized_construction(self)
         else:
-            original_construction(self)
+            oc(self)
 
         ############################################################
         # GET THE INITIAL CLUSTER LIST
@@ -509,7 +509,7 @@ if __name__ == "__main__":
                        density_threshold=.3,
                        merge_threshold=.9,
                        penalty_value_per_node=2,
-                       randomized_construction_bool=True,
+                       randomized_construction_bool=False,
                        rng_seed=None,
                        number_of_shakes=1,
                        number_of_bad_adds=1,
