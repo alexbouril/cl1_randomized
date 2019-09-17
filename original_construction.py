@@ -3,10 +3,6 @@ from construction_operations import *
 from graph import *
 
 def oc(self):
-    """
-    :param self:
-    :return:
-    """
     considered_vertices = set()
     index = 0
     if self.sort_seeds_by == 'degree':

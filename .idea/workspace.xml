@@ -2,15 +2,12 @@
 <project version="4">
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/commands.py" />
-    <bookmark url="file://$PROJECT_DIR$/original_construction.py" line="139" />
+    <bookmark url="file://$PROJECT_DIR$/original_construction.py" line="27" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1865913f-46b4-461e-9cda-61e2c58d2182" name="Default Changelist" comment="about to implement best_change_list for the find_best_add()">
+    <list default="true" id="1865913f-46b4-461e-9cda-61e2c58d2182" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cl1_randomized.py" beforeDir="false" afterPath="$PROJECT_DIR$/cl1_randomized.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/original_construction.py" beforeDir="false" afterPath="$PROJECT_DIR$/original_construction.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/randomized_construction.py" beforeDir="false" afterPath="$PROJECT_DIR$/randomized_construction.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_log" beforeDir="false" afterPath="$PROJECT_DIR$/run_log" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -37,8 +34,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/cl1_randomized.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="260">
-              <caret line="511" column="57" selection-start-line="511" selection-start-column="57" selection-end-line="511" selection-end-column="57" />
+            <state relative-caret-position="505">
+              <caret line="663" lean-forward="true" selection-start-line="663" selection-end-line="663" />
               <folding>
                 <element signature="e#0#22#0" expanded="true" />
               </folding>
@@ -49,8 +46,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/original_construction.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="440">
-              <caret line="111" selection-start-line="111" selection-end-line="111" />
+            <state relative-caret-position="60">
+              <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
               </folding>
@@ -61,8 +58,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/construction_operations.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-50">
-              <caret line="97" selection-start-line="97" selection-end-line="97" />
+            <state relative-caret-position="-5">
+              <caret line="100" column="24" lean-forward="true" selection-start-line="100" selection-start-column="24" selection-end-line="100" selection-end-column="24" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
               </folding>
@@ -73,26 +70,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/randomized_construction.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1140">
-              <caret line="77" selection-start-line="77" selection-end-line="77" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/graph.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="345">
-              <caret line="23" column="27" selection-start-line="23" selection-start-column="27" selection-end-line="23" selection-end-column="27" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cluster_quality.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-129">
-              <caret line="8" column="57" selection-start-line="8" selection-start-column="57" selection-end-line="8" selection-end-column="57" />
+            <state relative-caret-position="236">
+              <caret line="75" column="38" selection-start-line="75" selection-start-column="38" selection-end-line="75" selection-end-column="38" />
             </state>
           </provider>
         </entry>
@@ -108,7 +87,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>hello</find>
       <find>x</find>
       <find>final_</find>
       <find>quality</find>
@@ -137,6 +115,7 @@
       <find>time.sleep</find>
       <find>change_vertex_score</find>
       <find>F</find>
+      <find>True</find>
       <find>last_failed_remove_round_no</find>
     </findStrings>
     <replaceStrings>
@@ -178,8 +157,8 @@
         <option value="$PROJECT_DIR$/networkx_tests.py" />
         <option value="$PROJECT_DIR$/construction_operations.py" />
         <option value="$PROJECT_DIR$/randomized_construction.py" />
-        <option value="$PROJECT_DIR$/original_construction.py" />
         <option value="$PROJECT_DIR$/cl1_randomized.py" />
+        <option value="$PROJECT_DIR$/original_construction.py" />
       </list>
     </option>
   </component>
@@ -468,7 +447,7 @@
       <workItem from="1568083178022" duration="4798000" />
       <workItem from="1568114925293" duration="478000" />
       <workItem from="1568520685913" duration="120000" />
-      <workItem from="1568558867480" duration="4877000" />
+      <workItem from="1568558867480" duration="5827000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1562624427613</created>
@@ -575,11 +554,25 @@
       <option name="project" value="LOCAL" />
       <updated>1568088805881</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="added oc, a cleaned up original construction">
+      <created>1568576485450</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1568576485450</updated>
+    </task>
+    <task id="LOCAL-00017" summary="cleaned up dead code from original_construction.py">
+      <created>1568576686095</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1568576686095</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="424088000" />
+    <option name="totallyTimeSpent" value="425038000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -599,7 +592,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32932165" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.39803708" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.39803708" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.23413567" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -658,7 +651,9 @@
     <MESSAGE value="keeping track of cluster construction operations and intermediate states" />
     <MESSAGE value="networkx initial version" />
     <MESSAGE value="about to implement best_change_list for the find_best_add()" />
-    <option name="LAST_COMMIT_MESSAGE" value="about to implement best_change_list for the find_best_add()" />
+    <MESSAGE value="added oc, a cleaned up original construction" />
+    <MESSAGE value="cleaned up dead code from original_construction.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="cleaned up dead code from original_construction.py" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -744,7 +739,7 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/cl1_randomized$cl1_randomized.coverage" NAME="cl1_randomized Coverage Results" MODIFIED="1568576354930" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/cl1_randomized$cl1_randomized.coverage" NAME="cl1_randomized Coverage Results" MODIFIED="1568576602710" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/cl1_randomized$networkx_tests.coverage" NAME="networkx_tests Coverage Results" MODIFIED="1568089558101" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/relinking$commands.coverage" NAME="commands Coverage Results" MODIFIED="1565230953840" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/relinking$rli2.coverage" NAME="rli2 Coverage Results" MODIFIED="1559582187782" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -878,13 +873,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cluster_quality.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-129">
-          <caret line="8" column="57" selection-start-line="8" selection-start-column="57" selection-end-line="8" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/graph.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="345">
@@ -892,10 +880,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/cluster_quality.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-129">
+          <caret line="8" column="57" selection-start-line="8" selection-start-column="57" selection-end-line="8" selection-end-column="57" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/randomized_construction.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="236">
+          <caret line="75" column="38" selection-start-line="75" selection-start-column="38" selection-end-line="75" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/construction_operations.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-50">
-          <caret line="97" selection-start-line="97" selection-end-line="97" />
+        <state relative-caret-position="-5">
+          <caret line="100" column="24" lean-forward="true" selection-start-line="100" selection-start-column="24" selection-end-line="100" selection-end-column="24" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
           </folding>
@@ -904,25 +906,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/original_construction.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="440">
-          <caret line="111" selection-start-line="111" selection-end-line="111" />
+        <state relative-caret-position="60">
+          <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/randomized_construction.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1140">
-          <caret line="77" selection-start-line="77" selection-end-line="77" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/cl1_randomized.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="260">
-          <caret line="511" column="57" selection-start-line="511" selection-start-column="57" selection-end-line="511" selection-end-column="57" />
+        <state relative-caret-position="505">
+          <caret line="663" lean-forward="true" selection-start-line="663" selection-end-line="663" />
           <folding>
             <element signature="e#0#22#0" expanded="true" />
           </folding>
