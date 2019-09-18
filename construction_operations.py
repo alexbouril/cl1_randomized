@@ -98,6 +98,7 @@ def find_best_2neighborhood_add(self, add_candidates, current_cluster, current_s
 def find_best_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out):
     best_change = None
     best_change_score = current_score
+    best_change_tie_list = []
     for v in add_candidates:
         numerator = current_cluster_weight_in + add_candidates[v].sum_weight_to
         denominator = current_cluster_weight_in + \
@@ -111,6 +112,9 @@ def find_best_add(self, add_candidates, current_cluster, current_score, current_
         if proposed_score > best_change_score:
             best_change = v
             best_change_score = proposed_score
+            best_change_tie_list = [v]
+        elif proposed_score == best_change_score:
+            best_change_tie_list.append(v)
         debug("##################### ADD Consideration ########################")
         debug("v: %s" % str(v))
         debug("proposed_score: %s" % str(proposed_score))
@@ -124,6 +128,13 @@ def find_best_add(self, add_candidates, current_cluster, current_score, current_
         debug("add_candidates[v].sum_weight_from: %s" % str(add_candidates[v].sum_weight_from))
         debug("len(current_cluster): %s" % str(len(current_cluster)))
         sleep_debug(.25)
+    if len(best_change_tie_list)>1:
+        print("uh oh, we had an adding tie")
+        print(best_change_tie_list)
+        for n in best_change_tie_list:
+            print(n)
+            print(add_candidates[n].stringify())
+        time.sleep(0)
     return best_change, best_change_score
 
 
@@ -176,6 +187,9 @@ def add(self, add_candidates, current_cluster, remove_candidates,
     #######################################################################
     # iterate over neighbors of change_vertex, and update each Relationship
     #######################################################################
+    added_to_add_candidates_at_same_time = []
+
+
     for v in self.graph.hash_graph[change_vertex]:
         edge_weight = self.graph.hash_graph[v][change_vertex]
         if v in add_candidates:
@@ -192,6 +206,7 @@ def add(self, add_candidates, current_cluster, remove_candidates,
         # handle the case that v is on the new boundary
         # add v to add_candidates
         if v not in add_candidates and v not in current_cluster:
+            added_to_add_candidates_at_same_time.append(v)
             num_edges_to = 0
             weight_to = 0
             num_edges_from = 0
@@ -212,21 +227,15 @@ def add(self, add_candidates, current_cluster, remove_candidates,
                                              num_edges_to,
                                              weight_from,
                                              num_edges_from)
-            # a = num_edges_to < 0
-            # b = weight_to < 0
-            # c = num_edges_from < 0
-            # d = weight_from < 0
-            # if a or b or c or d:
-            #     print("shoot")
-            #     # exit(0)
-
-
+    if len(added_to_add_candidates_at_same_time) >1:
+        print("added_to_add_candidates_at_same_time: ", added_to_add_candidates_at_same_time)
     return cc_weight_in, cc_weight_out
 
 
 def find_best_remove(self, remove_candidates, current_cluster, current_cluster_weight_in, current_cluster_weight_out, current_score):
     best_change = None
     best_change_score = current_score
+    best_change_tie_list = []
     # check that
     #   (1) the cluster has more than one element
     if len(current_cluster) > 1:
@@ -273,6 +282,9 @@ def find_best_remove(self, remove_candidates, current_cluster, current_cluster_w
                 if proposed_score > best_change_score:
                     best_change = v
                     best_change_score = proposed_score
+                    best_change_tie_list = [v]
+                elif proposed_score == best_change_score:
+                    best_change_tie_list.append(v)
                 debug("##################### REMOVE Consideration ########################")
                 debug("v: %s" % str(v))
                 debug("proposed_score: %s" % str(proposed_score))
@@ -288,6 +300,10 @@ def find_best_remove(self, remove_candidates, current_cluster, current_cluster_w
                     remove_candidates[v].sum_weight_from))
                 debug("len(current_cluster): %s" % str(len(current_cluster)))
                 sleep_debug(1)
+    if len(best_change_tie_list) > 1:
+        print("uh oh, we had a REMOVING tie")
+        print(best_change_tie_list)
+        time.sleep(0)
     return best_change, best_change_score
 
 

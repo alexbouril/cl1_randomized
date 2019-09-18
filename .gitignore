@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-
 # Created by https://www.gitignore.io/api/venv,python,virtualenv,pycharm+all
 # Edit at https://www.gitignore.io/?templates=venv,python,virtualenv,pycharm+all
 
@@ -261,7 +259,5 @@ pip-selfcheck.json
 # http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
 
 # End of https://www.gitignore.io/api/venv,python,virtualenv,pycharm+all
-=======
 __pycache__
 .idea
->>>>>>> 2ad351e356cb9189bba76e2df2463a67235271c2
