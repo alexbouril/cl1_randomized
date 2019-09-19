@@ -44,7 +44,9 @@ def oc(self):
                 best_remove_change, best_remove_change_score = \
                     find_best_remove(self, remove_candidates, current_cluster, current_cluster_weight_in,
                                      current_cluster_weight_out, current_score)
-                ############################################################
+                print(best_add_change, best_add_change_score,best_remove_change,best_remove_change_score, len(current_cluster), len(add_candidates))
+                ############################################
+                # ################
                 # END CURRENT CLUSTER GROWTH IF NECESSARY
                 ############################################################
                 if (best_add_change is None) and (best_remove_change is None):

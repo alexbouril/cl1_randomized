@@ -2,6 +2,11 @@ from cl1_randomized import *
 from common import *
 from graph import *
 
+nice_comment("hello world.  what's going on?")
+print(nice_comment("DETERMINE THE QUALITY OF THE RESULT USING ORIGINAL AUTHORS' MEASURES"))
+
+exit()
+
 
 # get_quality("cl1_gold_standard/gold_standard/mips_3_100.txt", "original_algo_findings.txt")
 name = loadData('pickles/most_recent')['title']

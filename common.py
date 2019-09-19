@@ -216,3 +216,10 @@ def get_quality(gold_standard_filename, output_filename):
         # a = a.replace("b", "").replace("=", "").replace("\'", "").split()
 
 
+def nice_comment(comment):
+    bound = ""
+    for i in range(len(comment)+6):
+        bound+="#"
+    bound+="\n"
+    s = bound + "#  " + comment + "  #\n" + bound
+    return(s)

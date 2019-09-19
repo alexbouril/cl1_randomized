@@ -53,6 +53,11 @@ class CL1_Randomized:
         ############################################################
         self.base_file_path = base_file_path
         self.graph = Graph(base_file_path+"/"+original_graph_filename)
+
+        print("size of graph in bytes: %s"%str(sys.getsizeof(self.graph.hash_graph)))
+        print("number of nodes: %s"%str(self.graph.num_proteins))
+        print("number of edges: %s"%str(self.graph.num_edges))
+
         self.vertices_by_degree = sort_vertices_by_degree(self)
         self.vertices_by_weight = sort_vertices_by_weight(self)
         self.quality_function_name = quality_function_name
@@ -443,9 +448,9 @@ class CL1_Randomized:
         if len(self.found):
             found_and_unfound_details()
 
-        ############################################################
-        # DETERMINE THE QUALITY OF THE RESULT USING ORIGINAL AUTHORS' MEASURES
-        ############################################################
+        ##########################################################################
+        #  DETERMINE THE QUALITY OF THE RESULT USING ORIGINAL AUTHORS' MEASURES  #
+        ##########################################################################
         print("################ QUALITY #######################")
 
         def get_quality():
@@ -504,21 +509,21 @@ if __name__ == "__main__":
     # b'mmr = 0.2116'
     # b'ppv = 0.4035'
     # b'sep = 0.2429'
-
-    a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality',
-                       density_threshold=.3,
-                       merge_threshold=.9,
-                       penalty_value_per_node=2,
-                       randomized_construction_bool=False,
-                       rng_seed=None,
-                       number_of_shakes=1,
-                       number_of_bad_adds=1,
-                       sort_seeds_by="weight",
-                       care_about_cuts=True,
-                       seed_from_all=True,
-                       gsc_appearance_ratio_threshold=.9,
-                       found_gsc_jaccard_threshold=.8,
-                       gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
+#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    # a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality',
+    #                    density_threshold=.3,
+    #                    merge_threshold=.9,
+    #                    penalty_value_per_node=2,
+    #                    randomized_construction_bool=True,
+    #                    rng_seed=None,
+    #                    number_of_shakes=1,
+    #                    number_of_bad_adds=1,
+    #                    sort_seeds_by="weight",
+    #                    care_about_cuts=True,
+    #                    seed_from_all=True,
+    #                    gsc_appearance_ratio_threshold=.9,
+    #                    found_gsc_jaccard_threshold=.8,
+    #                    gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
     # above, without reverting to best seen
     # 189
     # reference
@@ -677,3 +682,74 @@ if __name__ == "__main__":
     #                    gsc_appearance_ratio_threshold=.9,
     #                    found_gsc_jaccard_threshold=.8,
     #                    gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
+    """
+    ################ QUALITY #######################
+189 reference complexes, 1591 predicted complexes
+b'acc = 0.3572'
+b'cws = 0.3189'
+b'frac = 0.4762'
+b'mmr = 0.2599'
+b'ppv = 0.4001'
+b'sep = 0.1251'
+krogan2006_extended+2019-09-19_09:27:51:114908
+
+    """
+    # a = CL1_Randomized("cl1_datasets/datasets", "krogan2006_extended.txt", 'Dummy_quality',
+    #                    density_threshold=.3,
+    #                    merge_threshold=.9,
+    #                    penalty_value_per_node=2,
+    #                    randomized_construction_bool=False,
+    #                    rng_seed=None,
+    #                    number_of_shakes=0,
+    #                    number_of_bad_adds=1,
+    #                    sort_seeds_by="weight",
+    #                    care_about_cuts=True,
+    #                    seed_from_all=True,
+    #                    gsc_appearance_ratio_threshold=.9,
+    #                    found_gsc_jaccard_threshold=.8,
+    #                    gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
+    """
+    ################ QUALITY #######################
+189 reference complexes, 1131 predicted complexes
+b'acc = 0.3709'
+b'cws = 0.3571'
+b'frac = 0.4444'
+b'mmr = 0.2570'
+b'ppv = 0.3853'
+b'sep = 0.1387'
+krogan2006_extended+2019-09-19_09:26:25:901378
+    """
+
+
+    a = CL1_Randomized("cl1_datasets/datasets", "biogrid_yeast_physical_unweighted+naively_weighted.txt", 'Dummy_quality',
+                       density_threshold=.3,
+                       merge_threshold=.9,
+                       penalty_value_per_node=2,
+                       randomized_construction_bool=False,
+                       rng_seed=None,
+                       number_of_shakes=1,
+                       number_of_bad_adds=1,
+                       sort_seeds_by="weight",
+                       care_about_cuts=True,
+                       seed_from_all=True,
+                       gsc_appearance_ratio_threshold=.9,
+                       found_gsc_jaccard_threshold=.8,
+                       gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
+
+
+
+    # a = CL1_Randomized("cl1_datasets/datasets", "krogan2006_extended.txt", 'Dummy_quality',
+    #                    density_threshold=.3,
+    #                    merge_threshold=.9,
+    #                    penalty_value_per_node=2,
+    #                    randomized_construction_bool=True,
+    #                    rng_seed=None,
+    #                    number_of_shakes=1,
+    #                    number_of_bad_adds=1,
+    #                    sort_seeds_by="weight",
+    #                    care_about_cuts=True,
+    #                    seed_from_all=True,
+    #                    gsc_appearance_ratio_threshold=.9,
+    #                    found_gsc_jaccard_threshold=.8,
+    #                    gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
+    #

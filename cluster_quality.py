@@ -54,3 +54,17 @@ def modularity(self, list_of_proteins):
     :return:
     """
     return 1
+
+
+def get_quality(gold_standard_filename,complexes_filename):
+    import subprocess
+    res = subprocess.check_output(["python2",
+                                   "cl1_reproducibility/reproducibility/scripts/match_standalone.py",
+                                   gold_standard_filename,
+                                   complexes_filename])
+    for line in res.splitlines():
+        print(line)
+        # a = str(line)
+        # a = a.replace("b", "").replace("=", "").replace("\'", "").split()
+        # self.quality_report[a[0]] = float(a[1])
+
