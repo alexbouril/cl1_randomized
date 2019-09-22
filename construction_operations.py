@@ -2,20 +2,50 @@ from common import *
 from graph import *
 
 
-
-def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out):
+def find_best_add_list(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out):
     best_change = None
     best_change_score = current_score
-    factor = .3
+    best_change_list = []
     for v in add_candidates:
         numerator = current_cluster_weight_in + add_candidates[v].sum_weight_to
         denominator = current_cluster_weight_in + current_cluster_weight_out + add_candidates[
             v].sum_weight_from + self.penalty_value_per_node * (len(current_cluster) + 1)
-        #####################
-        # CONSIDER WHAT COULD BE GAINED ON THE NEWLY EXPOSED BOUNDARY
-        #####################
+        proposed_score = numerator / denominator
+        if proposed_score > best_change_score:
+            best_change = v
+            best_change_score = proposed_score
+            best_change_list.append[(proposed_score, v)]
+
+    def filter_list(li, length_to_keep):
+        for tup in li:
+            tup[0] = -1 * tup[0]
+        length_to_keep = min(len(li), length_to_keep)
+        heapq.heapify(li)
+        li =  [(x[0], -1*x[1]) for x in heapq.heappop(li)]
+    filter_list(best_change_list)
+    return best_change_list
+
+
+def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out):
+    best_change = None
+    best_change_score = current_score
+
+    dict_gain = {v:{"in":0,
+                    "out":0}
+                 for v in add_candidates}
+    for v in add_candidates:
+        numerator = current_cluster_weight_in + \
+                    add_candidates[v].sum_weight_to
+        denominator = current_cluster_weight_in + \
+                      current_cluster_weight_out + \
+                      add_candidates[v].sum_weight_from + \
+                      self.penalty_value_per_node * (len(current_cluster) + 1)
+        #################################################################
+        #  CONSIDER WHAT COULD BE GAINED ON THE NEWLY EXPOSED BOUNDARY  #
+        #################################################################
         # find the neighbors of v
         distance_2_neighbors = self.graph.hash_graph[v]
+        dict_in_out = dict()
         for d2n in distance_2_neighbors:
             if d2n in current_cluster:
                 #########################################
@@ -23,33 +53,42 @@ def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, c
                 #########################################
                 continue
             else:
+                dict_in_out[d2n]={"to_current_cluster":0,
+                                  "to_v":0,
+                                  "to_N(v)": 0,
+                                  "out":0}
                 distance_3_neighbors = self.graph.hash_graph[d2n]
                 for d3n in distance_3_neighbors:
+                    weight = self.graph.hash_graph[d2n][d3n]
                     if d3n is v:
-                        continue
+                        dict_in_out[d2n]["to_v"] += weight
                     if d3n in current_cluster:
-                        numerator += factor * self.graph.hash_graph[d2n][d3n]
-                    # elif d3n in add_candidates:
-                    #     numerator += self.graph.hash_graph[d2n][d3n]
+                        dict_in_out[d2n]["to_current_cluster"] += weight
+                    elif d3n in distance_2_neighbors:
+                        dict_in_out[d2n]["to_N(v)"] = weight
                     else:
-                        denominator += factor * self.graph.hash_graph[d2n][d3n]
+                        dict_in_out[d2n]["out"] = weight
+
+        for d2n in dict_in_out:
+            # TODO: figure out what to do with "to_N(v)"
+            inbound = dict_in_out[d2n]["to_current_cluster"] + \
+                      dict_in_out[d2n]["to_v"]
+            outbound = dict_in_out[d2n]["out"]
+            gain_ratio = inbound / (inbound+outbound)
+            # if gain_ratio>=current_score:
+            if inbound>=outbound:
+                dict_gain[v]["in"]+=inbound
+                dict_gain[v]["out"]+=outbound
+
+        numerator+= .3*dict_gain[v]["in"]
+        denominator+=.3*(dict_gain[v]["out"] + dict_gain[v]["out"])
+
+
 
         proposed_score = numerator / denominator
         if proposed_score > best_change_score:
             best_change = v
             best_change_score = proposed_score
-        debug("##################### ADD Consideration ########################")
-        debug("v: %s" % str(v))
-        debug("proposed_score: %s" % str(proposed_score))
-        debug("best_change_score: %s" % str(best_change_score))
-        debug("best_change: %s" % str(best_change))
-        debug("numerator: %s" % str(numerator))
-        debug("denominator: %s" % str(denominator))
-        debug("current_cluster_weight_in: %s" % str(current_cluster_weight_in))
-        debug("add_candidates[v].sum_weight_to: %s" % str(add_candidates[v].sum_weight_to))
-        debug("current_cluster_weight_out: %s" % str(current_cluster_weight_out))
-        debug("add_candidates[v].sum_weight_from: %s" % str(add_candidates[v].sum_weight_from))
-        debug("len(current_cluster): %s" % str(len(current_cluster)))
         sleep_debug(.25)
     return best_change, best_change_score
 
