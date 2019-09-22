@@ -1,6 +1,64 @@
 from common import *
 from graph import *
 
+
+
+
+
+
+def find_best_2neighborhood_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out):
+    best_change = None
+    best_change_score = current_score
+    factor = .3
+    for v in add_candidates:
+        numerator = current_cluster_weight_in + add_candidates[v].sum_weight_to
+        denominator = current_cluster_weight_in + current_cluster_weight_out + add_candidates[
+            v].sum_weight_from + self.penalty_value_per_node * (len(current_cluster) + 1)
+        #####################
+        # CONSIDER WHAT COULD BE GAINED ON THE NEWLY EXPOSED BOUNDARY
+        #####################
+        # find the neighbors of v
+        distance_2_neighbors = self.graph.hash_graph[v]
+        for d2n in distance_2_neighbors:
+            if d2n in current_cluster:
+                numerator += factor * self.graph.hash_graph[v][d2n]
+            else:
+                distance_3_neighbors = self.graph.hash_graph[d2n]
+                for d3n in distance_3_neighbors:
+                    if d3n in current_cluster:
+                        numerator += factor * self.graph.hash_graph[d2n][d3n]
+                    # elif d3n in add_candidates:
+                    #     numerator += self.graph.hash_graph[d2n][d3n]
+                    else:
+                        denominator += factor * self.graph.hash_graph[d2n][d3n]
+
+        proposed_score = numerator / denominator
+        if proposed_score > best_change_score:
+            best_change = v
+            best_change_score = proposed_score
+        debug("##################### ADD Consideration ########################")
+        debug("v: %s" % str(v))
+        debug("proposed_score: %s" % str(proposed_score))
+        debug("best_change_score: %s" % str(best_change_score))
+        debug("best_change: %s" % str(best_change))
+        debug("numerator: %s" % str(numerator))
+        debug("denominator: %s" % str(denominator))
+        debug("current_cluster_weight_in: %s" % str(current_cluster_weight_in))
+        debug("add_candidates[v].sum_weight_to: %s" % str(add_candidates[v].sum_weight_to))
+        debug("current_cluster_weight_out: %s" % str(current_cluster_weight_out))
+        debug("add_candidates[v].sum_weight_from: %s" % str(add_candidates[v].sum_weight_from))
+        debug("len(current_cluster): %s" % str(len(current_cluster)))
+        sleep_debug(.25)
+    return best_change, best_change_score
+
+
+
+
+
+
+
+
+
 def initialize_complex(self, current_seed):
     ###########################################
     # initalize the current cluster
