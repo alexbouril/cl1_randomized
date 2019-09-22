@@ -72,7 +72,7 @@ def randomized_construction(self):
                     round_no += 1
                     # best_change, best_change_score = \
                     best_change, best_change_score = \
-                        find_best_2neighborhood_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
+                        careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
                     # find_best_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
 
                     if best_change:
