@@ -3,7 +3,6 @@ from graph import *
 
 
 def find_best_add_list(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out):
-    best_change = None
     best_change_score = current_score
     best_change_list = []
     for v in add_candidates:
@@ -14,19 +13,29 @@ def find_best_add_list(self, add_candidates, current_cluster, current_score, cur
         if proposed_score > best_change_score:
             best_change = v
             best_change_score = proposed_score
-            best_change_list.append[(proposed_score, v)]
+            best_change_list.append((proposed_score, best_change))
 
-    def filter_list(li, length_to_keep):
-        for tup in li:
-            tup[0] = -1 * tup[0]
-        length_to_keep = min(len(li), length_to_keep)
-        heapq.heapify(li)
-        li =  [(x[0], -1*x[1]) for x in heapq.heappop(li)]
-    filter_list(best_change_list)
-    return best_change_list
+    def filter_list(best_change_list, length_to_keep):
+        for index, tup in enumerate(best_change_list):
+            new_tuple = (-1 * tup[0], tup[1])
+            best_change_list[index] = new_tuple
+
+        length_to_keep = min(len(best_change_list), length_to_keep)
+        heapq.heapify(best_change_list)
+        update_list = []
+        for i in range(length_to_keep):
+            update_list.append(heapq.heappop(best_change_list))
+        best_change_list = update_list
+
+    print(best_change_list)
+    filter_list(best_change_list, 7)
+    retval = [t[1] for t in best_change_list]
+    return retval
 
 
 def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out):
+    best_change_list = find_best_add_list(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
+
     best_change = None
     best_change_score = current_score
     best_proposed_score = current_score
@@ -35,13 +44,15 @@ def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, c
                     "out":0}
                  for v in add_candidates}
     # print([v for v in add_candidates])
-    for v in add_candidates:
+    # for v in add_candidates:
+    for v in best_change_list:
         numerator = current_cluster_weight_in + \
                     add_candidates[v].sum_weight_to
         denominator = current_cluster_weight_in + \
                       current_cluster_weight_out + \
                       add_candidates[v].sum_weight_from + \
                       self.penalty_value_per_node * (len(current_cluster) + 1)
+        actual_score = numerator/denominator
         #################################################################
         #  CONSIDER WHAT COULD BE GAINED ON THE NEWLY EXPOSED BOUNDARY  #
         #################################################################
@@ -93,12 +104,11 @@ def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, c
         numerator+= factor*dict_gain[v]["in"]
         denominator+= factor*(dict_gain[v]["in"] + dict_gain[v]["out"])
 
-
-
         proposed_score = numerator / denominator
-        if proposed_score > best_change_score:
+        if proposed_score > best_proposed_score:
             best_change = v
-            best_change_score = proposed_score
+            best_proposed_score = proposed_score
+            best_change_score = actual_score
         sleep_debug(.25)
     print("-------------",best_change)
     return best_change, best_change_score
@@ -112,7 +122,6 @@ def find_best_2neighborhood_add(self, add_candidates, current_cluster, current_s
         numerator = current_cluster_weight_in + add_candidates[v].sum_weight_to
         denominator = current_cluster_weight_in + current_cluster_weight_out + add_candidates[
             v].sum_weight_from + self.penalty_value_per_node * (len(current_cluster) + 1)
-        actual_score = numerator/denominator
         #####################
         # CONSIDER WHAT COULD BE GAINED ON THE NEWLY EXPOSED BOUNDARY
         #####################
@@ -132,10 +141,9 @@ def find_best_2neighborhood_add(self, add_candidates, current_cluster, current_s
                         denominator += factor * self.graph.hash_graph[d2n][d3n]
 
         proposed_score = numerator / denominator
-        if proposed_score > best_proposed_score:
+        if proposed_score > best_change_score:
             best_change = v
-            best_proposed_score = proposed_score
-            best_change_score = actual_score
+            best_change_score = proposed_score
         debug("##################### ADD Consideration ########################")
         debug("v: %s" % str(v))
         debug("proposed_score: %s" % str(proposed_score))
