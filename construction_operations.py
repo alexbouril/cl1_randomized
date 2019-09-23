@@ -34,7 +34,7 @@ def find_best_add_list(self, add_candidates, current_cluster, current_score, cur
 
 
 def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out):
-    best_change_list = find_best_add_list(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
+    # best_change_list = find_best_add_list(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
 
     best_change = None
     best_change_score = current_score
@@ -44,8 +44,8 @@ def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, c
                     "out":0}
                  for v in add_candidates}
     # print([v for v in add_candidates])
-    # for v in add_candidates:
-    for v in best_change_list:
+    for v in add_candidates:
+    # for v in best_change_list:
         numerator = current_cluster_weight_in + \
                     add_candidates[v].sum_weight_to
         denominator = current_cluster_weight_in + \
@@ -99,7 +99,7 @@ def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, c
         #         if b in self.graph.hash_graph[a]:
         #             in_N_v_grabbed += self.graph.hash_graph[a][b]
         # dict_gain[v]["in"]+=in_N_v_grabbed
-        print(v, d2n_to_grab)
+        # print(v, d2n_to_grab)
         factor = .2
         numerator+= factor*dict_gain[v]["in"]
         denominator+= factor*(dict_gain[v]["in"] + dict_gain[v]["out"])
@@ -110,7 +110,7 @@ def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, c
             best_proposed_score = proposed_score
             best_change_score = actual_score
         sleep_debug(.25)
-    print("-------------",best_change)
+    # print("-------------",best_change)
     return best_change, best_change_score
 
 
