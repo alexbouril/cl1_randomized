@@ -34,16 +34,16 @@ def find_best_add_list(self, add_candidates, current_cluster, current_score, cur
 
 
 def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out):
+    # if len(current_cluster)<5:
+    #     return find_best_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
     # best_change_list = find_best_add_list(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
 
     best_change = None
     best_change_score = current_score
     best_proposed_score = current_score
-
-    dict_gain = {v:{"in":0,
-                    "out":0}
-                 for v in add_candidates}
-    # print([v for v in add_candidates])
+    neighborhood_gain = {v: {"in": 0,
+                            "out": 0}
+                                        for v in add_candidates}
     for v in add_candidates:
     # for v in best_change_list:
         numerator = current_cluster_weight_in + \
@@ -56,9 +56,8 @@ def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, c
         #################################################################
         #  CONSIDER WHAT COULD BE GAINED ON THE NEWLY EXPOSED BOUNDARY  #
         #################################################################
-        # find the neighbors of v
         distance_2_neighbors = self.graph.hash_graph[v]
-        dict_in_out = dict()
+        in_and_out_for_distance_2_neighbors = dict()
         for d2n in distance_2_neighbors:
             if d2n in current_cluster:
                 #########################################
@@ -66,7 +65,7 @@ def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, c
                 #########################################
                 continue
             else:
-                dict_in_out[d2n]={"to_current_cluster":0,
+                in_and_out_for_distance_2_neighbors[d2n]={"to_current_cluster":0,
                                   "to_v":0,
                                   "to_N(v)": 0,
                                   "out":0}
@@ -74,25 +73,24 @@ def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, c
                 for d3n in distance_3_neighbors:
                     weight = self.graph.hash_graph[d2n][d3n]
                     if d3n is v:
-                        dict_in_out[d2n]["to_v"] += weight
+                        in_and_out_for_distance_2_neighbors[d2n]["to_v"] += weight
                     if d3n in current_cluster:
-                        dict_in_out[d2n]["to_current_cluster"] += weight
+                        in_and_out_for_distance_2_neighbors[d2n]["to_current_cluster"] += weight
                     elif d3n in distance_2_neighbors:
-                        dict_in_out[d2n]["to_N(v)"] = weight
+                        in_and_out_for_distance_2_neighbors[d2n]["to_N(v)"] = weight
                     else:
-                        dict_in_out[d2n]["out"] = weight
+                        in_and_out_for_distance_2_neighbors[d2n]["out"] = weight
         d2n_to_grab = set()
-        for d2n in dict_in_out:
+        for d2n in in_and_out_for_distance_2_neighbors:
             # TODO: figure out what to do with "to_N(v)"
-            inbound = dict_in_out[d2n]["to_current_cluster"] + \
-                      dict_in_out[d2n]["to_v"]
-            outbound = dict_in_out[d2n]["out"]
-            gain_ratio = inbound / (inbound+outbound)
-            # if gain_ratio>=current_score:
-            if inbound>=outbound:
+            inbound = in_and_out_for_distance_2_neighbors[d2n]["to_current_cluster"] + \
+                      in_and_out_for_distance_2_neighbors[d2n]["to_v"]
+            outbound = in_and_out_for_distance_2_neighbors[d2n]["out"]
+            # if inbound>=outbound:
+            if inbound/(inbound+outbound)>actual_score:
                 d2n_to_grab.add(d2n)
-                dict_gain[v]["in"]+=inbound
-                dict_gain[v]["out"]+=outbound
+                neighborhood_gain[v]["in"]+=inbound
+                neighborhood_gain[v]["out"]+=outbound
         # in_N_v_grabbed = 0
         # for a in d2n_to_grab:
         #     for b in d2n_to_grab:
@@ -100,9 +98,12 @@ def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, c
         #             in_N_v_grabbed += self.graph.hash_graph[a][b]
         # dict_gain[v]["in"]+=in_N_v_grabbed
         # print(v, d2n_to_grab)
-        factor = .2
-        numerator+= factor*dict_gain[v]["in"]
-        denominator+= factor*(dict_gain[v]["in"] + dict_gain[v]["out"])
+        # factor = len(current_cluster)*.09
+        factor = logistic.cdf(len(current_cluster)/10)
+        # factor = .2* logistic.cdf(len(current_cluster))
+        numerator+= factor*neighborhood_gain[v]["in"]
+        denominator+= factor*\
+                      (neighborhood_gain[v]["in"] + neighborhood_gain[v]["out"])
 
         proposed_score = numerator / denominator
         if proposed_score > best_proposed_score:
@@ -112,6 +113,50 @@ def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, c
         sleep_debug(.25)
     # print("-------------",best_change)
     return best_change, best_change_score
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def find_best_2neighborhood_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out):

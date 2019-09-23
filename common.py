@@ -12,7 +12,10 @@ from cluster_quality import cohesiveness, density
 import os
 import logging
 import pprint as pp
+from scipy.stats import logistic
 
+
+logistic.cdf(10)
 def setup_custom_logger(name):
     """ Setup logger """
     LOGGING_FILE_PATH = './logs/cl1_randomized.log'

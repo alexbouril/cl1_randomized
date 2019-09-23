@@ -60,8 +60,10 @@ def randomized_construction(self):
             backup_add_candidates = add_candidates.copy()
             backup_remove_candidates = remove_candidates.copy()
             backup_current_score = current_score
-
-            while (add_candidates or remove_candidates) and abs(last_failed_remove_round_no - last_failed_add_round_no) != 1:
+            remove_counter = 0
+            while (add_candidates or remove_candidates) and \
+                    abs(last_failed_remove_round_no - last_failed_add_round_no) != 1\
+                    and remove_counter<100:
                 debug("Current cluster #%s" % str(len(self.initial_clustering)))
                 decider = numpy.random.rand()
 
@@ -71,8 +73,13 @@ def randomized_construction(self):
                 if (decider <= .5 or last_failed_remove_round_no == round_no) and last_failed_add_round_no != round_no:
                     round_no += 1
                     # best_change, best_change_score = \
-                    best_change, best_change_score = \
+                    if round_no%10==1:
+                        best_change, best_change_score = \
                         careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
+                    else:
+                        best_change, best_change_score = \
+                            find_best_add(self, add_candidates, current_cluster, current_score,
+                                                                current_cluster_weight_in, current_cluster_weight_out)
                     # find_best_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
 
                     if best_change:
@@ -125,7 +132,8 @@ def randomized_construction(self):
                     best_change, best_change_score = \
                         find_best_remove(self, remove_candidates, current_cluster, current_cluster_weight_in, current_cluster_weight_out, current_score)
                     if best_change:
-                        print("==================================================== REMOVING =====================================================")
+                        remove_counter+=1
+                        print("==================================================== REMOVING %s====================================================="%str(best_change))
                         current_score = best_change_score
                         current_cluster_weight_in, current_cluster_weight_out = \
                             remove(self, remove_candidates, add_candidates, current_cluster, best_change, best_change_score, current_cluster_weight_in, current_cluster_weight_out)
