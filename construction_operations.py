@@ -51,8 +51,9 @@ def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, c
                     add_candidates[v].sum_weight_to
         denominator = current_cluster_weight_in + \
                       current_cluster_weight_out + \
-                      add_candidates[v].sum_weight_from + \
-                      self.penalty_value_per_node * (len(current_cluster) + 1)
+                      self.penalty_value_per_node * (len(current_cluster) + 1)+\
+                      add_candidates[v].sum_weight_from
+
         actual_score = numerator/denominator
         #################################################################
         #  CONSIDER WHAT COULD BE GAINED ON THE NEWLY EXPOSED BOUNDARY  #
@@ -64,6 +65,9 @@ def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, c
                 #########################################
                 #  THIS HAS ALREADY BEEN ACCOUNTED FOR  #
                 #########################################
+                '''
+                already captured in the term current_cluster_weight_in
+                '''
                 continue
             else:
                 in_and_out_for_distance_2_neighbors[d2n]={"to_current_cluster":0,
@@ -72,23 +76,23 @@ def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, c
                                   "out":0}
                 distance_3_neighbors = self.graph.hash_graph[d2n]
                 for d3n in distance_3_neighbors:
-                    weight = self.graph.hash_graph[d2n][d3n]
+                    edge_weight = self.graph.hash_graph[d2n][d3n]
                     if d3n is v:
-                        in_and_out_for_distance_2_neighbors[d2n]["to_v"] += 3*weight
+                        in_and_out_for_distance_2_neighbors[d2n]["to_v"] += 3*edge_weight
                     if d3n in current_cluster:
-                        in_and_out_for_distance_2_neighbors[d2n]["to_current_cluster"] += weight
+                        in_and_out_for_distance_2_neighbors[d2n]["to_current_cluster"] += 3 * edge_weight
                     elif d3n in distance_2_neighbors:
-                        in_and_out_for_distance_2_neighbors[d2n]["to_N(v)"] = weight
+                        in_and_out_for_distance_2_neighbors[d2n]["to_N(v)"] = edge_weight
                     else:
-                        in_and_out_for_distance_2_neighbors[d2n]["out"] = weight
+                        in_and_out_for_distance_2_neighbors[d2n]["out"] = edge_weight
         d2n_to_grab = set()
         for d2n in in_and_out_for_distance_2_neighbors:
             # TODO: figure out what to do with "to_N(v)"
             inbound = in_and_out_for_distance_2_neighbors[d2n]["to_current_cluster"] + \
                       in_and_out_for_distance_2_neighbors[d2n]["to_v"]
             outbound = in_and_out_for_distance_2_neighbors[d2n]["out"]
-            # if inbound>=outbound:
-            if inbound/(inbound+outbound)>actual_score:
+            if inbound>=outbound:
+            # if inbound/(inbound+outbound)>actual_score:
                 d2n_to_grab.add(d2n)
                 neighborhood_gain[v]["in"]+=inbound
                 neighborhood_gain[v]["out"]+=outbound
@@ -114,7 +118,7 @@ def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, c
             best_change_score = actual_score
         sleep_debug(.25)
     # print("-------------",best_change)
-    return best_change, best_change_score, good_neighbors[best_change]
+    return best_change, best_change_score, #good_neighbors[best_change]
 
 
 

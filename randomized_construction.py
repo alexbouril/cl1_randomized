@@ -78,7 +78,9 @@ def randomized_construction(self):
                             careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
 
                         if best_change:
-                            current_score = best_change_score
+                            new_cluster = [v for v in current_cluster]+[best_change]
+                            current_score = cohesiveness(self, new_cluster)
+                            # current_score = best_change_score
                             current_cluster_weight_in, current_cluster_weight_out = \
                                 add(self, add_candidates, current_cluster, remove_candidates, best_change,
                                     best_change_score, current_cluster_weight_in, current_cluster_weight_out)
