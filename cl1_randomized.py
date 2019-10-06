@@ -660,21 +660,13 @@ if __name__ == "__main__":
                        randomized_construction_bool=True,
                        rng_seed=None,
                        number_of_shakes=0,
-                       number_of_bad_adds=1,
+                       number_of_bad_adds=2,
                        sort_seeds_by="weight",
                        care_about_cuts=True,
                        seed_from_all=True,
                        gsc_appearance_ratio_threshold=.9,
                        found_gsc_jaccard_threshold=.8,
                        gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
-
-
-
-
-
-
-
-
 
 
 
