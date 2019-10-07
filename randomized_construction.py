@@ -72,18 +72,22 @@ def randomized_construction(self):
                 ############################################################
                 if (decider <= .5 or last_failed_remove_round_no == round_no) and last_failed_add_round_no != round_no:
                     # best_change, best_change_score = \
-                    if  len(current_cluster)>5 and round_no%4==1:
+                    if  len(current_cluster)>5 and round_no%3==1:
                         round_no += 1
                         best_change, best_change_score = \
                             careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
                         # find_best_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
 
                         if best_change:
+                            ##################################
+                            # sanity check
+                            ##################################
                             new_cluster = [v for v in current_cluster]+[best_change]
                             current_score_check = cohesiveness(self, new_cluster)
-                            if best_change_score!=current_score_check:
+                            if abs(best_change_score-current_score_check)>.001:
                                 print(abs(best_change_score-current_score_check), best_change_score, current_score_check)
-                            # current_score = best_change_score
+
+                            current_score = best_change_score
                             current_cluster_weight_in, current_cluster_weight_out = \
                                 add(self, add_candidates, current_cluster, remove_candidates, best_change,
                                     best_change_score, current_cluster_weight_in, current_cluster_weight_out)
@@ -99,19 +103,14 @@ def randomized_construction(self):
                                 backup_remove_candidates = remove_candidates.copy()
                                 backup_current_score = current_score
 
-
                             for counter in range(2):
                                 round_no += 1
-                                # best_change, best_change_score = \
-                                #     find_best_add(self, add_candidates, current_cluster, current_score,
-                                #                   current_cluster_weight_in, current_cluster_weight_out)
                                 best_change, best_change_score = \
                                     find_best_suboptimal_add(self,
                                                              add_candidates,
                                                              current_cluster,
                                                              current_cluster_weight_in,
                                                              current_cluster_weight_out)
-
                                 if best_change:
                                     current_score = best_change_score
                                     current_cluster_weight_in, current_cluster_weight_out = \
@@ -128,25 +127,16 @@ def randomized_construction(self):
                                         backup_add_candidates = add_candidates.copy()
                                         backup_remove_candidates = remove_candidates.copy()
                                         backup_current_score = current_score
-
                                 else:
                                     debug("\n", "No improvement by ADDING", "\n")
                                     current_cluster_construction_log.append(
                                         Action("failed to add, current cohesiveness: %s" % str(current_score)))
                                     last_failed_add_round_no = round_no
-
                             for counter in range(2):
                                 round_no += 1
                                 best_change, best_change_score = \
                                     find_best_add(self, add_candidates, current_cluster, current_score,
                                                   current_cluster_weight_in, current_cluster_weight_out)
-                                # best_change, best_change_score = \
-                                #     find_best_suboptimal_add(self,
-                                #                              add_candidates,
-                                #                              current_cluster,
-                                #                              current_cluster_weight_in,
-                                #                              current_cluster_weight_out)
-
                                 if best_change:
                                     current_score = best_change_score
                                     current_cluster_weight_in, current_cluster_weight_out = \
@@ -184,7 +174,10 @@ def randomized_construction(self):
                         if best_change:
                             current_score = best_change_score
                             current_score_check = cohesiveness(self, [v for v in current_cluster]+[best_change])
-                            if current_score!=current_score_check:
+                            ##################################
+                            # sanity check
+                            ##################################
+                            if abs(best_change_score-current_score_check)>.001:
                                 print("----------------",current_score, current_score_check)
                             current_cluster_weight_in, current_cluster_weight_out = \
                                 add(self, add_candidates, current_cluster, remove_candidates, best_change,
