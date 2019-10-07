@@ -74,19 +74,19 @@ def jaccard_similarity(a,b):
 
 
 class Relationship:
-    def __init__(self, sum_weight_to:float, num_edges_to:int, sum_weight_from:float, num_edges_from:int):
-        self.sum_weight_to = sum_weight_to
+    def __init__(self, _in:float, num_edges_to:int, _out:float, num_edges_from:int):
+        self._in = _in
         self.num_edges_to = num_edges_to
-        self.sum_weight_from = sum_weight_from
+        self._out = _out
         self.num_edges_from = num_edges_from
 
     def copy(self):
-        return Relationship(self.sum_weight_to, self.num_edges_to, self.sum_weight_from, self.num_edges_from)
+        return Relationship(self._in, self.num_edges_to, self._out, self.num_edges_from)
 
     def stringify(self):
         s=""
-        s+="weight_to: "+ str(self.sum_weight_to) +"\t"
-        s+="weight_from: "+ str(self.sum_weight_from)+"\n"
+        s+="weight_to: "+ str(self._in) +"\t"
+        s+="weight_from: "+ str(self._out)+"\n"
         s+="num_edges_to: "+ str(self.num_edges_to)+"\t"
         s+="num_edges_from: "+ str(self.num_edges_from)+"\n"
         return s

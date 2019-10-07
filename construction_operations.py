@@ -6,9 +6,9 @@ def find_best_add_list(self, add_candidates, current_cluster, current_score, cur
     best_change_score = current_score
     best_change_list = []
     for v in add_candidates:
-        numerator = current_cluster_weight_in + add_candidates[v].sum_weight_to
+        numerator = current_cluster_weight_in + add_candidates[v]._in
         denominator = current_cluster_weight_in + current_cluster_weight_out + add_candidates[
-            v].sum_weight_from + self.penalty_value_per_node * (len(current_cluster) + 1)
+            v]._out + self.penalty_value_per_node * (len(current_cluster) + 1)
         proposed_score = numerator / denominator
         if proposed_score > best_change_score:
             best_change = v
@@ -48,11 +48,11 @@ def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, c
     for v in add_candidates:
     # for v in best_change_list:
         numerator = current_cluster_weight_in + \
-                    add_candidates[v].sum_weight_to
+                    add_candidates[v]._in
         denominator = current_cluster_weight_in + \
                       current_cluster_weight_out + \
                       self.penalty_value_per_node * (len(current_cluster) + 1)+\
-                      add_candidates[v].sum_weight_from
+                      add_candidates[v]._out
 
         actual_score = numerator/denominator
         #################################################################
@@ -170,9 +170,9 @@ def find_best_2neighborhood_add(self, add_candidates, current_cluster, current_s
     best_change_score = current_score
     factor = .3
     for v in add_candidates:
-        numerator = current_cluster_weight_in + add_candidates[v].sum_weight_to
+        numerator = current_cluster_weight_in + add_candidates[v]._in
         denominator = current_cluster_weight_in + current_cluster_weight_out + add_candidates[
-            v].sum_weight_from + self.penalty_value_per_node * (len(current_cluster) + 1)
+            v]._out + self.penalty_value_per_node * (len(current_cluster) + 1)
         #####################
         # CONSIDER WHAT COULD BE GAINED ON THE NEWLY EXPOSED BOUNDARY
         #####################
@@ -203,9 +203,9 @@ def find_best_2neighborhood_add(self, add_candidates, current_cluster, current_s
         debug("numerator: %s" % str(numerator))
         debug("denominator: %s" % str(denominator))
         debug("current_cluster_weight_in: %s" % str(current_cluster_weight_in))
-        debug("add_candidates[v].sum_weight_to: %s" % str(add_candidates[v].sum_weight_to))
+        debug("add_candidates[v]._in: %s" % str(add_candidates[v]._in))
         debug("current_cluster_weight_out: %s" % str(current_cluster_weight_out))
-        debug("add_candidates[v].sum_weight_from: %s" % str(add_candidates[v].sum_weight_from))
+        debug("add_candidates[v]._out: %s" % str(add_candidates[v]._out))
         debug("len(current_cluster): %s" % str(len(current_cluster)))
         sleep_debug(.25)
     return best_change, best_change_score
@@ -272,9 +272,9 @@ def find_best_2neighborhood_add(self, add_candidates, current_cluster, current_s
     best_change_score = current_score
     factor = .3
     for v in add_candidates:
-        numerator = current_cluster_weight_in + add_candidates[v].sum_weight_to
+        numerator = current_cluster_weight_in + add_candidates[v]._in
         denominator = current_cluster_weight_in + current_cluster_weight_out + add_candidates[
-            v].sum_weight_from + self.penalty_value_per_node * (len(current_cluster) + 1)
+            v]._out + self.penalty_value_per_node * (len(current_cluster) + 1)
         #####################
         # CONSIDER WHAT COULD BE GAINED ON THE NEWLY EXPOSED BOUNDARY
         #####################
@@ -305,9 +305,9 @@ def find_best_2neighborhood_add(self, add_candidates, current_cluster, current_s
         debug("numerator: %s" % str(numerator))
         debug("denominator: %s" % str(denominator))
         debug("current_cluster_weight_in: %s" % str(current_cluster_weight_in))
-        debug("add_candidates[v].sum_weight_to: %s" % str(add_candidates[v].sum_weight_to))
+        debug("add_candidates[v]._in: %s" % str(add_candidates[v]._in))
         debug("current_cluster_weight_out: %s" % str(current_cluster_weight_out))
-        debug("add_candidates[v].sum_weight_from: %s" % str(add_candidates[v].sum_weight_from))
+        debug("add_candidates[v]._out: %s" % str(add_candidates[v]._out))
         debug("len(current_cluster): %s" % str(len(current_cluster)))
         sleep_debug(.25)
     return best_change, best_change_score
@@ -318,9 +318,12 @@ def find_best_add(self, add_candidates, current_cluster, current_score, current_
     best_change_score = current_score
     # best_change_list = []
     for v in add_candidates:
-        numerator = current_cluster_weight_in + add_candidates[v].sum_weight_to
-        denominator = current_cluster_weight_in + current_cluster_weight_out + add_candidates[
-            v].sum_weight_from + self.penalty_value_per_node * (len(current_cluster) + 1)
+        numerator = current_cluster_weight_in +\
+                    add_candidates[v]._in
+        denominator = current_cluster_weight_in+\
+                      current_cluster_weight_out +\
+                      add_candidates[v]._out +\
+                      self.penalty_value_per_node * (len(current_cluster) + 1)
         proposed_score = numerator / denominator
         if proposed_score > best_change_score:
             best_change = v
@@ -337,9 +340,9 @@ def find_best_add(self, add_candidates, current_cluster, current_score, current_
         debug("numerator: %s" % str(numerator))
         debug("denominator: %s" % str(denominator))
         debug("current_cluster_weight_in: %s" % str(current_cluster_weight_in))
-        debug("add_candidates[v].sum_weight_to: %s" % str(add_candidates[v].sum_weight_to))
+        debug("add_candidates[v]._in: %s" % str(add_candidates[v]._in))
         debug("current_cluster_weight_out: %s" % str(current_cluster_weight_out))
-        debug("add_candidates[v].sum_weight_from: %s" % str(add_candidates[v].sum_weight_from))
+        debug("add_candidates[v]._out: %s" % str(add_candidates[v]._out))
         debug("len(current_cluster): %s" % str(len(current_cluster)))
         sleep_debug(.25)
     # UNFINISHED BEST_CHANGE_LIST
@@ -353,9 +356,13 @@ def find_best_add(self, add_candidates, current_cluster, current_score, current_
 def add(self, add_candidates, current_cluster, remove_candidates,
         change_vertex, change_vertex_score, cc_weight_in, cc_weight_out):
     debug("\n", "ADD: %s" % str(change_vertex), "change_vertex_score: %s" % str(change_vertex_score), "\n")
-    # update the overall weight into and out of the current_cluster
-    cc_weight_in += add_candidates[change_vertex].sum_weight_to
-    cc_weight_out += add_candidates[change_vertex].sum_weight_from
+    #################################################################
+    # update the overall weight into and out of the current_cluster #
+    #################################################################
+    change_vertex_in = add_candidates[change_vertex]._in
+    change_vertex_out = add_candidates[change_vertex]._out
+    cc_weight_in += change_vertex_in
+    cc_weight_out = cc_weight_out - change_vertex_in + change_vertex_out
 
     ###################################
     # Move the change vertex from add_candidates to current_cluster
@@ -370,22 +377,44 @@ def add(self, add_candidates, current_cluster, remove_candidates,
     if to_add.num_edges_from:
         remove_candidates[change_vertex] = to_add.copy()
 
-    s = current_cluster[change_vertex].stringify()
     def update_v(v, edge_weight, collection):
-        collection[v].sum_weight_to += edge_weight
-        collection[v].sum_weight_from -= edge_weight
+        collection[v]._in += edge_weight
+        collection[v]._out -= edge_weight
         collection[v].num_edges_to += 1
         collection[v].num_edges_from -= 1
-
+        #######################
+        # sanity check
+        #######################
         thresh = -.001
-        a = collection[v].sum_weight_to < thresh
-        b = collection[v].sum_weight_from < thresh
+        a = collection[v]._in < thresh
+        b = collection[v]._out < thresh
         c = collection[v].num_edges_to < thresh
         d = collection[v].num_edges_from < thresh
         if a or b or c or d:
             print("oh no %s; %s%s%s%s"%(str(v), a, b, c, d))
             exit()
 
+    def initialize_new_add_candidate_for_V(add_vertex, current_cluster, add_candidates):
+        num_edges_to = 0
+        weight_to = 0
+        num_edges_from = 0
+        weight_from = 0
+        ###################################
+        # iterate over the neighbors of v
+        ###################################
+        for neighbor in self.graph.hash_graph[add_vertex]:
+            weight_prime = self.graph.hash_graph[add_vertex][neighbor]
+            if neighbor in current_cluster:
+                num_edges_to += 1
+                weight_to += weight_prime
+            else:
+                num_edges_from += 1
+                weight_from += weight_prime
+
+        add_candidates[add_vertex] = Relationship(weight_to,
+                                         num_edges_to,
+                                         weight_from,
+                                         num_edges_from)
 
     #######################################################################
     # iterate over neighbors of change_vertex, and update each Relationship
@@ -400,40 +429,13 @@ def add(self, add_candidates, current_cluster, remove_candidates,
         # remove_candidates is a subset of current_cluster
         if v in remove_candidates:
             update_v(v, edge_weight, remove_candidates)
-            # Check that a candidate for removal+ is still on the boundary
+            # Check that a candidate for removal is still on the boundary
             if remove_candidates[v].num_edges_from == 0:
                 del remove_candidates[v]
         # handle the case that v is on the new boundary
         # add v to add_candidates
         if v not in add_candidates and v not in current_cluster:
-            num_edges_to = 0
-            weight_to = 0
-            num_edges_from = 0
-            weight_from = 0
-            ###################################
-            # iterate over the neighbors of v
-            ###################################
-            for v_prime in self.graph.hash_graph[v]:
-                weight_prime = self.graph.hash_graph[v][v_prime]
-                if v_prime in current_cluster:
-                    num_edges_to += 1
-                    weight_to += weight_prime
-                else:
-                    num_edges_from += 1
-                    weight_from += weight_prime
-
-            add_candidates[v] = Relationship(weight_to,
-                                             num_edges_to,
-                                             weight_from,
-                                             num_edges_from)
-            # a = num_edges_to < 0
-            # b = weight_to < 0
-            # c = num_edges_from < 0
-            # d = weight_from < 0
-            # if a or b or c or d:
-            #     print("shoot")
-            #     # exit(0)
-
+            initialize_new_add_candidate_for_V(v, current_cluster, add_candidates)
 
     return cc_weight_in, cc_weight_out
 
@@ -474,9 +476,9 @@ def find_best_remove(self, remove_candidates, current_cluster, current_cluster_w
 
             if not is_a_cut:
                 # TODO: check that this makes sense
-                numerator = current_cluster_weight_in - remove_candidates[v].sum_weight_to
+                numerator = current_cluster_weight_in - remove_candidates[v]._in
                 denominator = current_cluster_weight_in + current_cluster_weight_out - \
-                              remove_candidates[v].sum_weight_from + self.penalty_value_per_node * (
+                              remove_candidates[v]._out + self.penalty_value_per_node * (
                                       len(current_cluster) - 1)
                 proposed_score = numerator / denominator
                 if proposed_score > best_change_score:
@@ -491,52 +493,76 @@ def find_best_remove(self, remove_candidates, current_cluster, current_cluster_w
                 debug("denominator: %s" % str(denominator))
                 debug("current_cluster_weight_in: %s" % str(current_cluster_weight_in))
                 debug(
-                    "remove_candidates[v].sum_weight_to: %s" % str(remove_candidates[v].sum_weight_to))
+                    "remove_candidates[v]._in: %s" % str(remove_candidates[v]._in))
                 debug("current_cluster_weight_out: %s" % str(current_cluster_weight_out))
-                debug("remove_candidates[v].sum_weight_from: %s" % str(
-                    remove_candidates[v].sum_weight_from))
+                debug("remove_candidates[v]._out: %s" % str(
+                    remove_candidates[v]._out))
                 debug("len(current_cluster): %s" % str(len(current_cluster)))
                 sleep_debug(1)
     return best_change, best_change_score
 
 
-def remove(self, remove_candidates, add_candidates, current_cluster, change_vertex, change_vertex_score, cc_weight_in, cc_weight_out):
+def remove(self,
+           remove_candidates,
+           add_candidates,
+           current_cluster,
+           change_vertex,
+           change_vertex_score,
+           cc_weight_in,
+           cc_weight_out):
     debug("REMOVE: ", change_vertex, "change_vertex_score: ", change_vertex_score)
     sleep_debug(1)
-    # Update the current_cluster 's score, and overall weight into and out of the current cluster
-    current_score = change_vertex_score
-    cc_weight_in -= remove_candidates[change_vertex].sum_weight_to
-    cc_weight_out -= remove_candidates[change_vertex].sum_weight_from
+    ###############################################################################################
+    # Update the current_cluster 's score, and overall weight into and out of the current cluster #
+    ###############################################################################################
+    change_vertex_in = remove_candidates[change_vertex]._in
+    change_vertex_out = remove_candidates[change_vertex]._out
+    cc_weight_in -= change_vertex_in
+    cc_weight_out = cc_weight_out - change_vertex_out + change_vertex_in
 
-    # Remove the change vertex from remove_candidates and current_cluster
+    #######################################################################
+    # Remove the change vertex from remove_candidates and current_cluster #
+    #######################################################################
     to_remove = remove_candidates[change_vertex].copy()
     del remove_candidates[change_vertex]
     del current_cluster[change_vertex]
 
-    # Also add the change vertex to add_candidates
-    add_candidates[change_vertex] = to_remove.copy()
+    ################################################
+    # Also add the change vertex to add_candidates #
+    ################################################
+    add_candidates[change_vertex] = to_remove
 
+    #########################################################################
+    # iterate over neighbors of change_vertex, and update each Relationship #
+    #########################################################################
     def update_v(v, edge_weight, collection):
-        collection[v].sum_weight_to -= edge_weight
-        collection[v].sum_weight_from += edge_weight
+        collection[v]._in -= edge_weight
+        collection[v]._out += edge_weight
         collection[v].num_edges_to -= 1
         collection[v].num_edges_from += 1
+        #######################
+        # sanity check
+        #######################
+        thresh = -.001
+        a = collection[v]._in < thresh
+        b = collection[v]._out < thresh
+        c = collection[v].num_edges_to < thresh
+        d = collection[v].num_edges_from < thresh
+        if a or b or c or d:
+            print("oh no %s; %s%s%s%s"%(str(v), a, b, c, d))
+            exit()
 
-    # AFTER this is done, THEN do the following
-    for v in self.graph.hash_graph[
-        change_vertex]:  # iterate over neighbors of change_vertex, and update each Relationship
+    for v in self.graph.hash_graph[change_vertex]:
         edge_weight = self.graph.hash_graph[change_vertex][v]
         # note that v may be in both the current_cluster and in remove_candidates
         if v in remove_candidates:
             update_v(v, edge_weight, remove_candidates)
         if v in current_cluster:
             update_v(v, edge_weight, current_cluster)
-            # TODO: if v is in the current cluster, and is newly also on the boundary, add v to remove_candidates
             if current_cluster[v].num_edges_from == 1:
                 remove_candidates[v] = current_cluster[v].copy()
         if v in add_candidates:
             update_v(v, edge_weight, add_candidates)
-            # TODO: if v in no longer on the boundary after change_vertex is removed from current_cluster, remove v from add_candidates
             if add_candidates[v].num_edges_to == 0:
                 del add_candidates[v]
     return cc_weight_in, cc_weight_out
@@ -546,9 +572,9 @@ def find_best_suboptimal_add(self, add_candidates, current_cluster, cc_weight_in
     best_suboptimal_change = None
     best_suboptimal_change_score = -10000
     for v in add_candidates:
-        numerator = cc_weight_in + add_candidates[v].sum_weight_to
+        numerator = cc_weight_in + add_candidates[v]._in
         denominator = cc_weight_in + cc_weight_out + add_candidates[
-            v].sum_weight_from + self.penalty_value_per_node * (len(current_cluster) + 1)
+            v]._out + self.penalty_value_per_node * (len(current_cluster) + 1)
         proposed_score = numerator / denominator
         if proposed_score > best_suboptimal_change_score:
             best_suboptimal_change = v
@@ -561,9 +587,9 @@ def find_best_suboptimal_add(self, add_candidates, current_cluster, cc_weight_in
         debug("numerator: %s" % str(numerator))
         debug("denominator: %s" % str(denominator))
         debug("current_cluster_weight_in: %s" % str(cc_weight_in))
-        debug("add_candidates[v].sum_weight_to: %s" % str(add_candidates[v].sum_weight_to))
+        debug("add_candidates[v]._in: %s" % str(add_candidates[v]._in))
         debug("current_cluster_weight_out: %s" % str(cc_weight_out))
-        debug("add_candidates[v].sum_weight_from: %s" % str(add_candidates[v].sum_weight_from))
+        debug("add_candidates[v]._out: %s" % str(add_candidates[v]._out))
         debug("len(current_cluster): %s" % str(len(current_cluster)))
         sleep_debug(.25)
     return best_suboptimal_change, best_suboptimal_change_score

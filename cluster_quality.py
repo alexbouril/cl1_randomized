@@ -16,12 +16,14 @@ def cohesiveness(self, list_of_proteins) -> float:
     weight_out = 0
     for source in list_of_proteins:
         for target in self.graph.hash_graph[source]:
+            edge_weight = self.graph.hash_graph[source][target]
             if target in list_of_proteins:
-                weight_in += self.graph.hash_graph[source][target] / 2.0
+                weight_in += edge_weight/2.0
             else:
-                weight_out += self.graph.hash_graph[source][target]
+                weight_out += edge_weight
     # TODO: check that all is good with the calculation
-    return weight_in / (weight_in + weight_out)
+    return weight_in / \
+           ((weight_in + weight_out)+2*len(list_of_proteins))
 
 
 def density(self, list_of_proteins):

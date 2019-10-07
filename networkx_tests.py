@@ -181,16 +181,16 @@ for cs in cluster_states:
             s += "<<< WEIGHT IN: %s>>>\n" \
             "<<< WEIGHT OUT: %s>>>\n" \
             "<<< CONNECTIONS IN: %s>>>\n" \
-            "<<< CONNECTIONS OUT: %s>>>\n"%(str(cs_add_candidates[node_id].sum_weight_to),
-                                                str(cs_add_candidates[node_id].sum_weight_from),
+            "<<< CONNECTIONS OUT: %s>>>\n"%(str(cs_add_candidates[node_id]._in),
+                                                str(cs_add_candidates[node_id]._out),
                                                 str(cs.add_candidates[node_id].num_edges_to),
                                                 str(cs.add_candidates[node_id].num_edges_from))
         else:
             s += "<<< WEIGHT IN: %s>>>\n" \
             "<<< WEIGHT OUT: %s>>>\n" \
             "<<< CONNECTIONS IN: %s>>>\n" \
-            "<<< CONNECTIONS OUT: %s>>>\n"%(str(cs.current_cluster[node_id].sum_weight_to),
-                                                str(cs.current_cluster[node_id].sum_weight_from),
+            "<<< CONNECTIONS OUT: %s>>>\n"%(str(cs.current_cluster[node_id]._in),
+                                                str(cs.current_cluster[node_id]._out),
                                                 str(cs.current_cluster[node_id].num_edges_to),
                                                 str(cs.current_cluster[node_id].num_edges_from))
         node_text.append(('%s, %s # of connections: '%(adjacencies[0], id_to_name[adjacencies[0]])) +str(len(adjacencies[1])) + s)

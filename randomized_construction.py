@@ -76,10 +76,13 @@ def randomized_construction(self):
                         round_no += 1
                         best_change, best_change_score = \
                             careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
+                        # find_best_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
 
                         if best_change:
                             new_cluster = [v for v in current_cluster]+[best_change]
-                            current_score = cohesiveness(self, new_cluster)
+                            current_score_check = cohesiveness(self, new_cluster)
+                            if best_change_score!=current_score_check:
+                                print(abs(best_change_score-current_score_check), best_change_score, current_score_check)
                             # current_score = best_change_score
                             current_cluster_weight_in, current_cluster_weight_out = \
                                 add(self, add_candidates, current_cluster, remove_candidates, best_change,
@@ -180,6 +183,9 @@ def randomized_construction(self):
 
                         if best_change:
                             current_score = best_change_score
+                            current_score_check = cohesiveness(self, [v for v in current_cluster]+[best_change])
+                            if current_score!=current_score_check:
+                                print("----------------",current_score, current_score_check)
                             current_cluster_weight_in, current_cluster_weight_out = \
                                 add(self, add_candidates, current_cluster, remove_candidates, best_change,
                                     best_change_score, current_cluster_weight_in, current_cluster_weight_out)
