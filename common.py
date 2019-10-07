@@ -1,95 +1,228 @@
 import sys
 import heapq
 import numpy as np
+import pickle
 import time
+import pickle
+import datetime
 DEBUG = False
 SLEEP_DEBUG = False
+import numpy
+from cluster_quality import cohesiveness, density
+import os
+import logging
+import pprint as pp
+from scipy.stats import logistic
+
+
+logistic.cdf(10)
+def setup_custom_logger(name):
+    """ Setup logger """
+    LOGGING_FILE_PATH = './logs/cl1_randomized.log'
+
+    if not os.path.exists(os.path.dirname(LOGGING_FILE_PATH)):
+        os.makedirs(os.path.dirname(LOGGING_FILE_PATH), exist_ok=True)
+
+    logging.basicConfig(
+        format='[%(asctime)s] %(name)s %(levelname)s (%(funcName)s) %(message)s',
+        level=logging.DEBUG,
+        handlers=[logging.StreamHandler(),
+                  logging.FileHandler(LOGGING_FILE_PATH, encoding='UTF-8')]
+    )
+
+    return logging.getLogger(name)
+
 
 def debug(*argv):
     if DEBUG:
         for arg in argv:
             print(arg)
 
-def sleep_debug(t):
+def sleep_debug(t, m = ""):
     if SLEEP_DEBUG:
+        print(m)
         time.sleep(t)
+
+def loadData(f_name):
+    # for reading also binary mode is important
+    f = open(f_name, 'rb')
+    obj = pickle.load(f)
+    f.close()
+    return obj
+
+
+def sort_vertices_by_degree(self) -> list:
+    """
+    :return: a sorted list of tuples corresponding to (vertex id, vertex degree)
+    """
+    retval = [[k, len(self.graph.hash_graph[k])] for k in self.graph.hash_graph]
+    retval.sort(key=lambda x: x[1], reverse=True)
+    return retval
+
+def sort_vertices_by_weight(self) -> list:
+    """
+    :return: a sorted list of tuples corresponding to (vertex id, weight)
+    """
+    retval = [[k, sum([self.graph.hash_graph[k][target] for target in self.graph.hash_graph[k]])] for k in self.graph.hash_graph]
+    retval.sort(key=lambda x: x[1], reverse=True)
+    return retval
+
+def jaccard_similarity(a,b):
+    a = set(a.copy())
+    b = set(b.copy())
+    return len(a.intersection(b)) / len(a.union(b))
 
 
 class Relationship:
-    def __init__(self, sum_weight_to:float, num_edges_to:int, sum_weight_from:float, num_edges_from:int):
-        self.sum_weight_to = sum_weight_to
+    def __init__(self, _in:float, num_edges_to:int, _out:float, num_edges_from:int):
+        self._in = _in
         self.num_edges_to = num_edges_to
-        self.sum_weight_from = sum_weight_from
+        self._out = _out
         self.num_edges_from = num_edges_from
 
     def copy(self):
-        return Relationship(self.sum_weight_to, self.num_edges_to, self.sum_weight_from, self.num_edges_from)
+        return Relationship(self._in, self.num_edges_to, self._out, self.num_edges_from)
 
-class Graph:
-    #  expects a file with every line as:
-    # source_name target_name weight
-    def __init__(self, original_filename):
-        self.original_filename = original_filename
-        self.list_of_names = self.get_list_of_names()
-        self.num_proteins = len(self.list_of_names)
-        self.name_to_id, self.id_to_name  = self.original_protein_names_to_integer_id()
-        self.new_filename = self.original_filename.split(".")[0]+"_translated."+self.original_filename.split(".")[1]
-        self.translate_graph_original_names_to_id()
-        self.hash_graph, self.num_edges = self.create_hash_graph_weighted()
+    def stringify(self):
+        s=""
+        s+="weight_to: "+ str(self._in) +"\t"
+        s+="weight_from: "+ str(self._out)+"\n"
+        s+="num_edges_to: "+ str(self.num_edges_to)+"\t"
+        s+="num_edges_from: "+ str(self.num_edges_from)+"\n"
+        return s
 
-    def create_hash_graph_weighted(self):
-        h={}
-        f = open(self.new_filename, "r")
-        num_edges = 0
-        for line in f.readlines():
-            num_edges+=1
-            source, target, weight = line.split()
-            source = int(source)
-            target = int(target)
-            weight = float(weight)
-            if source in h:
-                h[source][target] = weight
+
+class ClusterState:
+    def __init__(self, current_cluster, add_candidates, remove_candidates, cohesiveness, neighborhood_2=None, neighborhood_3=None):
+        self.current_cluster = current_cluster.copy()
+        self.current_cluster = copy_relationship_dictionary(current_cluster)
+        self.add_candidates = add_candidates.copy()
+        self.add_candidates = {rel:add_candidates[rel].copy() for rel in add_candidates}
+        self.remove_candidates = remove_candidates.copy()
+        self.remove_candidates = {rel:remove_candidates[rel].copy() for rel in remove_candidates}
+        self.cohesiveness = cohesiveness
+        self.neighborhood_2 = neighborhood_2
+        self.neighborhood_3 = neighborhood_3
+
+    def stringify_heavy(self, graph):
+        s=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
+        s+=f"CURRENT_COHESIVENESS: {self.cohesiveness}\n"
+        s += "\n"
+        s+="**************************************\n"
+        s += "********** CURRENT CLUSTER: **********\n"
+        s+="**************************************\n"
+        s += "\n"
+        for protein in self.current_cluster:
+            s+=str(protein)+", "+graph.id_to_name[protein]+"\n"
+            s+=self.current_cluster[protein].stringify()
+        s += "\n"
+        s += "*************************************\n"
+        s+="********** ADD CANDIDATES: **********\n"
+        s+="*************************************\n"
+        s += "\n"
+
+        for protein in self.add_candidates:
+            s+=str(protein)+", "+graph.id_to_name[protein]+"\n"
+            s+=self.add_candidates[protein].stringify()
+        s+="\n"
+        s+="****************************************\n"
+        s+="********** REMOVE CANDIDATES: **********\n"
+        s+="****************************************\n"
+        s += "\n"
+
+        for protein in self.remove_candidates:
+            s+=str(protein)+", "+graph.id_to_name[protein]+"\n"
+            s+=self.remove_candidates[protein].stringify()
+        s+=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
+        return s
+
+
+    def stringify_lite(self):
+        s=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
+        s+=f"CURRENT_COHESIVENESS: {self.cohesiveness}\n"
+        s += "********** CURRENT CLUSTER: **********\n"
+        s+= str([protein for protein in self.current_cluster])+"\n"
+        s+="********** ADD CANDIDATES : **********\n"
+        s+= str([protein for protein in self.add_candidates]) +"\n"
+        s+="********** REMOVE CANDIDATES: **********\n"
+        s+= str([protein for protein in self.remove_candidates]) +"\n"
+        s+=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
+        return s
+
+
+
+
+
+class Action:
+    def __init__(self, action_name, involved_node = None):
+        self.action_name = action_name
+        self.involved_node  = involved_node
+
+    def stringify(self):
+        s=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
+        if self.action_name:
+            s+=f"ACTION: {str(self.action_name)}\n"
+        if self.involved_node:
+            s+=f"INVOLVED NODE: {str(self.involved_node)}\n"
+        s+=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
+
+        return s
+
+
+
+def stringify_construction_log(construction_log, verbose = False, graph = None):
+    s = ""
+    for key in construction_log:
+        s += "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ NEW CLUSTER @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"
+        s+=str(key)+"\n"
+        for entry in construction_log[key]:
+            if type(entry) == ClusterState:
+                if verbose:
+                    s += entry.stringify_heavy(graph)
+                else:
+                    s += entry.stringify_lite()
+            if type(entry) == Action:
+                s+=entry.stringify()
+        s+= "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ END CLUSTER @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"
+
+    return s
+
+def stringify_single_cluster_construction_log(construction_log, cluster_key, verbose = False, graph = None):
+    s = ""
+    s += "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ NEW CLUSTER @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"
+    s += str(cluster_key) + "\n"
+    for entry in construction_log[cluster_key]:
+        if type(entry) == ClusterState:
+            if verbose:
+                s+= entry.stringify_heavy(graph)
             else:
-                h[source] = {target: weight}
-            if target in h:
-                h[target][source] = weight
-            else:
-                h[target] = {source: weight}
-        return h, num_edges
+                s += entry.stringify_lite()
+        if type(entry) == Action:
+            s += entry.stringify()
+    s += "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ END CLUSTER @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"
+    return s
 
-    #  expects a file with every line as:
-    # source_id_int target_id_int weight
-    def get_list_of_names(self):
-        f = open(self.original_filename, "r")
-        li = []
-        for line in f.readlines():
-            source, target, weight = line.split()
-            if source not in li:
-                li.append(source)
-            if target not in li:
-                li.append(target)
-        return li
 
-    # input:
-    #   list_protein_names: a list of protein names
-    # output:
-    #   name_to_id: a dict that has original names mapped to new protein id numbers
-    #   id_to_name: a dict that has protein id numbers mapped to a value of an original name
-    def original_protein_names_to_integer_id(self):
-        name_to_id = {}
-        id_to_name = {}
-        for id, name in enumerate(self.list_of_names):
-            name_to_id[name] = id
-            id_to_name[id] = name
-        return name_to_id, id_to_name
+def copy_relationship_dictionary(rd):
+    return {rel:rd[rel].copy() for rel in rd}
 
-    def translate_graph_original_names_to_id(self):
-        new_file = open(self.new_filename,"w+")
-        old_file = open(self.original_filename, "r")
-        for line in old_file.readlines():
-            source, target, weight = line.split()
-            source = self.name_to_id[source]
-            target = self.name_to_id[target]
-            new_file.write(str(source)+"\t"+str(target)+"\t"+weight+"\n")
-        old_file.close()
-        new_file.close()
+
+def get_quality(gold_standard_filename, output_filename):
+    import subprocess
+    res = subprocess.check_output(["python2",
+                                   "cl1_reproducibility/reproducibility/scripts/match_standalone.py",
+                                   gold_standard_filename,
+                                   output_filename])
+    for line in res.splitlines():
+        print(line)
+        # a = str(line)
+        # a = a.replace("b", "").replace("=", "").replace("\'", "").split()
+
+
+def nice_comment(comment):
+    bound = ""
+    for i in range(len(comment)+6):
+        bound+="#"
+    bound+="\n"
+    s = bound + "#  " + comment + "  #\n" + bound
+    return(s)

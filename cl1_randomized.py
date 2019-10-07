@@ -1,21 +1,26 @@
+from __init__ import *
 from common import *
-import numpy
+from graph import Graph
+from randomized_construction import randomized_construction
+from original_construction import oc
 import sys
 import math
-#TODO: make the not care about cuts option work for original_construction()
-#TODO: make the bad_adds option work for randomized_construction()
+
+#TODO implement find 1, 2, 3 neighborhood of current cluster
+#TODO implement add based on cohesiveness of 2 neighborhood
+#TODO graph cluster with their 1,2,3 neighborhoods in the background
+#TODO Fix object saving
+
+#TODO try merging a run of add_shake enabled with a run of add_shake disabled
+
+
+#TODO: make the random proportional bad_adds option work for randomized_construction()
 #TODO: check if Cl1 are always connected, in original implementation, and in my implementation
+#TODO: check if Cl1 found are similar to my found
 #TODO: figure out why found and not_found have added cardinality larger than gsc_appearing_in_dataset when the threshold is less than 1
-
-
-def jaccard_similarity(l1:list, l2:list)->float:
-    set1 = set(l1)
-    set2 = set(l2)
-    numerator = len(set1.intersection(set2))
-    denominator = len(set1.union(set2))
-    return numerator/denominator
-
-
+#TODO: figure out how sensitive the clusters are to the choice of seeds
+#TODO: figure out which complexes are missed by my algo
+#TODO: multi-pass merger
 
 
 class CL1_Randomized:
@@ -23,44 +28,77 @@ class CL1_Randomized:
                  base_file_path,
                  original_graph_filename,
                  quality_function_name,
-                 output_filename="unnamed.txt",
                  density_threshold = .3,
                  merge_threshold = .8,
                  penalty_value_per_node = 2,
                  randomized_construction_bool= False,
+                 rng_seed = None,
+                 number_of_shakes = 0,
                  number_of_bad_adds = 0,
                  bad_add_probability = 0,
+                 add_with_proportional_probability = False,
                  sort_seeds_by="degree",
                  care_about_cuts=True,
                  seed_from_all = False,
                  gsc_appearance_ratio_threshold=1,
+                 gsc_appearance_density_threshold = 0,
                  found_gsc_jaccard_threshold = 1,
                  gold_standard_filename = ""):
+        self.time_of_run = str(datetime.datetime.now()).replace(" ","_").replace(".",":")
+        self.run_title = original_graph_filename.replace(".txt", "")+"+"+self.time_of_run
+        self.argument_dict = locals()
+
+        ############################################################
+        # STORE ARGUMENTS
+        ############################################################
         self.base_file_path = base_file_path
         self.graph = Graph(base_file_path+"/"+original_graph_filename)
-        self.vertices_by_degree = self.sort_vertices_by_degree()
-        self.vertices_by_weight = self.sort_vertices_by_weight()
+
+        print("size of graph in bytes: %s"%str(sys.getsizeof(self.graph.hash_graph)))
+        print("number of nodes: %s"%str(self.graph.num_proteins))
+        print("number of edges: %s"%str(self.graph.num_edges))
+
+        self.vertices_by_degree = sort_vertices_by_degree(self)
+        self.vertices_by_weight = sort_vertices_by_weight(self)
         self.quality_function_name = quality_function_name
-        self.output_filename = output_filename
+        self.output_filename = "complexes+" + self.run_title+".txt"
         self.density_threshold = density_threshold
         self.merge_threshold = merge_threshold
         self.penalty_value_per_node = penalty_value_per_node
         self.randomized_construction_bool = randomized_construction_bool
+        self.rng_seed = rng_seed
+        numpy.random.seed(rng_seed)
+        self.rng_initial_state = numpy.random.get_state()
+        self.number_of_shakes = number_of_shakes
         self.number_of_bad_adds = number_of_bad_adds
         self.bad_add_probability = bad_add_probability
+        # TODO implement the feature of adding with proportional probability
+        self.add_with_proportional_probability = add_with_proportional_probability
         self.sort_seeds_by = sort_seeds_by
         self.care_about_cuts = care_about_cuts
         self.seed_from_all = seed_from_all
         self.gsc_appearance_ratio_threshold = gsc_appearance_ratio_threshold
+        # TODO implement the density threshold for gsc appearance
+        self.gsc_appearance_density_threshold = gsc_appearance_density_threshold
         self.found_gsc_jaccard_threshold = found_gsc_jaccard_threshold
         self.gold_standard_filename = gold_standard_filename
 
-        # the gold standard complexes whose entire set of proteins appear in the dataset
+        ############################################################
+        # SET UP THE LOGGER
+        ############################################################
+        self.logger = setup_custom_logger('cl1_randomized')
+        self.logger.info(f'(RUN:{self.run_title}) Starting cl1_randomized v{__version__} ({__status__}) [{__website__}]')
+
+        ############################################################
+        # OUTPUTS OF CALCULATIONS
+        ############################################################
         # TODO: prune gold_standard_complexes_appearing_in_dataset if it is unlikely that is "SHOULD" be detected by algorithm
+        # the gold standard complexes whose entire set of proteins appear in the dataset
         self.gold_standard_complexes_appearing_in_dataset = list()
         self.gold_standard_complexes = list()
-        self.clustering = list()
-        self.cluster_list = list()
+        self.initial_clustering = list()
+        self.initial_clustering_seeds = list()
+        self.initial_cluster_list = list()
         self.merged_cluster_list = list()
         self.sizeThreshold_merged_cluster_list = list()
         self.densityThreshold_sizeThreshold_merged_cluster_list = list()
@@ -68,826 +106,656 @@ class CL1_Randomized:
         self.found = []
         # the gold standard complexes appearing in the dataset that were not found by the algorithm
         self.not_found = []
+        self.quality_report = {}
+        self.final_clusters_stats = dict()
+        self.gsc_appearing_stats = dict()
+        self.gsc_appearing_found_stats = dict()
+        self.gsc_appearing_notFound_stats = dict()
 
-    def sort_vertices_by_degree(self):
-        retval = [[k, len(self.graph.hash_graph[k])] for k in self.graph.hash_graph]
-        retval.sort(key=lambda x: x[1], reverse=True)
-        return retval
+        ############################################################
+        # STORE INFORMATION ABOUT STATES OF CLUSTER DURING CONSTRUCTION
+        ############################################################
+        self.construction_log = dict()
 
-    def sort_vertices_by_weight(self):
-        retval = [[k, sum([self.graph.hash_graph[k][target] for target in self.graph.hash_graph[k]])] for k in self.graph.hash_graph]
-        retval.sort(key=lambda x: x[1], reverse=True)
-        return retval
+        ############################################################
+        # RUN THE ALGORITHM
+        ############################################################
+        self.process()
 
-    def get_clusters(self):
-        clusters = []
-        for cluster in self.clustering:
-            clusters.append([vertex for vertex in cluster])
-        return clusters
-
-    def make_cluster_list(self):
-        self.cluster_list = [set(cluster) for cluster in self.get_clusters()]
-
-    def write_final_clusters(self):
-        f = open(self.base_file_path+"/"+ self.output_filename, "w+")
-        counter = 1
-        for cluster in self.densityThreshold_sizeThreshold_merged_cluster_list:
-            s = ""
-            for id in cluster:
-                s+=self.graph.id_to_name[id]+"\t"
-            print("Cluster #%s: "%str(counter),len(cluster), " proteins")
-            print(s)
-            f.write(s + "\n")
-            counter+=1
-        f.close()
-
-    def get_quality(self):
-        import subprocess
-        res = subprocess.check_output(["python2",
-                                       "cl1_reproducibility/reproducibility/scripts/match_standalone.py",
-                                       self.gold_standard_filename,
-                                       self.base_file_path +"/"+self.output_filename])
-        for line in res.splitlines():
-            print(line)
-
-    def sizeThreshold(self):
-        self.sizeThreshold_merged_cluster_list = [cluster for cluster in self.merged_cluster_list if len(cluster) > 2]
-
-    def densityThreshold(self):
-
-        def checkDensity(cluster_set):
-            in_weight=0
-            for source in cluster_set:
-                for target in self.graph.hash_graph[source]:
-                    if target in cluster_set:
-                        in_weight+=self.graph.hash_graph[source][target]
-            n = len(cluster_set)
-            # TODO: check that authors didn't mean n* (n+1)/2
-            denominator = (n * (n-1)) /2
-            return in_weight/denominator
-
-        for cluster_set in self.sizeThreshold_merged_cluster_list:
-            density = checkDensity(cluster_set)
-            if density>self.density_threshold:
-                self.densityThreshold_sizeThreshold_merged_cluster_list.append(cluster_set)
-        return "Dummy"
 
     def process(self):
+        ############################################################
+        # INITIAL CONSTRUCTION
+        ############################################################
         if self.randomized_construction_bool:
-            self.randomized_construction()
+            randomized_construction(self)
         else:
-            self.original_construction()
-        self.make_cluster_list()
-        self.merger()
-        self.sizeThreshold()
-        self.densityThreshold()
-        self.write_final_clusters()
-        self.gold_standard_complex_appearance()
-        self.found_gsc()
-        self.not_found_gsc()
-        print("################ FOUND AND UNFOUND GSC DETAILS #######################")
-        self.found_and_unfound_details()
-        print("################ QUALITY #######################")
-        self.get_quality()
+            oc(self)
+
+        ############################################################
+        # GET THE INITIAL CLUSTER LIST
+        ############################################################
+        #TODO document better what the point of this step is
+        def make_initial_cluster_list():
+            # TODO: rid redundant work
+            def get_initial_clusters():
+                clusters = []
+                for cluster in self.initial_clustering:
+                    clusters.append([vertex for vertex in cluster])
+                return clusters
+
+            self.initial_cluster_list = [set(cluster) for cluster in get_initial_clusters()]
+        make_initial_cluster_list()
+
+        ############################################################
+        # MERGE THE INITIAL CLUSTERS
+        ############################################################
+        def merger():  # takes a list of clusters
+            threshold = self.merge_threshold
+            hash_graph = dict()
+
+            def similarity(A, B):
+                """Implements the overlap score described in the paper
+
+                :param A: a set
+                :param B: a set
+                :return: the overlap score
+                """
+                numerator = len(A.intersection(B)) ** 2
+                denominator = len(A) * len(B)
+                return numerator / denominator
+
+            def dfs(index, local_visited):
+                local_visited.add(index)
+                for neigbor in hash_graph[index]:
+                    if neigbor not in local_visited:
+                        dfs(neigbor, local_visited)
+
+            for i in range(len(self.initial_cluster_list)):
+                if i not in hash_graph:
+                    hash_graph[i] = set()
+                for j in range(i + 1, len(self.initial_cluster_list)):
+                    if similarity(self.initial_cluster_list[i], self.initial_cluster_list[j]) > threshold:
+                        if i in hash_graph:
+                            hash_graph[i].add(j)
+                        else:
+                            hash_graph[i] = {j}
+                        if j in hash_graph:
+                            hash_graph[j].add(i)
+                        else:
+                            hash_graph[j] = {i}
+
+            global_visited = set()
+            merge_indices = list()
+            for index in range(len(self.initial_cluster_list)):
+                if index not in global_visited:
+                    local_visited = set()
+                    dfs(index, local_visited)
+                    # TODO: is the copy necessary?
+                    merge_indices.append(local_visited.copy())
+                    for reached in local_visited:
+                        global_visited.add(reached)
+
+            new_clusters = list()
+            for group in merge_indices:
+                new_cluster = set()
+                for cluster_index in group:
+                    new_cluster = new_cluster.union(self.initial_cluster_list[cluster_index])
+                new_clusters.append(new_cluster)
+
+            self.merged_cluster_list = new_clusters
+
+        merger()
+
+        ############################################################
+        # THRESHOLD BASED ON SIZE
+        ############################################################
+        def sizeThreshold():
+            self.sizeThreshold_merged_cluster_list = [cluster for cluster in self.merged_cluster_list if
+                                                      len(cluster) > 2]
+
+        sizeThreshold()
+
+        ############################################################
+        # THRESHOLD BASED ON DENSITY
+        ############################################################
+        def densityThreshold():
+            def checkDensity(cluster_set):
+                in_weight = 0
+                for source in cluster_set:
+                    for target in self.graph.hash_graph[source]:
+                        if target in cluster_set:
+                            in_weight += self.graph.hash_graph[source][target]
+                n = len(cluster_set)
+                # TODO: check that authors didn't mean n* (n+1)/2
+                denominator = (n * (n - 1)) / 2
+                return in_weight / denominator
+
+            for cluster_set in self.sizeThreshold_merged_cluster_list:
+                density = checkDensity(cluster_set)
+                if density > self.density_threshold:
+                    self.densityThreshold_sizeThreshold_merged_cluster_list.append(cluster_set)
+            return "Dummy"
+
+        densityThreshold()
+
+        ############################################################
+        # WRITE THE FINAL RESULT INTO A TEXT FILE
+        ############################################################
+        def write_final_clusters():
+            f = open("complexes/" + self.output_filename, "w+")
+            counter = 1
+            for cluster in self.densityThreshold_sizeThreshold_merged_cluster_list:
+                s = ""
+                for id in cluster:
+                    s += self.graph.id_to_name[id] + "\t"
+                print("Cluster #%s: " % str(counter), len(cluster), " proteins")
+                print(s)
+                f.write(s + "\n")
+                counter += 1
+            f.close()
+
+        write_final_clusters()
 
 
-    def gold_standard_complex_appearance(self,gold_standard_filename=""):
-        if gold_standard_filename:
-            gsf = gold_standard_filename
-        else:
-            gsf = self.gold_standard_filename
+        ############################################################
+        # DETERMINE WHICH GOLD STANDARD COMPLEXES APPEAR IN CURRENT DATASET
+        ############################################################
+        def gold_standard_complex_appearance(gold_standard_filename=""):
+            if gold_standard_filename:
+                gsf = gold_standard_filename
+            else:
+                gsf = self.gold_standard_filename
+            f = open(gsf, "r")
+            li = []
+            counter = 0
+            for line in f.readlines():
+                complex = line.split()
+                li.append(complex)
+                counter += 1
+            self.gold_standard_complexes = li
+            intermediate = []
+            for complex in li:
+                complex_appears = True
+                proteins_from_current_gsc_found_in_dataset = []
+                for protein in complex:
+                    if protein not in self.graph.name_to_id:
+                        complex_appears = False
+                    else:
+                        proteins_from_current_gsc_found_in_dataset.append(protein)
+                if complex_appears:
+                    intermediate.append(complex)
+                elif len(proteins_from_current_gsc_found_in_dataset) / float(
+                        len(complex)) >= self.gsc_appearance_ratio_threshold and len(
+                        proteins_from_current_gsc_found_in_dataset) >= 3:
+                    intermediate.append(proteins_from_current_gsc_found_in_dataset)
+            final = []
+            for complex in intermediate:
+                current = []
+                for protein in complex:
+                    current.append(self.graph.name_to_id[protein])
+                final.append(current)
+            self.gold_standard_complexes_appearing_in_dataset = final
+            return final
 
-        f = open(gsf, "r")
-        li = []
-        counter = 0
-        for line in f.readlines():
-            complex = line.split()
-            li.append(complex)
-            counter+=1
-        self.gold_standard_complexes = li
-        intermediate = []
-        for complex in li:
-            complex_appears = True
-            proteins_from_current_gsc_found_in_dataset = []
-            for protein in complex:
-                if protein not in self.graph.name_to_id:
-                    complex_appears=False
-                else:
-                    proteins_from_current_gsc_found_in_dataset.append(protein)
-            if complex_appears:
-                intermediate.append(complex)
-            elif len(proteins_from_current_gsc_found_in_dataset)/float(len(complex)) >= self.gsc_appearance_ratio_threshold and len(proteins_from_current_gsc_found_in_dataset)>=3:
-                intermediate.append(proteins_from_current_gsc_found_in_dataset)
+        gold_standard_complex_appearance()
 
 
-        final=[]
-        for complex in intermediate:
-            current = []
-            for protein in complex:
-                current.append(self.graph.name_to_id[protein])
-            final.append(current)
-        self.gold_standard_complexes_appearing_in_dataset = final
-        return final
+        ############################################################
+        # DETERMINE WHICH APPEARING GSC ARE FOUND BY ALGORITHM
+        ############################################################
+        def found_gsc():
+            retval = []
+            for A in self.gold_standard_complexes_appearing_in_dataset:
+                for B in self.densityThreshold_sizeThreshold_merged_cluster_list:
+                    if jaccard_similarity(A, B) >= self.found_gsc_jaccard_threshold:
+                        retval.append(A)
+            self.found = retval
+            return retval
+
+        found_gsc()
 
 
-    def found_gsc(self):
-        retval = []
-        for A in self.gold_standard_complexes_appearing_in_dataset:
-            for B in self.densityThreshold_sizeThreshold_merged_cluster_list:
-                if jaccard_similarity(A,B) >= self.found_gsc_jaccard_threshold:
+
+        ############################################################
+        # DETERMINE WHICH GSC APPEARING IN DATASET ARE NOT FOUND BY ALGORITHM
+        ############################################################
+        def not_found_gsc():
+            retval = []
+            for A in self.gold_standard_complexes_appearing_in_dataset:
+                found = False
+                for B in self.densityThreshold_sizeThreshold_merged_cluster_list:
+                    if jaccard_similarity(A, B) >= self.found_gsc_jaccard_threshold:
+                        found = True
+                if not found:
                     retval.append(A)
-        self.found = retval
-        return retval
-
-    def not_found_gsc(self):
-        retval = []
-        for A in self.gold_standard_complexes_appearing_in_dataset:
-            found = False
-            for B in self.densityThreshold_sizeThreshold_merged_cluster_list:
-                if jaccard_similarity(A,B) >= self.found_gsc_jaccard_threshold:
-                    found = True
-            if not found:
-                retval.append(A)
-        self.not_found = retval
-        return retval
-
-    def found_and_unfound_details(self):
-        print("FOUND")
-        cohesiveness_tot = 0
-        density_tot = 0
-        length_tot = 0
-        for c in self.found:
-            c_cohesiveness = self.cohesiveness(c)
-            cohesiveness_tot += c_cohesiveness
-            c_density = self.density(c)
-            density_tot += c_density
-            length_tot += len(c)
-            print(c)
-            print(len(c), c_cohesiveness, c_density, len(c))
-        c1 = cohesiveness_tot / float(len(self.found))
-        d1 = density_tot / float(len(self.found))
-        l1 = length_tot / float(len(self.found))
-        print("--------------------------------------")
-
-        print("NOT FOUND")
-        cohesiveness_tot = 0
-        density_tot = 0
-        length_tot = 0
-        for c in self.not_found:
-            c_cohesiveness = self.cohesiveness(c)
-            cohesiveness_tot += c_cohesiveness
-            c_density = self.density(c)
-            density_tot += c_density
-            length_tot += len(c)
-            print(c)
-            print(len(c), c_cohesiveness, c_density, len(c))
-        c2 = cohesiveness_tot / float(len(self.not_found))
-        d2 = density_tot / float(len(self.not_found))
-        l2 = length_tot / float(len(self.not_found))
-        print("--------------------------------------")
-        print("GSC appearing in dataset: ", len(self.gold_standard_complexes_appearing_in_dataset))
-        print("found: ", len(self.found))
-        print("not found: ", len(self.not_found))
-        print("average cohesiveness of found= ", c1)
-        print("average density of found= ", d1)
-        print("average length of found= ", l1)
-        print("average cohesiveness of NOT found= ", c2)
-        print("average density of NOT found= ", d2)
-        print("average length of NOT found= ", l2)
-        print(len(self.gold_standard_complexes), " reference complexes")
-        print(len(self.gold_standard_complexes_appearing_in_dataset), " appear in the dataset")
-
-    def cohesiveness(self, list_of_proteins):
-        weight_in = 0
-        weight_out = 0
-        for source in list_of_proteins:
-            for target in self.graph.hash_graph[source]:
-                if target in list_of_proteins:
-                    weight_in += self.graph.hash_graph[source][target] /2.0
-                else:
-                    weight_out += self.graph.hash_graph[source][target]
-        return weight_in/(weight_in + weight_out)
-
-    def density(self, list_of_proteins):
-        in_weight = 0
-        for source in list_of_proteins:
-            for target in self.graph.hash_graph[source]:
-                if target in list_of_proteins:
-                    in_weight += self.graph.hash_graph[source][target]
-        n = len(list_of_proteins)
-        # TODO: check that authors didn't mean n* (n+1)/2
-        denominator = (n * (n - 1)) / 2
-        return in_weight / denominator
-
-    def modularity(self, list_of_proteins):
-        return 1
-
-
-
-    def original_construction(self):
-
-        def dfs(current_vertex, ignore_vertex, current_cluster_membership_hashset, visited):
-            visited.add(current_vertex)
-            for neighbor in self.graph.hash_graph[current_vertex]:
-                if neighbor not in current_cluster_membership_hashset:
-                    continue
-                elif neighbor in visited:
-                    continue
-                elif neighbor == ignore_vertex:
-                    continue
-                else:
-                    dfs(neighbor, ignore_vertex, current_cluster_membership_hashset, visited)
-
-        considered_vertices = set()
-        index = 0
-        while index < len(self.vertices_by_degree):
-            current_seed = self.vertices_by_degree[index][0]
-            current_seed_degree = self.vertices_by_degree[index][1]
-            debug("current_seed: ", current_seed)
-            debug("current_seed_degree: ", current_seed_degree)
-            if current_seed in considered_vertices:
-                debug("SKIP %s"%str(current_seed))
-                index+=1
-                continue
-            else:
-                debug("Starting cluster #%s"%str(len(self.clustering)))
-                # time.sleep(3)
-                # TODO: ignore vertices that have been removed before during construction of current cluster
-                ignore_vertices = set()
-
-                # initialize the current cluster starting with the selected seed
-                current_cluster = dict()
-                weight_to = 0
-                num_edges_to = 0
-                weight_from = sum([self.graph.hash_graph[current_seed][tar] for tar in self.graph.hash_graph[current_seed]])
-                num_edges_from = len(self.graph.hash_graph[current_seed])
-                current_cluster[current_seed] = Relationship(weight_to, num_edges_to, weight_from, num_edges_from)
-                current_score = 0
-                current_cluster_weight_in = 0
-                current_cluster_weight_out = weight_from
-                # initalize the candidates for removal
-                remove_candidates = dict()
-                remove_candidates[current_seed] = Relationship(weight_to, num_edges_to, weight_from, num_edges_from)
-
-                # initialize the candidates for addition
-                add_candidates = dict()
-                for target in self.graph.hash_graph[current_seed]:
-                    weight_to = self.graph.hash_graph[current_seed][target]
-                    num_edges = len(self.graph.hash_graph[target])
-                    num_edges_to = 1
-                    num_edges_from = num_edges - num_edges_from
-                    weight_from = sum([self.graph.hash_graph[target][tar] for tar in self.graph.hash_graph[target] if tar != current_seed])
-                    add_candidates[target] = Relationship(weight_to, num_edges_to, weight_from, num_edges_from)
-
-
-                improvement_flag=True
-
-                while improvement_flag and (add_candidates or remove_candidates):
-                    improvement_flag = False
-
-                    # Consider ADDING a vertex on the boundary
-                    #
-                    #
-                    #
-                    best_change = None
-                    best_change_score = current_score
-                    for v in add_candidates:
-                        numerator = current_cluster_weight_in + add_candidates[v].sum_weight_to
-                        denominator = current_cluster_weight_in + current_cluster_weight_out + add_candidates[v].sum_weight_from + self.penalty_value_per_node * (len(current_cluster)+1)
-
-                        proposed_score = numerator / denominator
-
-                        if proposed_score>best_change_score:
-                            best_change = v
-                            best_change_score = proposed_score
-                        debug("##################### ADD Consideration ########################")
-                        debug("v: %s"%str(v))
-                        debug("proposed_score: %s"% str(proposed_score))
-                        debug("best_change_score: %s"%str(best_change_score))
-                        debug("best_change: %s"%str(best_change))
-                        debug("numerator: %s" %str(numerator))
-                        debug("denominator: %s" %str(denominator))
-                        debug("current_cluster_weight_in: %s"%str(current_cluster_weight_in))
-                        debug("add_candidates[v].sum_weight_to: %s"%str(add_candidates[v].sum_weight_to))
-                        debug("current_cluster_weight_out: %s"%str(current_cluster_weight_out))
-                        debug("add_candidates[v].sum_weight_from: %s"%str(add_candidates[v].sum_weight_from))
-                        sleep_debug(.25)
-
-                    if best_change:
-                        debug("\n", "ADD: %s" %str(best_change), "best_change_score: %s"%str(best_change_score), "\n")
-                        improvement_flag = True
-
-                        # update the current_cluster 's score
-                        current_score = best_change_score
-                        # update the overall weight into and out of the current_cluster
-                        current_cluster_weight_in += add_candidates[best_change].sum_weight_to
-                        current_cluster_weight_out += add_candidates[best_change].sum_weight_from
-
-                        # Move the change vertex from add_candidates to current_cluster
-                        to_add = add_candidates[best_change].copy()
-                        current_cluster[best_change] = to_add
-                        del add_candidates[best_change]
-
-                        # Also add the change vertex to remove_candidates if applicable
-                        if to_add.num_edges_from:
-                            remove_candidates[best_change] = to_add
-
-                        for v in self.graph.hash_graph[best_change]:     # iterate over neighbors of best_change, and update each Relationship
-                            edge_weight = self.graph.hash_graph[best_change][v]
-                            if v in add_candidates:
-                                add_candidates[v].sum_weight_to = edge_weight + add_candidates[v].sum_weight_to
-                                add_candidates[v].sum_weight_from = -1 * edge_weight + add_candidates[v].sum_weight_from
-                                add_candidates[v].num_edges_to = 1 + add_candidates[v].num_edges_to
-                                add_candidates[v].num_edges_from = -1 + add_candidates[v].num_edges_from
-                            if v in current_cluster:
-                                current_cluster[v].sum_weight_to = edge_weight + current_cluster[v].sum_weight_to
-                                current_cluster[v].sum_weight_from = -1 * edge_weight + current_cluster[v].sum_weight_from
-                                current_cluster[v].num_edges_to = 1 + current_cluster[v].num_edges_to
-                                current_cluster[v].num_edges_from = -1 + current_cluster[v].num_edges_from
-                            # note that v may be in both the current_cluster and in remove_candidates
-                            # remove_candidates is a subset of current_cluster
-                            if v in remove_candidates:
-                                remove_candidates[v].sum_weight_to = edge_weight + remove_candidates[v].sum_weight_to
-                                remove_candidates[v].sum_weight_from = -1 * edge_weight + remove_candidates[v].sum_weight_from
-                                remove_candidates[v].num_edges_to = 1 + remove_candidates[v].num_edges_to
-                                remove_candidates[v].num_edges_from = -1 + remove_candidates[v].num_edges_from
-                                # Check that a candidate for removal is still on the boundary
-                                if remove_candidates[v].num_edges_from == 0:
-                                    del remove_candidates[v]
-                            # handle the case that v is on the new boundary
-                            # add v to add_candidates
-                            if v not in add_candidates and v not in current_cluster:
-                                num_edges_to = 0
-                                weight_to = 0
-                                num_edges_from = 0
-                                weight_from = 0
-                                for v_prime in self.graph.hash_graph[v]:
-                                    weight_prime = self.graph.hash_graph[v][v_prime]
-                                    if v_prime in current_cluster:
-                                        num_edges_to+=1
-                                        weight_to+=weight_prime
-                                    else:
-                                        num_edges_from+=1
-                                        weight_from+=weight_prime
-                                add_candidates[v] = Relationship(weight_to, num_edges_to, weight_from, num_edges_from)
-
-                    else:
-                        debug("\n","No improvement by ADDING", "\n")
-
-                    # sleep_debug(1)
-
-                    # Consider REMOVING a vertex on the boundary
-                    #
-                    #
-                    #
-                    # check that
-                    #   (1) the cluster has more than one element
-                    if len(current_cluster) > 1:
-                        best_change = None
-                        best_change_score = current_score
-                        current_cluster_membership_hashset = [vertex for vertex in current_cluster]
-                        for v in remove_candidates:
-                            # TODO: check if there is a cut.
-                            #   Implement more efficiently using a Dynamic Connectivity algorithm
-                            is_a_cut = True
-                            visted = set()
-                            start_point = None
-                            for potential_start_point in current_cluster_membership_hashset:
-                                if potential_start_point != v:
-                                    start_point = potential_start_point
-                                    # consider break statement here
-                            # check that
-                            #   (2) removal of vertex under consideration will not disconnect cluster
-                            debug("DFS starting vertex: %s"%str(start_point), "DFS ignore vertex: %s"%str(v))
-                            dfs(start_point, v,  current_cluster_membership_hashset, visted)
-                            debug("=============================")
-                            if len(visted) == -1 + len(current_cluster_membership_hashset):
-                                is_a_cut = False
-                                debug("%s is NOT a CUT"%str(v))
-                            if is_a_cut:
-                                debug("%s is a CUT!" % str(v))
-                            debug("cluster: %s"% str(current_cluster_membership_hashset))
-                            debug("visited by DFS: %s"%str(visted))
-                            sleep_debug(.25)
-                            if not is_a_cut:
-                                # TODO: check that this makes sense
-                                numerator = current_cluster_weight_in - remove_candidates[v].sum_weight_to
-                                denominator = current_cluster_weight_in + current_cluster_weight_out - remove_candidates[v].sum_weight_from + self.penalty_value_per_node * (len(current_cluster)-1)
-                                proposed_score = numerator / denominator
-                                if proposed_score>best_change_score:
-                                    best_change = v
-                                    best_change_score = proposed_score
-                                debug("##################### REMOVE Consideration ########################")
-                                debug("v: %s"%str(v))
-                                debug("proposed_score: %s" % str(proposed_score))
-                                debug("best_change_score: %s" % str(best_change_score))
-                                debug("best_change: %s" % str(best_change))
-                                debug("numerator: %s" % str(numerator))
-                                debug("denominator: %s" % str(denominator))
-                                debug("current_cluster_weight_in: %s" % str(current_cluster_weight_in))
-                                debug("remove_candidates[v].sum_weight_to: %s" % str(remove_candidates[v].sum_weight_to))
-                                debug("current_cluster_weight_out: %s" % str(current_cluster_weight_out))
-                                debug("remove_candidates[v].sum_weight_from: %s" % str(remove_candidates[v].sum_weight_from))
-                                sleep_debug(1)
-                        if best_change:
-                            improvement_flag = True
-                            debug("REMOVE: ", best_change, "best_change_score: ", best_change_score)
-                            sleep_debug(2)
-                            # Update the current_cluster 's score, and overall weight into and out of the current cluster
-                            current_score = best_change_score
-                            current_cluster_weight_in -= remove_candidates[best_change].sum_weight_to
-                            current_cluster_weight_out -= remove_candidates[best_change].sum_weight_from
-
-                            # Remove the change vertex from remove_candidates and current_cluster
-                            to_remove = remove_candidates[best_change].copy()
-                            del remove_candidates[best_change]
-                            del current_cluster[best_change]
-
-                            # Also add the change vertex to add_candidates
-                            # TODO: figure out if we should put a removed vertex back in add_candidates
-                            add_candidates[best_change] = to_remove
-
-                            # AFTER this is done, THEN do the following
-                            for v in self.graph.hash_graph[best_change]:  # iterate over neighbors of best_change, and update each Relationship
-                                edge_weight = self.graph.hash_graph[best_change][v]
-                                # note that v may be in both the current_cluster and in remove_candidates
-                                if v in remove_candidates:
-                                    remove_candidates[v].sum_weight_to = -1 * edge_weight + remove_candidates[v].sum_weight_to
-                                    remove_candidates[v].sum_weight_from = edge_weight + remove_candidates[v].sum_weight_from
-                                    remove_candidates[v].num_edges_to = -1 + remove_candidates[v].num_edges_to
-                                    remove_candidates[v].num_edges_from = 1 + remove_candidates[v].num_edges_from
-                                if v in current_cluster:
-                                    current_cluster[v].sum_weight_to = -1 * edge_weight + current_cluster[v].sum_weight_to
-                                    current_cluster[v].sum_weight_from = edge_weight + current_cluster[v].sum_weight_from
-                                    current_cluster[v].num_edges_to = -1 + current_cluster[v].num_edges_to
-                                    current_cluster[v].num_edges_from = 1 + current_cluster[v].num_edges_from
-                                    # TODO: if v is in the current cluster, and is newly also on the boundary, add v to remove_candidates
-                                    if current_cluster[v].num_edges_from == 1:
-                                        remove_candidates[v] = current_cluster[v].copy()
-                                if v in add_candidates:
-                                    # update the relationship
-                                    add_candidates[v].sum_weight_to = -1 * edge_weight + add_candidates[v].sum_weight_to
-                                    add_candidates[v].sum_weight_from = edge_weight + add_candidates[v].sum_weight_from
-                                    add_candidates[v].num_edges_to = - 1 + add_candidates[v].num_edges_to
-                                    add_candidates[v].num_edges_from = 1 + add_candidates[v].num_edges_from
-                                    # TODO: if v in no longer on the boundary after best_change is removed from current_cluster, remove v from add_candidates
-                                    if add_candidates[v].num_edges_to == 0:
-                                        del add_candidates[v]
-                        else:
-                            debug("\n", "No improvement by REMOVING", "\n")
-
-                    sleep_debug(1)
-
-                #add current_cluster to the list of clusters
-                self.clustering.append(current_cluster)
-                index += 1
-                if not self.seed_from_all:
-                    for v in current_cluster:
-                        considered_vertices.add(v)
-                print("CLUSTER #%s: %s"%(str(len(self.clustering)), str([vertex for vertex in current_cluster])))
-                # time.sleep(2)
-
-
-    def randomized_construction(self):
-
-        def dfs(current_vertex, ignore_vertex, current_cluster_membership_hashset, visited):
-            visited.add(current_vertex)
-            for neighbor in self.graph.hash_graph[current_vertex]:
-                if neighbor not in current_cluster_membership_hashset:
-                    continue
-                elif neighbor in visited:
-                    continue
-                elif neighbor == ignore_vertex:
-                    continue
-                else:
-                    dfs(neighbor, ignore_vertex, current_cluster_membership_hashset, visited)
-
-        considered_vertices = set()
-        index = 0
-
-        if self.sort_seeds_by == 'degree':
-            sorted_seeds = self.vertices_by_degree
-        else:
-            sorted_seeds = self.vertices_by_weight
-
-        while index < len(sorted_seeds):
-            current_seed = sorted_seeds[index][0]
-            current_seed_degree = sorted_seeds[index][1]
-            debug("current_seed: ", current_seed)
-            debug("current_seed_degree: ", current_seed_degree)
-            if current_seed in considered_vertices:
-                debug("SKIP %s"%str(current_seed))
-                index+=1
-                continue
-            else:
-                debug("Starting cluster #%s"%str(len(self.clustering)))
-                # time.sleep(3)
-                # TODO: ignore vertices that have been removed before during construction of current cluster
-                ignore_vertices = set()
-
-                # initialize the current cluster starting with the selected seed
-                current_cluster = dict()
-                weight_to = 0
-                num_edges_to = 0
-                weight_from = sum([self.graph.hash_graph[current_seed][tar] for tar in self.graph.hash_graph[current_seed]])
-                num_edges_from = len(self.graph.hash_graph[current_seed])
-                current_cluster[current_seed] = Relationship(weight_to, num_edges_to, weight_from, num_edges_from)
-                current_score = 0
-                current_cluster_weight_in = 0
-                current_cluster_weight_out = weight_from
-                # initalize the candidates for removal
-                remove_candidates = dict()
-                remove_candidates[current_seed] = Relationship(weight_to, num_edges_to, weight_from, num_edges_from)
-
-                # initialize the candidates for addition
-                add_candidates = dict()
-                for target in self.graph.hash_graph[current_seed]:
-                    weight_to = self.graph.hash_graph[current_seed][target]
-                    num_edges = len(self.graph.hash_graph[target])
-                    num_edges_to = 1
-                    num_edges_from = num_edges - num_edges_from
-                    weight_from = sum([self.graph.hash_graph[target][tar] for tar in self.graph.hash_graph[target] if tar != current_seed])
-                    add_candidates[target] = Relationship(weight_to, num_edges_to, weight_from, num_edges_from)
-
-
-                last_failed_add_round = -777
-                last_failed_remove_round = -666
-                round = 0
-
-
-                while (add_candidates or remove_candidates) and abs(last_failed_remove_round-last_failed_add_round) != 1:
-                    debug("Current cluster #%s" % str(len(self.clustering)))
-                    decider = numpy.random.rand()
-
-                    # Consider ADDING a vertex on the boundary
-                    #
-                    #
-                    #
-                    if (decider <= .5 or last_failed_remove_round == round) and last_failed_add_round!=round:
-                        round+=1
-                        best_change = None
-                        best_change_score = current_score
-                        for v in add_candidates:
-                            numerator = current_cluster_weight_in + add_candidates[v].sum_weight_to
-                            denominator = current_cluster_weight_in + current_cluster_weight_out + add_candidates[v].sum_weight_from + self.penalty_value_per_node * (len(current_cluster)+1)
-
-                            proposed_score = numerator / denominator
-
-                            if proposed_score>best_change_score:
-                                best_change = v
-                                best_change_score = proposed_score
-                            debug("##################### ADD Consideration ########################")
-                            debug("v: %s"%str(v))
-                            debug("proposed_score: %s"% str(proposed_score))
-                            debug("best_change_score: %s"%str(best_change_score))
-                            debug("best_change: %s"%str(best_change))
-                            debug("numerator: %s" %str(numerator))
-                            debug("denominator: %s" %str(denominator))
-                            debug("current_cluster_weight_in: %s"%str(current_cluster_weight_in))
-                            debug("add_candidates[v].sum_weight_to: %s"%str(add_candidates[v].sum_weight_to))
-                            debug("current_cluster_weight_out: %s"%str(current_cluster_weight_out))
-                            debug("add_candidates[v].sum_weight_from: %s"%str(add_candidates[v].sum_weight_from))
-                            debug("len(current_cluster): %s"%str(len(current_cluster)))
-                            sleep_debug(.25)
-
-                        if best_change:
-                            debug("\n", "ADD: %s" %str(best_change), "best_change_score: %s"%str(best_change_score), "\n")
-                            # update the current_cluster 's score
-                            current_score = best_change_score
-                            # update the overall weight into and out of the current_cluster
-                            current_cluster_weight_in += add_candidates[best_change].sum_weight_to
-                            current_cluster_weight_out += add_candidates[best_change].sum_weight_from
-
-                            # Move the change vertex from add_candidates to current_cluster
-                            to_add = add_candidates[best_change].copy()
-                            current_cluster[best_change] = to_add
-                            del add_candidates[best_change]
-
-                            # Also add the change vertex to remove_candidates if applicable
-                            if to_add.num_edges_from:
-                                remove_candidates[best_change] = to_add
-
-                            for v in self.graph.hash_graph[best_change]:     # iterate over neighbors of best_change, and update each Relationship
-                                edge_weight = self.graph.hash_graph[best_change][v]
-                                if v in add_candidates:
-                                    add_candidates[v].sum_weight_to = edge_weight + add_candidates[v].sum_weight_to
-                                    add_candidates[v].sum_weight_from = -1 * edge_weight + add_candidates[v].sum_weight_from
-                                    add_candidates[v].num_edges_to = 1 + add_candidates[v].num_edges_to
-                                    add_candidates[v].num_edges_from = -1 + add_candidates[v].num_edges_from
-                                if v in current_cluster:
-                                    current_cluster[v].sum_weight_to = edge_weight + current_cluster[v].sum_weight_to
-                                    current_cluster[v].sum_weight_from = -1 * edge_weight + current_cluster[v].sum_weight_from
-                                    current_cluster[v].num_edges_to = 1 + current_cluster[v].num_edges_to
-                                    current_cluster[v].num_edges_from = -1 + current_cluster[v].num_edges_from
-                                # note that v may be in both the current_cluster and in remove_candidates
-                                # remove_candidates is a subset of current_cluster
-                                if v in remove_candidates:
-                                    remove_candidates[v].sum_weight_to = edge_weight + remove_candidates[v].sum_weight_to
-                                    remove_candidates[v].sum_weight_from = -1 * edge_weight + remove_candidates[v].sum_weight_from
-                                    remove_candidates[v].num_edges_to = 1 + remove_candidates[v].num_edges_to
-                                    remove_candidates[v].num_edges_from = -1 + remove_candidates[v].num_edges_from
-                                    # Check that a candidate for removal is still on the boundary
-                                    if remove_candidates[v].num_edges_from == 0:
-                                        del remove_candidates[v]
-                                # handle the case that v is on the new boundary
-                                # add v to add_candidates
-                                if v not in add_candidates and v not in current_cluster:
-                                    num_edges_to = 0
-                                    weight_to = 0
-                                    num_edges_from = 0
-                                    weight_from = 0
-                                    for v_prime in self.graph.hash_graph[v]:
-                                        weight_prime = self.graph.hash_graph[v][v_prime]
-                                        if v_prime in current_cluster:
-                                            num_edges_to+=1
-                                            weight_to+=weight_prime
-                                        else:
-                                            num_edges_from+=1
-                                            weight_from+=weight_prime
-                                    add_candidates[v] = Relationship(weight_to, num_edges_to, weight_from, num_edges_from)
-
-                        else:
-                            debug("\n","No improvement by ADDING", "\n")
-                            last_failed_add_round = round
-
-                    # Consider REMOVING a vertex on the boundary
-                    #
-                    #
-                    #
-                    if (decider>.5 or last_failed_add_round == round) and  last_failed_remove_round!=round:
-                        round+=1
-                        # check that
-                        #   (1) the cluster has more than one element
-                        debug("length of current cluster: ", len(current_cluster))
-                        if len(current_cluster) > 1:
-                            best_change = None
-                            best_change_score = current_score
-                            current_cluster_membership_hashset = [vertex for vertex in current_cluster]
-                            for v in remove_candidates:
-                                if self.care_about_cuts:
-                                    # TODO: check if there is a cut.
-                                    #   Implement more efficiently using a Dynamic Connectivity algorithm
-                                    is_a_cut = True
-                                    visted = set()
-                                    start_point = None
-                                    for potential_start_point in current_cluster_membership_hashset:
-                                        if potential_start_point != v:
-                                            start_point = potential_start_point
-                                            # consider break statement here
-                                    # check that
-                                    #   (2) removal of vertex under consideration will not disconnect cluster
-                                    debug("DFS starting vertex: %s"%str(start_point), "DFS ignore vertex: %s"%str(v))
-                                    dfs(start_point, v,  current_cluster_membership_hashset, visted)
-                                    debug("=============================")
-                                    if len(visted) == -1 + len(current_cluster_membership_hashset):
-                                        is_a_cut = False
-                                        debug("%s is NOT a CUT"%str(v))
-                                    if is_a_cut:
-                                        debug("%s is a CUT!" % str(v))
-                                    debug("cluster: %s"% str(current_cluster_membership_hashset))
-                                    debug("visited by DFS: %s"%str(visted))
-                                    sleep_debug(.25)
-                                else:
-                                    is_a_cut=False
-
-                                if not is_a_cut:
-                                    # TODO: check that this makes sense
-                                    numerator = current_cluster_weight_in - remove_candidates[v].sum_weight_to
-                                    denominator = current_cluster_weight_in + current_cluster_weight_out - remove_candidates[v].sum_weight_from + self.penalty_value_per_node * (len(current_cluster)-1)
-                                    proposed_score = numerator / denominator
-                                    if proposed_score>best_change_score:
-                                        best_change = v
-                                        best_change_score = proposed_score
-                                    debug("##################### REMOVE Consideration ########################")
-                                    debug("v: %s"%str(v))
-                                    debug("proposed_score: %s" % str(proposed_score))
-                                    debug("best_change_score: %s" % str(best_change_score))
-                                    debug("best_change: %s" % str(best_change))
-                                    debug("numerator: %s" % str(numerator))
-                                    debug("denominator: %s" % str(denominator))
-                                    debug("current_cluster_weight_in: %s" % str(current_cluster_weight_in))
-                                    debug("remove_candidates[v].sum_weight_to: %s" % str(remove_candidates[v].sum_weight_to))
-                                    debug("current_cluster_weight_out: %s" % str(current_cluster_weight_out))
-                                    debug("remove_candidates[v].sum_weight_from: %s" % str(remove_candidates[v].sum_weight_from))
-                                    debug("len(current_cluster): %s" % str(len(current_cluster)))
-                                    sleep_debug(1)
-                            if best_change:
-                                debug("REMOVE: ", best_change, "best_change_score: ", best_change_score)
-                                sleep_debug(2)
-                                # Update the current_cluster 's score, and overall weight into and out of the current cluster
-                                current_score = best_change_score
-                                current_cluster_weight_in -= remove_candidates[best_change].sum_weight_to
-                                current_cluster_weight_out -= remove_candidates[best_change].sum_weight_from
-
-                                # Remove the change vertex from remove_candidates and current_cluster
-                                to_remove = remove_candidates[best_change].copy()
-                                del remove_candidates[best_change]
-                                del current_cluster[best_change]
-
-                                # Also add the change vertex to add_candidates
-                                # TODO: figure out if we should put a removed vertex back in add_candidates
-                                add_candidates[best_change] = to_remove
-
-                                # AFTER this is done, THEN do the following
-                                for v in self.graph.hash_graph[best_change]:  # iterate over neighbors of best_change, and update each Relationship
-                                    edge_weight = self.graph.hash_graph[best_change][v]
-                                    # note that v may be in both the current_cluster and in remove_candidates
-                                    if v in remove_candidates:
-                                        remove_candidates[v].sum_weight_to = -1 * edge_weight + remove_candidates[v].sum_weight_to
-                                        remove_candidates[v].sum_weight_from = edge_weight + remove_candidates[v].sum_weight_from
-                                        remove_candidates[v].num_edges_to = -1 + remove_candidates[v].num_edges_to
-                                        remove_candidates[v].num_edges_from = 1 + remove_candidates[v].num_edges_from
-                                    if v in current_cluster:
-                                        current_cluster[v].sum_weight_to = -1 * edge_weight + current_cluster[v].sum_weight_to
-                                        current_cluster[v].sum_weight_from = edge_weight + current_cluster[v].sum_weight_from
-                                        current_cluster[v].num_edges_to = -1 + current_cluster[v].num_edges_to
-                                        current_cluster[v].num_edges_from = 1 + current_cluster[v].num_edges_from
-                                        # TODO: if v is in the current cluster, and is newly also on the boundary, add v to remove_candidates
-                                        if current_cluster[v].num_edges_from == 1:
-                                            remove_candidates[v] = current_cluster[v].copy()
-                                    if v in add_candidates:
-                                        # update the relationship
-                                        add_candidates[v].sum_weight_to = -1 * edge_weight + add_candidates[v].sum_weight_to
-                                        add_candidates[v].sum_weight_from = edge_weight + add_candidates[v].sum_weight_from
-                                        add_candidates[v].num_edges_to = - 1 + add_candidates[v].num_edges_to
-                                        add_candidates[v].num_edges_from = 1 + add_candidates[v].num_edges_from
-                                        # TODO: if v in no longer on the boundary after best_change is removed from current_cluster, remove v from add_candidates
-                                        if add_candidates[v].num_edges_to == 0:
-                                            del add_candidates[v]
-                            else:
-                                debug("\n", "No improvement by REMOVING", "\n")
-                                last_failed_remove_round = round
-
-                        else:
-                            debug("\n", "No improvement by REMOVING, len(current_cluster) = 1", "\n")
-                            last_failed_remove_round = round
-
-                    debug("$$$$$$$$$", last_failed_add_round, last_failed_remove_round, decider)
-
-                num_bad_adds_remaining = self.number_of_bad_adds
-
-
-                #add current_cluster to the list of clusters
-                self.clustering.append(current_cluster)
-                index += 1
-                if not self.seed_from_all:
-                    for v in current_cluster:
-                        considered_vertices.add(v)
-                print("CLUSTER #%s: %s"%(str(len(self.clustering)), str([vertex for vertex in current_cluster])))
-                print(last_failed_add_round, last_failed_remove_round)
-                # time.sleep(2)
-
-    def merger(self):# takes a list of clusters
-        threshold = self.merge_threshold
-        indices_of_considered_clusters = {}
-        hash_graph = dict()
-
-        def similarity(A, B):
-            numerator = len(A.intersection(B))**2
-            denominator = len(A) * len(B)
-            return numerator / denominator
-
-        def dfs(index, local_visited):
-            local_visited.add(index)
-            for neigbor in hash_graph[index]:
-                if neigbor not in local_visited:
-                    dfs(neigbor, local_visited)
-
-        for i in range(len(self.cluster_list)):
-            if i not in hash_graph:
-                hash_graph[i]=set()
-            for j in range(i+1, len(self.cluster_list)):
-                if similarity(self.cluster_list[i], self.cluster_list[j])>threshold:
-                    if i in hash_graph:
-                        hash_graph[i].add(j)
-                    else:
-                        hash_graph[i] = {j}
-                    if j in hash_graph:
-                        hash_graph[j].add(i)
-                    else:
-                        hash_graph[j] = {i}
-
-        global_visited = set()
-        merge_indices = list()
-        for index in range(len(self.cluster_list)):
-            if index not in global_visited:
-                local_visited = set()
-                dfs(index, local_visited)
-                # TODO: is the copy necessary?
-                merge_indices.append(local_visited.copy())
-                for reached in local_visited:
-                    global_visited.add(reached)
-
-
-        new_clusters = list()
-        for group in merge_indices:
-            new_cluster = set()
-            for cluster_index in group:
-                new_cluster = new_cluster.union(self.cluster_list[cluster_index])
-            new_clusters.append(new_cluster)
-
-        self.merged_cluster_list =  new_clusters
-
-
-
-
+            self.not_found = retval
+            return retval
+
+        not_found_gsc()
+
+        ############################################################
+        # FUNCTION TO CALCULATE STATS ABOUT A LIST OF CLUSTERS
+        ############################################################
+        def calculate_clusters_stats(cluster_list, output_map):
+            output_map['clusters'] = dict()
+            total_density = 0
+            total_cohesiveness = 0
+            total_size = 0
+            for cluster in cluster_list:
+                key = tuple([self.graph.id_to_name[id] for id in cluster])
+                output_map['clusters'][key] = dict()
+                _cohesiveness = cohesiveness(self, list(cluster))
+                _size = len(cluster)
+                _density = density(self, list(cluster))
+                output_map['clusters'][key]['cohesiveness'] = _cohesiveness
+                output_map['clusters'][key]['size'] = _size
+                output_map['clusters'][key]['density'] = _density
+                total_cohesiveness+=_cohesiveness
+                total_density += _density
+                total_size +=_size
+            if len(cluster_list)==0:
+                print("the current cluster list has length 0")
+                output_map['average_cohesiveness'] = 0
+                output_map['average_density'] = 0
+                output_map['average_size'] = 0
+                return
+            output_map['average_cohesiveness'] = total_cohesiveness /float(len(cluster_list))
+            output_map['average_density'] = total_density /float(len(cluster_list))
+            output_map['average_size'] = total_size /float(len(cluster_list))
+
+
+        ############################################################
+        # CALCULATE STATS ABOUT THE FINAL RESULT
+        ############################################################
+        calculate_clusters_stats(
+            self.densityThreshold_sizeThreshold_merged_cluster_list,
+            self.final_clusters_stats)
+
+        ############################################################
+        # CALCULATE STATS ABOUT THE GSC APPEARING IN DATASET
+        ############################################################
+        calculate_clusters_stats(
+            self.gold_standard_complexes_appearing_in_dataset,
+            self.gsc_appearing_stats)
+
+        ############################################################
+        # CALCULATE STATS ABOUT THE GSC APPEARING IN DATASET FOUND BY ALGORITHM
+        ############################################################
+        print(len(self.found))
+        calculate_clusters_stats(
+            self.found,
+            self.gsc_appearing_found_stats)
+
+        ############################################################
+        # CALCULATE STATS ABOUT THE GSC APPEARING IN DATASET NOT FOUND BY ALGORITHM
+        ############################################################
+        calculate_clusters_stats(
+            self.not_found,
+            self.gsc_appearing_notFound_stats)
+
+        ############################################################
+        # DISPLAY DETAILS OF THE GSC THAT APPEARED IN THE DATASET BASED ON WHETHER OR NOT THE ALGORITHM FOUND THEM
+        ############################################################
+        print("################ FOUND AND UNFOUND GSC DETAILS #######################")
+
+        def found_and_unfound_details():
+            print("FOUND")
+            cohesiveness_tot = 0
+            density_tot = 0
+            length_tot = 0
+            for c in self.found:
+                c_cohesiveness = cohesiveness(self, c)
+                cohesiveness_tot += c_cohesiveness
+                c_density = density(self, c)
+                density_tot += c_density
+                length_tot += len(c)
+                print(c)
+                print(len(c), c_cohesiveness, c_density, len(c))
+            c1 = cohesiveness_tot / float(len(self.found))
+            d1 = density_tot / float(len(self.found))
+            l1 = length_tot / float(len(self.found))
+            print("--------------------------------------")
+
+            print("NOT FOUND")
+            cohesiveness_tot = 0
+            density_tot = 0
+            length_tot = 0
+            for c in self.not_found:
+                c_cohesiveness = cohesiveness(self, c)
+                cohesiveness_tot += c_cohesiveness
+                c_density = density(self, c)
+                density_tot += c_density
+                length_tot += len(c)
+                print(c)
+                print(len(c), c_cohesiveness, c_density, len(c))
+            c2 = cohesiveness_tot / float(len(self.not_found))
+            d2 = density_tot / float(len(self.not_found))
+            l2 = length_tot / float(len(self.not_found))
+            print("--------------------------------------")
+            print("GSC appearing in dataset: ", len(self.gold_standard_complexes_appearing_in_dataset))
+            print("found: ", len(self.found))
+            print("not found: ", len(self.not_found))
+            print("average cohesiveness of found= ", c1)
+            print("average density of found= ", d1)
+            print("average length of found= ", l1)
+            print("average cohesiveness of NOT found= ", c2)
+            print("average density of NOT found= ", d2)
+            print("average length of NOT found= ", l2)
+            print(len(self.gold_standard_complexes), " reference complexes")
+            print(len(self.gold_standard_complexes_appearing_in_dataset), " appear in the dataset")
+
+        if len(self.found):
+            found_and_unfound_details()
+
+        ##########################################################################
+        #  DETERMINE THE QUALITY OF THE RESULT USING ORIGINAL AUTHORS' MEASURES  #
+        ##########################################################################
+        print("################ QUALITY #######################")
+
+        def get_quality():
+            import subprocess
+            res = subprocess.check_output(["python2",
+                                           "cl1_reproducibility/reproducibility/scripts/match_standalone.py",
+                                           self.gold_standard_filename,
+                                           "complexes/" + self.output_filename])
+            for line in res.splitlines():
+                print(line)
+                a = str(line)
+                a = a.replace("b", "").replace("=", "").replace("\'", "").split()
+                self.quality_report[a[0]] = float(a[1])
+
+            print(self.run_title)
+
+        get_quality()
+
+        ############################################################
+        # LOG RUN INFO
+        ############################################################
+        f = open("run_log","a+")
+        f.write(str(self.run_title)+"\n")
+        f.write(str(self.argument_dict)+"\n")
+        f.write(str(self.quality_report)+"\n\n")
+        f.close()
+
+        ############################################################
+        # STORE THE CURRENT OBJECT USING PICKLE
+        ############################################################
+        def store_self():
+            f_name = "pickles/pickle+" + self.run_title
+            f = open(f_name, 'ab')
+            pickle.dump(self, f)
+            f.close()
+
+        store_self()
+
+        f_name = "pickles/most_recent"
+        f = open(f_name, 'wb')
+        title = {'title': "pickles/pickle+"+self.run_title}
+        pickle.dump(title, f)
+
+
+
+
+
+
+if __name__ == "__main__":
+    # To beat: my implementation of the original
+    # ORIGINAL
+    # 189 reference complexes, 254 predicted complexes
+    # b'acc = 0.3698'
+    # b'cws = 0.3388'
+    # b'frac = 0.4074'
+    # b'mmr = 0.2116'
+    # b'ppv = 0.4035'
+    # b'sep = 0.2429'
+#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    # a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality',
+    #                    density_threshold=.3,
+    #                    merge_threshold=.9,
+    #                    penalty_value_per_node=2,
+    #                    randomized_construction_bool=True,
+    #                    rng_seed=None,
+    #                    number_of_shakes=1,
+    #                    number_of_bad_adds=1,
+    #                    sort_seeds_by="weight",
+    #                    care_about_cuts=True,
+    #                    seed_from_all=True,
+    #                    gsc_appearance_ratio_threshold=.9,
+    #                    found_gsc_jaccard_threshold=.8,
+    #                    gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
+    # above, without reverting to best seen
+    # 189
+    # reference
+    # complexes, 301
+    # predicted
+    # complexes
+    # b'acc = 0.3741'
+    # b'cws = 0.3511'
+    # b'frac = 0.4074'
+    # b'mmr = 0.2135'
+    # b'ppv = 0.3985'
+    # b'sep = 0.2182'
+    # 189
+    # reference
+    # complexes, 300
+    # predicted
+    # complexes
+    # b'acc = 0.3759'
+    # b'cws = 0.3545'
+    # b'frac = 0.4180'
+    # b'mmr = 0.2175'
+    # b'ppv = 0.3985'
+    # b'sep = 0.2206'
+    # 189
+    # reference
+    # complexes, 301
+    # predicted
+    # complexes
+    # b'acc = 0.3756'
+    # b'cws = 0.3545'
+    # b'frac = 0.4180'
+    # b'mmr = 0.2173'
+    # b'ppv = 0.3979'
+    # b'sep = 0.2211'
+    # 189
+    # reference
+    # complexes, 298
+    # predicted
+    # complexes
+    # b'acc = 0.3750'
+    # b'cws = 0.3537'
+    # b'frac = 0.4127'
+    # b'mmr = 0.2147'
+    # b'ppv = 0.3977'
+    # b'sep = 0.2222'
+    # gavin2006_socioaffinities_rescaled + 2019 - 0
+    # 9 - 0
+    # 9_11: 43:34: 255366
+    # 189
+    # reference
+    # complexes, 300
+    # predicted
+    # complexes
+    # b'acc = 0.3760'
+    # b'cws = 0.3541'
+    # b'frac = 0.4180'
+    # b'mmr = 0.2176'
+    # b'ppv = 0.3992'
+    # b'sep = 0.2232'
+    # gavin2006_socioaffinities_rescaled + 2019 - 0
+    # 9 - 0
+    # 9_11: 45:03: 468226
+
+
+    # ABOVE, with reverting to best seen
+    # 189
+    # reference
+    # complexes, 378
+    # predicted
+    # complexes
+    # b'acc = 0.3780'
+    # b'cws = 0.3520'
+    # b'frac = 0.4127'
+    # b'mmr = 0.2378'
+    # b'ppv = 0.4059'
+    # b'sep = 0.2016'
+    # 189
+    # reference
+    # complexes, 372
+    # predicted
+    # complexes
+    # b'acc = 0.3772'
+    # b'cws = 0.3499'
+    # b'frac = 0.4127'
+    # b'mmr = 0.2377'
+    # b'ppv = 0.4068'
+    # b'sep = 0.2034'
+    # 189
+    # reference
+    # complexes, 377
+    # predicted
+    # complexes
+    # b'acc = 0.3786'
+    # b'cws = 0.3520'
+    # b'frac = 0.4127'
+    # b'mmr = 0.2380'
+    # b'ppv = 0.4073'
+    # b'sep = 0.2021'
+
+
+
+
+
+
+
+
+
+
+
+
+    # a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality',
+    #                    density_threshold=.3,
+    #                    merge_threshold=.8,
+    #                    penalty_value_per_node=2,
+    #                    randomized_construction_bool=True,
+    #
+    #                    rng_seed=None,
+    #                    number_of_shakes=0,
+    #                    number_of_bad_adds=1,
+    #                    sort_seeds_by="weight",
+    #                    care_about_cuts=True,
+    #                    seed_from_all=False,
+    #                    gsc_appearance_ratio_threshold=.9,
+    #                    found_gsc_jaccard_threshold=.8,
+    #                    gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
+    # exec("networkx_tests.py")
+
+
+
+    a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality',
+                       density_threshold=.3,
+                       merge_threshold=.9,
+                       penalty_value_per_node=2,
+                       randomized_construction_bool=True,
+                       rng_seed=None,
+                       number_of_shakes=0,
+                       number_of_bad_adds=2,
+                       sort_seeds_by="weight",
+                       care_about_cuts=True,
+                       seed_from_all=True,
+                       gsc_appearance_ratio_threshold=.9,
+                       found_gsc_jaccard_threshold=.8,
+                       gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
+
+
+
+
+
+
+
+    # a = CL1_Randomized("cl1_datasets/datasets", "krogan2006_extended.txt", 'Dummy_quality',
+    #                    density_threshold=.3,
+    #                    merge_threshold=.9,
+    #                    penalty_value_per_node=2,
+    #                    randomized_construction_bool=True,
+    #                    rng_seed=None,
+    #                    number_of_shakes=1,
+    #                    number_of_bad_adds=1,
+    #                    sort_seeds_by="weight",
+    #                    care_about_cuts=True,
+    #                    seed_from_all=True,
+    #                    gsc_appearance_ratio_threshold=.9,
+    #                    found_gsc_jaccard_threshold=.8,
+    #                    gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
+    """
+    ################ QUALITY #######################
+189 reference complexes, 1591 predicted complexes
+b'acc = 0.3572'
+b'cws = 0.3189'
+b'frac = 0.4762'
+b'mmr = 0.2599'
+b'ppv = 0.4001'
+b'sep = 0.1251'
+krogan2006_extended+2019-09-19_09:27:51:114908
+
+    """
+    # a = CL1_Randomized("cl1_datasets/datasets", "krogan2006_extended.txt", 'Dummy_quality',
+    #                    density_threshold=.3,
+    #                    merge_threshold=.9,
+    #                    penalty_value_per_node=2,
+    #                    randomized_construction_bool=False,
+    #                    rng_seed=None,
+    #                    number_of_shakes=0,
+    #                    number_of_bad_adds=1,
+    #                    sort_seeds_by="weight",
+    #                    care_about_cuts=True,
+    #                    seed_from_all=True,
+    #                    gsc_appearance_ratio_threshold=.9,
+    #                    found_gsc_jaccard_threshold=.8,
+    #                    gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
+    """
+    ################ QUALITY #######################
+189 reference complexes, 1131 predicted complexes
+b'acc = 0.3709'
+b'cws = 0.3571'
+b'frac = 0.4444'
+b'mmr = 0.2570'
+b'ppv = 0.3853'
+b'sep = 0.1387'
+krogan2006_extended+2019-09-19_09:26:25:901378
+    """
+
+
+    # a = CL1_Randomized("cl1_datasets/datasets", "biogrid_yeast_physical_unweighted+naively_weighted.txt", 'Dummy_quality',
+    #                    density_threshold=.3,
+    #                    merge_threshold=.9,
+    #                    penalty_value_per_node=2,
+    #                    randomized_construction_bool=False,
+    #                    rng_seed=None,
+    #                    number_of_shakes=1,
+    #                    number_of_bad_adds=1,
+    #                    sort_seeds_by="weight",
+    #                    care_about_cuts=True,
+    #                    seed_from_all=True,
+    #                    gsc_appearance_ratio_threshold=.9,
+    #                    found_gsc_jaccard_threshold=.8,
+    #                    gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
+
+
+
+    # a = CL1_Randomized("cl1_datasets/datasets", "krogan2006_extended.txt", 'Dummy_quality',
+    #                    density_threshold=.3,
+    #                    merge_threshold=.9,
+    #                    penalty_value_per_node=2,
+    #                    randomized_construction_bool=True,
+    #                    rng_seed=None,
+    #                    number_of_shakes=1,
+    #                    number_of_bad_adds=1,
+    #                    sort_seeds_by="weight",
+    #                    care_about_cuts=True,
+    #                    seed_from_all=True,
+    #                    gsc_appearance_ratio_threshold=.9,
+    #                    found_gsc_jaccard_threshold=.8,
+    #                    gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
+    #

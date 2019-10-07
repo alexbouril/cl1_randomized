@@ -1,231 +1,154 @@
 #exec(open("commands.py").read())
+#exec(open("commands.py").read())
 #python commands.py
 from cl1_randomized import *
+from common import *
+import matplotlib.pyplot as plt
+plt.style.use('seaborn-whitegrid')
+import numpy as np
+import pprint as pp
+
+def convert_cluster_list_to_subgraph_text(cl1_obj, cluster_list,output_file_name = "test.txt"):
+    f = open(output_file_name, "w+")
+    print(cluster_list)
+    retval = []
+    for cluster in cluster_list:
+        new_string = ""
+        considered =set()
+        for p1 in cluster:
+            for p2 in cl1_obj.graph.hash_graph[p1]:
+                key = tuple(sorted([p1, p2]))
+                if p2 in cluster and key not in considered:
+                    considered.add(key)
+                    new_string+=cl1_obj.graph.id_to_name[key[0]] + "\t"+ cl1_obj.graph.id_to_name[key[1]]+"\t"+ str(cl1_obj.graph.hash_graph[p1][p2])+ "\n"
+                    f.write(new_string)
+        retval.append(new_string)
+    f.close()
+    print(retval)
+    return retval
+
+
+
+
 a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality',
-                   "tarea_regulardensitythreshold18.txt",
                    density_threshold=.3,
                    merge_threshold=.8,
                    penalty_value_per_node=2,
                    randomized_construction_bool=True,
-                   sort_seeds_by="degree",
-                   care_about_cuts=True,
+                   rng_seed=None,
+                   number_of_shakes=3,
+                   number_of_bad_adds=5,
+                   sort_seeds_by="weight",
+                   care_about_cuts=False,
                    seed_from_all=False,
-                   gsc_appearance_ratio_threshold=.2,
+                   gsc_appearance_ratio_threshold=.8,
                    found_gsc_jaccard_threshold=.8,
                    gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
-a.process()
 
-
-#
-# average cohesiveness of found=  0.7287811118428832
-# average density of found=  1.1477001097007222
-# average cohesiveness of NOT found=  0.306053788274819
-# average density of NOT found=  0.7658721978209649
-
-# average cohesiveness of found=  0.7032572263002919
-# average density of found=  1.1277445595704951
-# average cohesiveness of NOT found=  0.2990207643943256
-# average density of NOT found=  0.7580406234794939
+# convert_cluster_list_to_subgraph_text(a, a.densityThreshold_sizeThreshold_merged_cluster_list)
 
 
 
 
 
 
+def graph_average_over_multiple_runs(number_of_runs):
+    def namestr(obj, namespace=locals()):
+        return str([name for name in namespace if namespace[name] is obj][0])
+
+    number_of_complexes =[]
+    avg_cohesiveness=[]
+    avg_density=[]
+    avg_acc = []
+    avg_cws = []
+    avg_frac = []
+    avg_mmr = []
+    avg_ppv = []
+    avg_sep = []
+
+    names_of_runs = []
+    arguments = []
+    for i in range(number_of_runs):
+        a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality',
+                           density_threshold=.3,
+                           merge_threshold=.8,
+                           penalty_value_per_node=2,
+                           randomized_construction_bool=True,
+                           number_of_shakes=1,
+                           number_of_bad_adds=2,
+                           sort_seeds_by="degree",
+                           care_about_cuts=True,
+                           seed_from_all=False,
+                           gsc_appearance_ratio_threshold=.8,
+                           found_gsc_jaccard_threshold=.8,
+                           gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
+        a.process()
+        number_of_complexes.append(len(a.final_clusters_stats['clusters']))
+        avg_cohesiveness.append(a.final_clusters_stats["average_cohesiveness"])
+        avg_density.append(a.final_clusters_stats["average_density"])
+        avg_acc.append(a.quality_report['acc'])
+        avg_cws.append(a.quality_report['cws'])
+        avg_frac.append(a.quality_report['frac'])
+        avg_mmr.append(a.quality_report['mmr'])
+        avg_ppv.append(a.quality_report['ppv'])
+        avg_sep.append(a.quality_report['sep'])
+        names_of_runs.append(a.time_of_run)
+
+
+    print(number_of_complexes)
+    print(avg_cohesiveness)
+    print(avg_density)
+    print(names_of_runs)
 
 
 
-# a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality',
-#                    "tarea_regulardensitythreshold18.txt",
-#                    density_threshold=.3,
-#                    penalty_value_per_node=2,
-#                    randomized_construction_bool=True,
-#                    sort_seeds_by="degree",
-#                    seed_from_all=False,
-#                    gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
-#
-# found:  20
-# not found:  45
-# average cohesiveness of found=  0.7160846952573257
-# average density of found=  1.168026004215686
-# average length of found=  5.7
-# average cohesiveness of NOT found=  0.3023026995668875
-# average density of NOT found=  0.7483534022169867
-# average length of NOT found=  7.133333333333334
-# #######################################
-# 189 reference complexes, 251 predicted complexes
-# b'acc = 0.3674'
-# b'cws = 0.3355'
-# b'frac = 0.4021'
-# b'mmr = 0.2112'
-# b'ppv = 0.4024'
-# b'sep = 0.2407'
-# --------------------------------------
-# found:  19
-# not found:  46
-# average cohesiveness of found=  0.7287811118428832
-# average density of found=  1.1477001097007222
-# average length of found=  5.7894736842105265
-# average cohesiveness of NOT found=  0.306053788274819
-# average density of NOT found=  0.7658721978209649
-# average length of NOT found=  7.065217391304348
-# #######################################
-# 189 reference complexes, 248 predicted complexes
-# b'acc = 0.3655'
-# b'cws = 0.3321'
-# b'frac = 0.3915'
-# b'mmr = 0.2062'
-# b'ppv = 0.4024'
-# b'sep = 0.2403'
-# --------------------------------------
-# found:  19
-# not found:  46
-# average cohesiveness of found=  0.7287811118428832
-# average density of found=  1.1477001097007222
-# average length of found=  5.7894736842105265
-# average cohesiveness of NOT found=  0.306053788274819
-# average density of NOT found=  0.7658721978209649
-# average length of NOT found=  7.065217391304348
-# #######################################
-# 189 reference complexes, 254 predicted complexes
-# b'acc = 0.3698'
-# b'cws = 0.3388'
-# b'frac = 0.4074'
-# b'mmr = 0.2116'
-# b'ppv = 0.4035'
-# b'sep = 0.2429'
+    considerations = [avg_cohesiveness, avg_density,
+                      avg_acc, avg_cws, avg_frac, avg_mmr,
+                      avg_ppv, avg_sep]
+    N = len(considerations)
+    data_means=[]
+    data_std =[]
+    for x in considerations:
+        data_means.append(np.mean(x))
+        data_std.append(np.std(x))
+
+    ind = np.arange(N)  # the x locations for the groups
+    width = 0.35       # the width of the bars
+
+    fig, ax = plt.subplots()
+    rects1 = ax.bar(ind, data_means, width, color='r', yerr=data_std)
+
+    women_means = tuple([.1 for i in range(N)])
+    women_std = tuple([.05 for i in range(N)])
+    rects2 = ax.bar(ind + width, women_means, width, color='b', yerr=women_std)
+
+    # add some text for labels, title and axes ticks
+    ax.set_ylabel('Scores')
+    ax.set_title('Scores by group and gender')
+    ax.set_xticks(ind + width / 2)
+    ax.set_xticklabels(tuple([namestr(obj) for obj in considerations]), rotation='vertical')
+
+    ax.legend((rects1[0], rects2[0]), ('Run Type 1', 'Run Type 2'))
 
 
+    def autolabel(rects):
+        """
+        Attach a text label above each bar displaying its height
+        """
+        for rect in rects:
+            height = rect.get_height()
+            ax.text(rect.get_x() + rect.get_width()/2., 1.05*height,
+                    '%d' % int(height),
+                    ha='center', va='bottom')
 
+    autolabel(rects1)
+    autolabel(rects2)
 
-
-
-
-
-
-# a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality',
-#                    "tarea_regulardensitythreshold18.txt",
-#                    density_threshold=.3,
-#                    penalty_value_per_node=2,
-#                    randomized_construction_bool=True,
-#                    sort_seeds_by="degree",
-#                    seed_from_all=True,
-#                    gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
-#
-# --------------------------------------
-# found:  23
-# not found:  42
-# average cohesiveness of found=  0.6826099368166605
-# average density of found=  1.1162283312020458
-# average length of found=  5.6521739130434785
-# average cohesiveness of NOT found=  0.2910782580684111
-# average density of NOT found=  0.7467421801531208
-# average length of NOT found=  7.261904761904762
-# #######################################
-# 189 reference complexes, 295 predicted complexes
-# b'acc = 0.3757'
-# b'cws = 0.3401'
-# b'frac = 0.4074'
-# b'mmr = 0.2156'
-# b'ppv = 0.4151'
-# b'sep = 0.2354'
-
-# --------------------------------------
-# found:  23
-# not found:  42
-# average cohesiveness of found=  0.6826099368166605
-# average density of found=  1.1162283312020458
-# average length of found=  5.6521739130434785
-# average cohesiveness of NOT found=  0.2910782580684111
-# average density of NOT found=  0.7467421801531208
-# average length of NOT found=  7.261904761904762
-# #######################################
-# 189 reference complexes, 298 predicted complexes
-# b'acc = 0.3778'
-# b'cws = 0.3431'
-# b'frac = 0.4074'
-# b'mmr = 0.2158'
-# b'ppv = 0.4159'
-# b'sep = 0.2370'
-# --------------------------------------
-# found:  23
-# not found:  42
-# average cohesiveness of found=  0.6826099368166605
-# average density of found=  1.1162283312020458
-# average length of found=  5.6521739130434785
-# average cohesiveness of NOT found=  0.2910782580684111
-# average density of NOT found=  0.7467421801531208
-# average length of NOT found=  7.261904761904762
-# #######################################
-# 189 reference complexes, 296 predicted complexes
-# b'acc = 0.3776'
-# b'cws = 0.3431'
-# b'frac = 0.4074'
-# b'mmr = 0.2158'
-# b'ppv = 0.4156'
-# b'sep = 0.2377'
+    plt.show()
 
 
 
 
-# from cl1_randomized import *
-# a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality',
-#                    "tarea_regulardensitythreshold18.txt",
-#                    density_threshold=.3,
-#                    penalty_value_per_node=2,
-#                    randomized_construction_bool=True,
-#                    sort_seeds_by="degree",
-#                    care_about_cuts=False,
-#                    seed_from_all=True,
-#                    gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
-# --------------------------------------
-# found:  23
-# not found:  42
-# average cohesiveness of found=  0.6826099368166605
-# average density of found=  1.1162283312020458
-# average length of found=  5.6521739130434785
-# average cohesiveness of NOT found=  0.2910782580684111
-# average density of NOT found=  0.7467421801531208
-# average length of NOT found=  7.261904761904762
-# #######################################
-# 189 reference complexes, 299 predicted complexes
-# b'acc = 0.3762'
-# b'cws = 0.3401'
-# b'frac = 0.4074'
-# b'mmr = 0.2158'
-# b'ppv = 0.4162'
-# b'sep = 0.2342'
-# --------------------------------------
-# found:  23
-# not found:  42
-# average cohesiveness of found=  0.6826099368166605
-# average density of found=  1.1162283312020458
-# average length of found=  5.6521739130434785
-# average cohesiveness of NOT found=  0.2910782580684111
-# average density of NOT found=  0.7467421801531208
-# average length of NOT found=  7.261904761904762
-# #######################################
-# 189 reference complexes, 300 predicted complexes
-# b'acc = 0.3782'
-# b'cws = 0.3439'
-# b'frac = 0.4127'
-# b'mmr = 0.2175'
-# b'ppv = 0.4159'
-# b'sep = 0.2350'
-# --------------------------------------
-# found:  23
-# not found:  42
-# average cohesiveness of found=  0.6826099368166605
-# average density of found=  1.1162283312020458
-# average length of found=  5.6521739130434785
-# average cohesiveness of NOT found=  0.2910782580684111
-# average density of NOT found=  0.7467421801531208
-# average length of NOT found=  7.261904761904762
-# #######################################
-# 189 reference complexes, 296 predicted complexes
-# b'acc = 0.3757'
-# b'cws = 0.3401'
-# b'frac = 0.4074'
-# b'mmr = 0.2153'
-# b'ppv = 0.4151'
-# b'sep = 0.2352'
+
+
+# graph_average_over_multiple_runs(5)
