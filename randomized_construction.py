@@ -74,7 +74,7 @@ def randomized_construction(self):
                     # best_change, best_change_score = \
                     if  len(current_cluster)>5 and round_no%3==1:
                         round_no += 1
-                        best_change, best_change_score = \
+                        best_change, best_change_score, good_neighbors = \
                             careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
                         # find_best_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
 
@@ -102,7 +102,13 @@ def randomized_construction(self):
                                 backup_add_candidates = add_candidates.copy()
                                 backup_remove_candidates = remove_candidates.copy()
                                 backup_current_score = current_score
-
+                            for g_n in list(good_neighbors)[0:3]:
+                                current_score = cohesiveness(self, [x for x in current_cluster]+[g_n])
+                                current_cluster_weight_in, current_cluster_weight_out = \
+                                    add(self, add_candidates, current_cluster, remove_candidates,
+                                        g_n,
+                                        current_score,
+                                        current_cluster_weight_in, current_cluster_weight_out)
                             for counter in range(2):
                                 round_no += 1
                                 best_change, best_change_score = \

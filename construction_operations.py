@@ -40,7 +40,7 @@ def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, c
 
     best_change = None
     best_change_score = current_score
-    best_proposed_score = current_score
+    best_proposed_score = 0#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     neighborhood_gain = {v: {"in": 0,
                             "out": 0}
                                         for v in add_candidates}
@@ -118,7 +118,7 @@ def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, c
             best_change_score = actual_score
         sleep_debug(.25)
     # print("-------------",best_change)
-    return best_change, best_change_score, #good_neighbors[best_change]
+    return best_change, best_change_score, good_neighbors[best_change]
 
 
 
