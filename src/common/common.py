@@ -113,7 +113,17 @@ class Relationship:
 
 
 class ClusterState:
-    def __init__(self, current_cluster, add_candidates, remove_candidates, cohesiveness, neighborhood_2=None, neighborhood_3=None):
+    def __init__(self,
+                 current_cluster,
+                 add_candidates,
+                 remove_candidates,
+                 cohesiveness,
+                 neighborhood_2=None,
+                 neighborhood_3=None,
+                 last_failed_add_round_no = None,
+                 last_failed_remove_round_no=None,
+                 round_no=None,
+                 number_of_shakes=None):
         self.current_cluster = current_cluster.copy()
         self.current_cluster = copy_relationship_dictionary(current_cluster)
         self.add_candidates = add_candidates.copy()
@@ -123,6 +133,11 @@ class ClusterState:
         self.cohesiveness = cohesiveness
         self.neighborhood_2 = neighborhood_2
         self.neighborhood_3 = neighborhood_3
+
+        self.last_failed_add_round_no = last_failed_add_round_no
+        self.last_failed_remove_round_no = last_failed_remove_round_no
+        self.round_no = round_no
+        self.local_number_of_shakes_remaining = number_of_shakes
 
     def stringify_heavy(self, graph):
         s=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"

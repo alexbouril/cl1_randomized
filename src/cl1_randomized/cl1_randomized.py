@@ -734,7 +734,7 @@ if __name__ == "__main__":
     # ... do something ...
 
 
-    a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality',
+    a = CL1_Randomized("../../cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality',
                        density_threshold=.3,
                        merge_threshold=.9,
                        penalty_value_per_node=2,

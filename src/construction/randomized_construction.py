@@ -43,6 +43,9 @@ def randomized_construction(self):
             current_cluster, remove_candidates, add_candidates, current_score, current_cluster_weight_in, current_cluster_weight_out = \
                 initialize_complex(self, current_seed)
 
+
+
+
             current_cluster_construction_log.append(
                 ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
 
@@ -55,6 +58,16 @@ def randomized_construction(self):
             ############################################################
             local_number_of_shakes_remaining = self.number_of_shakes
 
+            cs = ClusterState(current_cluster,
+                              add_candidates,
+                              remove_candidates,
+                              cohesiveness,
+                              last_failed_add_round_no=last_failed_add_round_no,
+                              last_failed_remove_round_no=last_failed_remove_round_no,
+                              round_no=round_no,
+                              number_of_shakes=local_number_of_shakes_remaining)
+
+
             ############################################################
             # initialize the backup in case add_shake gets us stuck in a lower local optima
             ############################################################
@@ -63,6 +76,7 @@ def randomized_construction(self):
             backup_remove_candidates = remove_candidates.copy()
             backup_current_score = current_score
             remove_counter = 0
+
             while (add_candidates or remove_candidates) and \
                     abs(last_failed_remove_round_no - last_failed_add_round_no) != 1 \
                     and remove_counter < 100:
