@@ -14,8 +14,21 @@ import logging
 import pprint as pp
 from scipy.stats import logistic
 
+class TwoN_Add:
+    def __init(self, add_candidate, good_neighbors, prior_cohesiveness, proposed_score, post_cohesiveness):
+        self.add_candidate = add_candidate
+        self.good_neighbors = good_neighbors
+        self.prior_cohesiveness = prior_cohesiveness
+        self.proposed_score = proposed_score
+        self.post_cohesiveness = post_cohesiveness
 
-logistic.cdf(10)
+class checking_2n_add:
+    def __init__(self):
+        self.changes_made =[TwoN_Add]
+        self.final_cohesiveness = None
+
+
+
 def setup_custom_logger(name):
     """ Setup logger """
     LOGGING_FILE_PATH = './logs/cl1_randomized.log'
