@@ -321,7 +321,7 @@ class CL1_Randomized:
         # WRITE THE FINAL RESULT INTO A TEXT FILE
         ############################################################
         def write_final_clusters():
-            f = open("complexes/" + self.output_filename, "w+")
+            f = open("../../complexes/" + self.output_filename, "w+")
             counter = 1
             for cluster in self.densityThreshold_sizeThreshold_merged_cluster_list:
                 s = ""
@@ -534,9 +534,9 @@ class CL1_Randomized:
         def get_quality():
             import subprocess
             res = subprocess.check_output(["python2",
-                                           "cl1_reproducibility/reproducibility/scripts/match_standalone.py",
+                                           "../../cl1_reproducibility/reproducibility/scripts/match_standalone.py",
                                            self.gold_standard_filename,
-                                           "complexes/" + self.output_filename])
+                                           "../../complexes/" + self.output_filename])
             for line in res.splitlines():
                 print(line)
                 a = str(line)
@@ -550,7 +550,7 @@ class CL1_Randomized:
         ############################################################
         # LOG RUN INFO
         ############################################################
-        f = open("run_log","a+")
+        f = open("../../run_log","a+")
         f.write(str(self.run_title)+"\n")
         f.write(str(self.argument_dict)+"\n")
         f.write(str(self.quality_report)+"\n\n")
@@ -560,14 +560,14 @@ class CL1_Randomized:
         # STORE THE CURRENT OBJECT USING PICKLE
         ############################################################
         def store_self():
-            f_name = "pickles/pickle+" + self.run_title
+            f_name = "../../pickles/pickle+" + self.run_title
             f = open(f_name, 'ab')
             pickle.dump(self, f)
             f.close()
 
         store_self()
 
-        f_name = "pickles/most_recent"
+        f_name = "../../pickles/most_recent"
         f = open(f_name, 'wb')
         title = {'title': "pickles/pickle+"+self.run_title}
         pickle.dump(title, f)
@@ -747,7 +747,7 @@ if __name__ == "__main__":
                        seed_from_all=True,
                        gsc_appearance_ratio_threshold=.9,
                        found_gsc_jaccard_threshold=.8,
-                       gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
+                       gold_standard_filename="../../cl1_gold_standard/gold_standard/mips_3_100.txt")
 
     pr.disable()
     s = io.StringIO()
