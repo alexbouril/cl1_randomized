@@ -118,6 +118,10 @@ class ClusterState:
                  add_candidates,
                  remove_candidates,
                  cohesiveness,
+                 best_change=None,
+                 best_change_score=None,
+                 current_cluster_weight_in=None,
+                 current_cluster_weight_out=None,
                  neighborhood_2=None,
                  neighborhood_3=None,
                  last_failed_add_round_no = None,
@@ -134,10 +138,18 @@ class ClusterState:
         self.neighborhood_2 = neighborhood_2
         self.neighborhood_3 = neighborhood_3
 
+        self.best_change=best_change
+        self.best_change_score=best_change_score
+        self.current_cluster_weight_in=current_cluster_weight_in
+        self.current_cluster_weight_out=current_cluster_weight_out
+
         self.last_failed_add_round_no = last_failed_add_round_no
         self.last_failed_remove_round_no = last_failed_remove_round_no
         self.round_no = round_no
         self.local_number_of_shakes_remaining = number_of_shakes
+
+    def make_backup(self):
+        return ClusterState(self.current_cluster, self.add_candidates, self.remove_candidates, self.cohesiveness)
 
     def stringify_heavy(self, graph):
         s=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"

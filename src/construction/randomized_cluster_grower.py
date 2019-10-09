@@ -1,301 +1,104 @@
-# import src.cl1_randomized.cl1_randomized
-# from src.common.common import *
-#
-# def randomized_cluster_grower(locals):
-#     current_cluster_construction_log = []
-#     self.initial_clustering_seeds.append(current_seed)
-#     current_cluster_construction_log.append(Action("seed", current_seed))
-#     debug("Starting cluster #%s" % str(len(self.initial_clustering)))
-#     # time.sleep(3)
-#     # TODO: ignore vertices that have been removed before during construction of current cluster
-#     ignore_vertices = set()
-#
-#     ############################################################
-#     # INITIALIZE THE CURRENT CLUSTER STARTING WITH THE SELECTED SEED
-#     ############################################################
-#     current_cluster, remove_candidates, add_candidates, current_score, current_cluster_weight_in, current_cluster_weight_out = \
-#         initialize_complex(self, current_seed)
-#
-#     current_cluster_construction_log.append(
-#         ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
-#
-#     last_failed_add_round_no = -777
-#     last_failed_remove_round_no = -666
-#     round_no = 0
-#
-#     ############################################################
-#     # Set the number of shakes available to the current cluster construction
-#     ############################################################
-#     local_number_of_shakes_remaining = self.number_of_shakes
-#
-#     ############################################################
-#     # initialize the backup in case add_shake gets us stuck in a lower local optima
-#     ############################################################
-#     backup_current_cluster = current_cluster.copy()
-#     backup_add_candidates = add_candidates.copy()
-#     backup_remove_candidates = remove_candidates.copy()
-#     backup_current_score = current_score
-#     remove_counter = 0
-#     while (add_candidates or remove_candidates) and \
-#             abs(last_failed_remove_round_no - last_failed_add_round_no) != 1 \
-#             and remove_counter < 100:
-#         debug("Current cluster #%s" % str(len(self.initial_clustering)))
-#         decider = numpy.random.rand()
-#
-#         ############################################################
-#         # CONSIDER ADDING A VERTEX ON THE BOUNDARY
-#         ############################################################
-#         if (decider <= .5 or last_failed_remove_round_no == round_no) and last_failed_add_round_no != round_no:
-#             # #@#
-#             # best_change, best_change_score = \
-#             #     find_best_add(self, add_candidates, current_cluster, current_score,
-#             #                   current_cluster_weight_in, current_cluster_weight_out)
-#             # #@#
-#             # if best_change is None:
-#             if len(current_cluster) > 5 and round_no % 4 == 1:
-#                 round_no += 1
-#                 ######################################################################
-#                 # JUST FOR COMPARISON
-#                 #####################################################################
-#                 # @#
-#                 best_change, best_change_score = \
-#                     find_best_add(self, add_candidates, current_cluster, current_score,
-#                                   current_cluster_weight_in, current_cluster_weight_out)
-#                 if best_change is None:
-#                     print("NO REGULAR ADD AVAILABLE")
-#                 if best_change:
-#                     print("REGULAR BEST CHANGE AVAILABLE WITH SCORE OF: %s" % str(best_change_score))
-#                 ######################################################################
-#                 # NOW FOR THE REAL CALL
-#                 #####################################################################
-#                 best_change, best_change_score = \
-#                     careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, current_score,
-#                                                         current_cluster_weight_in, current_cluster_weight_out)
-#                 # find_best_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
-#
-#                 if best_change:
-#
-#                     print("*******", current_score)
-#                     ##################################
-#                     # sanity check
-#                     ##################################
-#                     # new_cluster = [v for v in current_cluster]+[best_change]
-#                     # current_score_check = cohesiveness(self, new_cluster)
-#                     # if abs(best_change_score-current_score_check)>.001:
-#                     #     print(abs(best_change_score-current_score_check), best_change_score, current_score_check)
-#
-#                     print("adding: ", best_change)
-#                     current_score = best_change_score
-#                     current_cluster_weight_in, current_cluster_weight_out = \
-#                         add(self, add_candidates, current_cluster, remove_candidates, best_change,
-#                             best_change_score, current_cluster_weight_in, current_cluster_weight_out)
-#                     current_cluster_construction_log.append(Action("adding", best_change))
-#                     current_cluster_construction_log.append(
-#                         ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
-#                     print(current_score)
-#                     #################################################
-#                     # update the backup
-#                     #################################################
-#                     if current_score > backup_current_score:
-#                         backup_current_cluster = current_cluster.copy()
-#                         backup_add_candidates = add_candidates.copy()
-#                         backup_remove_candidates = remove_candidates.copy()
-#                         backup_current_score = current_score
-#
-#                     for counter in range(4):
-#                         round_no += 1
-#                         best_change, best_change_score = \
-#                             find_best_suboptimal_add(self,
-#                                                      add_candidates,
-#                                                      current_cluster,
-#                                                      current_cluster_weight_in,
-#                                                      current_cluster_weight_out)
-#                         if best_change:
-#                             current_score = best_change_score
-#                             current_cluster_weight_in, current_cluster_weight_out = \
-#                                 add(self, add_candidates, current_cluster, remove_candidates, best_change,
-#                                     best_change_score, current_cluster_weight_in, current_cluster_weight_out)
-#                             current_cluster_construction_log.append(Action("adding", best_change))
-#                             current_cluster_construction_log.append(
-#                                 ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
-#                             #################################################
-#                             # update the backup
-#                             #################################################
-#                             if current_score > backup_current_score:
-#                                 backup_current_cluster = current_cluster.copy()
-#                                 backup_add_candidates = add_candidates.copy()
-#                                 backup_remove_candidates = remove_candidates.copy()
-#                                 backup_current_score = current_score
-#                         else:
-#                             debug("\n", "No improvement by ADDING", "\n")
-#                             current_cluster_construction_log.append(
-#                                 Action("failed to add, current cohesiveness: %s" % str(current_score)))
-#                             last_failed_add_round_no = round_no
-#                     for counter in range(2):
-#                         round_no += 1
-#                         best_change, best_change_score = \
-#                             find_best_add(self, add_candidates, current_cluster, current_score,
-#                                           current_cluster_weight_in, current_cluster_weight_out)
-#                         if best_change:
-#                             current_score = best_change_score
-#                             current_cluster_weight_in, current_cluster_weight_out = \
-#                                 add(self, add_candidates, current_cluster, remove_candidates, best_change,
-#                                     best_change_score, current_cluster_weight_in, current_cluster_weight_out)
-#                             current_cluster_construction_log.append(Action("adding", best_change))
-#                             current_cluster_construction_log.append(
-#                                 ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
-#                             #################################################
-#                             # update the backup
-#                             #################################################
-#                             if current_score > backup_current_score:
-#                                 backup_current_cluster = current_cluster.copy()
-#                                 backup_add_candidates = add_candidates.copy()
-#                                 backup_remove_candidates = remove_candidates.copy()
-#                                 backup_current_score = current_score
-#
-#                         else:
-#                             debug("\n", "No improvement by ADDING", "\n")
-#                             current_cluster_construction_log.append(
-#                                 Action("failed to add, current cohesiveness: %s" % str(current_score)))
-#                             last_failed_add_round_no = round_no
-#
-#                         print(".......................", current_score)
-#
-#                 else:
-#                     debug("\n", "No improvement by ADDING", "\n")
-#                     current_cluster_construction_log.append(
-#                         Action("failed to add, current cohesiveness: %s" % str(current_score)))
-#                     last_failed_add_round_no = round_no
-#             else:
-#                 round_no += 1
-#                 # @#
-#                 best_change, best_change_score = \
-#                     find_best_add(self, add_candidates, current_cluster, current_score,
-#                                   current_cluster_weight_in, current_cluster_weight_out)
-#
-#                 if best_change:
-#                     print("-------------------------------------------------------------", current_score)
-#                     current_score = best_change_score
-#                     print("-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<", current_score)
-#
-#                     current_score_check = cohesiveness(self, [v for v in current_cluster] + [best_change])
-#                     ##################################
-#                     # sanity check
-#                     ##################################
-#                     if abs(best_change_score - current_score_check) > .001:
-#                         print("----------------", current_score, current_score_check)
-#                     current_cluster_weight_in, current_cluster_weight_out = \
-#                         add(self, add_candidates, current_cluster, remove_candidates, best_change,
-#                             best_change_score, current_cluster_weight_in, current_cluster_weight_out)
-#                     current_cluster_construction_log.append(Action("adding", best_change))
-#                     current_cluster_construction_log.append(
-#                         ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
-#                     #################################################
-#                     # update the backup
-#                     #################################################
-#                     if current_score > backup_current_score:
-#                         backup_current_cluster = current_cluster.copy()
-#                         backup_add_candidates = add_candidates.copy()
-#                         backup_remove_candidates = remove_candidates.copy()
-#                         backup_current_score = current_score
-#
-#                 else:
-#                     debug("\n", "No improvement by ADDING", "\n")
-#                     current_cluster_construction_log.append(
-#                         Action("failed to add, current cohesiveness: %s" % str(current_score)))
-#                     last_failed_add_round_no = round_no
-#
-#         ############################################################
-#         # CONSIDER REMOVING A VERTEX ON THE BOUNDARY
-#         ############################################################
-#         if (decider > .5 or last_failed_add_round_no == round_no) and last_failed_remove_round_no != round_no:
-#             round_no += 1
-#             best_change, best_change_score = \
-#                 find_best_remove(self, remove_candidates, current_cluster, current_cluster_weight_in,
-#                                  current_cluster_weight_out, current_score)
-#             if best_change:
-#                 remove_counter += 1
-#                 print(
-#                     "==================================================== REMOVING %s=====================================================" % str(
-#                         best_change))
-#                 current_score = best_change_score
-#                 current_cluster_weight_in, current_cluster_weight_out = \
-#                     remove(self, remove_candidates, add_candidates, current_cluster, best_change, best_change_score,
-#                            current_cluster_weight_in, current_cluster_weight_out)
-#                 current_cluster_construction_log.append(Action("removing", best_change))
-#                 current_cluster_construction_log.append(
-#                     ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
-#                 #################################################
-#                 # update the backup
-#                 #################################################
-#                 if current_score > backup_current_score:
-#                     backup_current_cluster = current_cluster.copy()
-#                     backup_add_candidates = add_candidates.copy()
-#                     backup_remove_candidates = remove_candidates.copy()
-#                     backup_current_score = current_score
-#             else:
-#                 debug("\n", "No improvement by REMOVING", "\n")
-#                 current_cluster_construction_log.append(
-#                     Action("failed to remove, current cohesiveness: %s" % str(current_score)))
-#                 last_failed_remove_round_no = round_no
-#
-#         ############################################################
-#         # IF STUCK IN LOCAL OPTIMUM, CONSIDER TAKING A 'BAD' ADD STEP
-#         ############################################################
-#         if local_number_of_shakes_remaining and add_candidates and abs(
-#                 last_failed_remove_round_no - last_failed_add_round_no) == 1:
-#             local_number_of_shakes_remaining -= 1
-#             current_cluster_construction_log.append(
-#                 Action("trying add_shake, current cohesiveness: %s" % str(current_score)))
-#             current_score, \
-#             current_cluster_weight_in, \
-#             current_cluster_weight_out, \
-#             round_no, \
-#             last_failed_add_round_no = \
-#                 add_shake(self,
-#                           add_candidates,
-#                           remove_candidates,
-#                           current_cluster,
-#                           current_cluster_weight_in,
-#                           current_cluster_weight_out,
-#                           round_no,
-#                           last_failed_add_round_no)
-#             current_cluster_construction_log.append(
-#                 ClusterState(current_cluster,
-#                              add_candidates,
-#                              remove_candidates,
-#                              current_score))
-#             # TODO: improve the granularity of the backup for add_shake
-#             #   what if in the middle of add shake we see an improvement that is lost by the end of add_shake
-#             #################################################
-#             # update the backup
-#             #################################################
-#             if current_score > backup_current_score:
-#                 backup_current_cluster = current_cluster.copy()
-#                 backup_add_candidates = add_candidates.copy()
-#                 backup_remove_candidates = remove_candidates.copy()
-#                 backup_current_score = current_score
-#
-#         debug("$$$$$$$$$", last_failed_add_round_no, last_failed_remove_round_no, decider)
-#
-#     #########################################
-#     # in the case that the current_cluster is not the best one that we saw, revert to the best one that we saw
-#     ##########################################
-#     if backup_current_score > current_score:
-#         current_cluster_construction_log.append(Action("reverting to previous state"))
-#         current_cluster = backup_current_cluster.copy()
-#         add_candidates = backup_add_candidates.copy()
-#         remove_candidates = backup_remove_candidates.copy()
-#         current_score = backup_current_score
-#         current_cluster_construction_log.append(
-#             ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
-#
-#     # add current_cluster to the list of clusters
-#     self.initial_clustering.append(current_cluster)
-#     self.construction_log[tuple([protein for protein in current_cluster])] = current_cluster_construction_log
-#     index += 1
-#     if not self.seed_from_all:
-#         considered_vertices.add(current_seed)
-#         for v in current_cluster:
-#             considered_vertices.add(v)
-#     print("CLUSTER #%s: %s" % (str(len(self.initial_clustering)), str([vertex for vertex in current_cluster])))
+from  src.cl1_randomized import cl1_randomized
+from src.common.common import *
+from src.construction.construction_operations import *
+
+def randomized_cluster_grower(cl1: cl1_randomized ,cs:ClusterState, current_cluster_construction_log):
+    def update_backup_cluster(cs, best_seen_cs):
+        if cs.cohesiveness > best_seen_cs.cohesiveness:
+            best_seen_cs = cs.make_backup()
+
+    def try_step(cs, best_seen_cs, search_function, change_function, current_cluster_construction_log, change_type):
+        cs.round_no+=1
+        search_function(cs, best_seen_cs)
+        if cs.best_change:
+            change_function(cs, best_seen_cs)
+            update_backup_cluster(cs, best_seen_cs)
+            current_cluster_construction_log.append(Action(change_type, cs.best_change))
+            current_cluster_construction_log.append(cs.make_backup())
+        else:
+            current_cluster_construction_log.append(Action("failed to %s, current cohesiveness: %s" % str(change_type, cs.cohesiveness)))
+            if change_type == "adding":
+                cs.last_failed_add_round_no = cs.round_no
+            else:
+                cs.last_failed_remove_round_no = cs.round_no
+
+    ############################################################
+    # initialize the backup in a shake heuristic gets us stuck in a lower local optima
+    ############################################################
+    best_seen_cs = cs.make_backup()
+    remove_counter = 0
+    while (cs.add_candidates or cs.remove_candidates) and \
+            abs(cs.last_failed_remove_round_no - cs.last_failed_add_round_no) != 1 \
+            and remove_counter < 100:
+        
+        decider = numpy.random.rand()
+        ############################################################
+        # CONSIDER ADDING A VERTEX ON THE BOUNDARY
+        ############################################################
+        if (decider <= .5 or cs.last_failed_remove_round_no == cs.round_no) and cs.last_failed_add_round_no != cs.round_no:
+            if len(cs.current_cluster) > 5 and cs.round_no % 4 == 1:
+                cs.round_no += 1
+                # ######################################################################
+                # # JUST FOR COMPARISON
+                # #####################################################################
+                # find_best_add(cl1, cs)
+                # if cs.best_change is None:
+                #     print("NO REGULAR ADD AVAILABLE")
+                # if cs.best_change:
+                #     print("REGULAR BEST CHANGE AVAILABLE WITH SCORE OF: %s" % str(cs.best_change_score))
+                ######################################################################
+                # NOW FOR THE REAL CALL
+                #####################################################################
+                try_step(cs,
+                          best_seen_cs,
+                          careful_find_best_2neighborhood_add(),
+                          add,
+                          current_cluster_construction_log,
+                          "adding")
+                if cs.best_change:
+                    for counter in range(4):
+                        try_step(cs,
+                                  best_seen_cs,
+                                  find_best_suboptimal_add,
+                                  add,
+                                  current_cluster_construction_log,
+                                  "adding")
+                    for counter in range(2):
+                        try_step(cs,
+                                  best_seen_cs,
+                                  find_best_add,
+                                  add,
+                                  current_cluster_construction_log,
+                                  "adding")
+            else:
+                try_step(cs,
+                          best_seen_cs,
+                          find_best_add,
+                          add,
+                          current_cluster_construction_log,
+                          "adding")
+        ############################################################
+        # CONSIDER REMOVING A VERTEX ON THE BOUNDARY
+        ############################################################
+        if (decider > .5 or cs.last_failed_add_round_no == cs.round_no) and cs.last_failed_remove_round_no != cs.round_no:
+            try_step(cs,
+                      best_seen_cs,
+                      find_best_add,
+                      remove,
+                      current_cluster_construction_log,
+                      "removing")
+
+        # TODO: make Bad Step work with the new object schema
+
+    #########################################
+    # in the case that the current_cluster is not the best one that we saw, revert to the best one that we saw
+    ##########################################
+    if best_seen_cs.cohesiveness > cs.cohesiveness:
+        current_cluster_construction_log.append(Action("reverting to previous state"))
+        current_cluster_construction_log.append(best_seen_cs)
+
+    # add current_cluster to the list of clusters
+    cl1.initial_clustering.append(best_seen_cs.current_cluster)
+    cl1.construction_log[tuple([protein for protein in best_seen_cs.current_cluster])] = current_cluster_construction_log
+
+    print("CLUSTER #%s: %s" % (str(len(cl1.initial_clustering)), str([vertex for vertex in best_seen_cs.current_cluster])))
