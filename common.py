@@ -13,9 +13,35 @@ import os
 import logging
 import pprint as pp
 from scipy.stats import logistic
+import cProfile, pstats, io
+from pstats import SortKey
+
+def profiler(cmd_str):
+    pr = cProfile.Profile()
+    pr.enable()
+    exec(cmd_str)
+    pr.disable()
+    s = io.StringIO()
+    sortby = SortKey.CUMULATIVE
+    ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+    ps.print_stats()
+    print(s.getvalue())
+
+class TwoN_Add:
+    def __init(self, add_candidate, good_neighbors, prior_cohesiveness, proposed_score, post_cohesiveness):
+        self.add_candidate = add_candidate
+        self.good_neighbors = good_neighbors
+        self.prior_cohesiveness = prior_cohesiveness
+        self.proposed_score = proposed_score
+        self.post_cohesiveness = post_cohesiveness
+
+class checking_2n_add:
+    def __init__(self):
+        self.changes_made =[TwoN_Add]
+        self.final_cohesiveness = None
 
 
-logistic.cdf(10)
+
 def setup_custom_logger(name):
     """ Setup logger """
     LOGGING_FILE_PATH = './logs/cl1_randomized.log'

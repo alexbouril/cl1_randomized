@@ -71,22 +71,44 @@ def randomized_construction(self):
                 # CONSIDER ADDING A VERTEX ON THE BOUNDARY
                 ############################################################
                 if (decider <= .5 or last_failed_remove_round_no == round_no) and last_failed_add_round_no != round_no:
+                    # #@#
                     # best_change, best_change_score = \
-                    if  len(current_cluster)>5 and round_no%3==1:
+                    #     find_best_add(self, add_candidates, current_cluster, current_score,
+                    #                   current_cluster_weight_in, current_cluster_weight_out)
+                    # #@#
+                    # if best_change is None:
+                    if len(current_cluster)>5 and round_no%4==1:
                         round_no += 1
+                        ######################################################################
+                        # JUST FOR COMPARISON
+                        #####################################################################
+                        #@#
+                        best_change, best_change_score = \
+                            find_best_add(self, add_candidates, current_cluster, current_score,
+                                          current_cluster_weight_in, current_cluster_weight_out)
+                        if best_change is None:
+                            print("NO REGULAR ADD AVAILABLE")
+                        if best_change:
+                            print("REGULAR BEST CHANGE AVAILABLE WITH SCORE OF: %s"%str(best_change_score))
+                        ######################################################################
+                        # NOW FOR THE REAL CALL
+                        #####################################################################
                         best_change, best_change_score = \
                             careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
                         # find_best_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
 
                         if best_change:
+
+                            print("*******",current_score)
                             ##################################
                             # sanity check
                             ##################################
-                            new_cluster = [v for v in current_cluster]+[best_change]
-                            current_score_check = cohesiveness(self, new_cluster)
-                            if abs(best_change_score-current_score_check)>.001:
-                                print(abs(best_change_score-current_score_check), best_change_score, current_score_check)
+                            # new_cluster = [v for v in current_cluster]+[best_change]
+                            # current_score_check = cohesiveness(self, new_cluster)
+                            # if abs(best_change_score-current_score_check)>.001:
+                            #     print(abs(best_change_score-current_score_check), best_change_score, current_score_check)
 
+                            print("adding: ", best_change)
                             current_score = best_change_score
                             current_cluster_weight_in, current_cluster_weight_out = \
                                 add(self, add_candidates, current_cluster, remove_candidates, best_change,
@@ -94,6 +116,7 @@ def randomized_construction(self):
                             current_cluster_construction_log.append(Action("adding", best_change))
                             current_cluster_construction_log.append(
                                 ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
+                            print(current_score)
                             #################################################
                             # update the backup
                             #################################################
@@ -103,7 +126,7 @@ def randomized_construction(self):
                                 backup_remove_candidates = remove_candidates.copy()
                                 backup_current_score = current_score
 
-                            for counter in range(2):
+                            for counter in range(4):
                                 round_no += 1
                                 best_change, best_change_score = \
                                     find_best_suboptimal_add(self,
@@ -160,6 +183,8 @@ def randomized_construction(self):
                                         Action("failed to add, current cohesiveness: %s" % str(current_score)))
                                     last_failed_add_round_no = round_no
 
+                                print(".......................",current_score)
+
                         else:
                             debug("\n", "No improvement by ADDING", "\n")
                             current_cluster_construction_log.append(
@@ -167,12 +192,16 @@ def randomized_construction(self):
                             last_failed_add_round_no = round_no
                     else:
                         round_no += 1
+                        #@#
                         best_change, best_change_score = \
                             find_best_add(self, add_candidates, current_cluster, current_score,
                                                                 current_cluster_weight_in, current_cluster_weight_out)
 
                         if best_change:
+                            print("-------------------------------------------------------------", current_score)
                             current_score = best_change_score
+                            print("-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<", current_score)
+
                             current_score_check = cohesiveness(self, [v for v in current_cluster]+[best_change])
                             ##################################
                             # sanity check
