@@ -1,6 +1,4 @@
-from cl1_randomized import *
-from common import *
-from graph import *
+from src.common.common import *
 
 nice_comment("hello world.  what's going on?")
 print(nice_comment("DETERMINE THE QUALITY OF THE RESULT USING ORIGINAL AUTHORS' MEASURES"))

@@ -1,12 +1,11 @@
 #exec(open("commands.py").read())
 #exec(open("commands.py").read())
 #python commands.py
-from cl1_randomized import *
-from common import *
+from src.cl1_randomized.cl1_randomized import *
 import matplotlib.pyplot as plt
 plt.style.use('seaborn-whitegrid')
 import numpy as np
-import pprint as pp
+
 
 def convert_cluster_list_to_subgraph_text(cl1_obj, cluster_list,output_file_name = "test.txt"):
     f = open(output_file_name, "w+")

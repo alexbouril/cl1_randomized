@@ -1,6 +1,5 @@
-from common import *
 from graph import *
-
+from src.common.common import *
 
 def find_best_add_list(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out):
     best_change_score = current_score

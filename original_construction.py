@@ -1,6 +1,5 @@
-from common import *
-from construction_operations import *
-from graph import *
+from src.construction.construction_operations import *
+
 
 def oc(self):
     considered_vertices = set()
