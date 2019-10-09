@@ -1,20 +1,14 @@
-import sys
-import heapq
-import numpy as np
-import pickle
 import time
 import pickle
-import datetime
 DEBUG = False
 SLEEP_DEBUG = False
-import numpy
-from cluster_quality import cohesiveness, density
 import os
 import logging
-import pprint as pp
-from scipy.stats import logistic
 import cProfile, pstats, io
 from pstats import SortKey
+import numpy
+import heapq
+import datetime
 
 def profiler(cmd_str):
     pr = cProfile.Profile()

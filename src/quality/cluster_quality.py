@@ -1,6 +1,3 @@
-from common import *
-
-
 def cohesiveness(self, list_of_proteins) -> float:
     """Returns the cohesiveness of a potential complex.
 

@@ -1,10 +1,11 @@
 from __init__ import *
-from common import *
+from src.common.common import *
 from graph import Graph
-from randomized_construction import randomized_construction
+from src.construction.randomized_construction import randomized_construction
 from original_construction import oc
+from src.quality.cluster_quality import *
 import sys
-import math
+
 
 #TODO implement find 1, 2, 3 neighborhood of current cluster
 #TODO implement add based on cohesiveness of 2 neighborhood
@@ -86,8 +87,8 @@ class CL1_Randomized:
         ############################################################
         # SET UP THE LOGGER
         ############################################################
-        self.logger = setup_custom_logger('cl1_randomized')
-        self.logger.info(f'(RUN:{self.run_title}) Starting cl1_randomized v{__version__} ({__status__}) [{__website__}]')
+        # self.logger = setup_custom_logger('cl1_randomized')
+        # self.logger.info(f'(RUN:{self.run_title}) Starting cl1_randomized v{__version__} ({__status__}) [{__website__}]')
 
         ############################################################
         # OUTPUTS OF CALCULATIONS
@@ -99,6 +100,7 @@ class CL1_Randomized:
         self.initial_clustering = list()
         self.initial_clustering_seeds = list()
         self.initial_cluster_list = list()
+        self.zipper_merged_cluster_list = list()
         self.merged_cluster_list = list()
         self.sizeThreshold_merged_cluster_list = list()
         self.densityThreshold_sizeThreshold_merged_cluster_list = list()
@@ -206,6 +208,82 @@ class CL1_Randomized:
             self.merged_cluster_list = new_clusters
 
         merger()
+
+        ############################################################
+        # ZIPPER MERGE COMPLEXES
+        ############################################################
+        def zipper_merger():  # takes a list of clusters
+            threshold = self.merge_threshold
+            hash_graph = dict()
+
+            def find_one_neighborhood_of_complex(complex):
+                complex_set = set([v for v in complex])
+                neighbor_set = set()
+                for v in complex_set:
+                    for u in self.graph.hash_graph[v]:
+                        if u not in complex_set:
+                            neighbor_set.add(u)
+                return complex_set, neighbor_set
+
+            def similarity(A, B):
+                A_complex_set, A_neighbor_set = find_one_neighborhood_of_complex(A)
+                B_complex_set, B_neighbor_set = find_one_neighborhood_of_complex(B)
+
+
+
+                """Implements the overlap score described in the paper
+
+                :param A: a set
+                :param B: a set
+                :return: the overlap score
+                """
+                numerator = len(A.intersection(B)) ** 2
+                denominator = len(A) * len(B)
+                return numerator / denominator
+
+            def dfs(index, local_visited):
+                local_visited.add(index)
+                for neigbor in hash_graph[index]:
+                    if neigbor not in local_visited:
+                        dfs(neigbor, local_visited)
+
+            for i in range(len(self.initial_cluster_list)):
+                if i not in hash_graph:
+                    hash_graph[i] = set()
+                for j in range(i + 1, len(self.initial_cluster_list)):
+                    if similarity(self.initial_cluster_list[i], self.initial_cluster_list[j]) > threshold:
+                        if i in hash_graph:
+                            hash_graph[i].add(j)
+                        else:
+                            hash_graph[i] = {j}
+                        if j in hash_graph:
+                            hash_graph[j].add(i)
+                        else:
+                            hash_graph[j] = {i}
+
+            global_visited = set()
+            merge_indices = list()
+            for index in range(len(self.initial_cluster_list)):
+                if index not in global_visited:
+                    local_visited = set()
+                    dfs(index, local_visited)
+                    # TODO: is the copy necessary?
+                    merge_indices.append(local_visited.copy())
+                    for reached in local_visited:
+                        global_visited.add(reached)
+
+            new_clusters = list()
+            for group in merge_indices:
+                new_cluster = set()
+                for cluster_index in group:
+                    new_cluster = new_cluster.union(self.initial_cluster_list[cluster_index])
+                new_clusters.append(new_cluster)
+
+            self.merged_cluster_list = new_clusters
+
+        # merger()
+
+
 
         ############################################################
         # THRESHOLD BASED ON SIZE

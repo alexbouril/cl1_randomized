@@ -1,6 +1,3 @@
-from common import *
-
-
 def dfs(self, current_vertex, ignore_vertex, current_cluster_membership_hashset, visited):
     visited.add(current_vertex)
     for neighbor in self.graph.hash_graph[current_vertex]:
