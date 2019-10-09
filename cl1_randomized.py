@@ -651,6 +651,9 @@ if __name__ == "__main__":
     #                    gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
     # exec("networkx_tests.py")
 
+    pr = cProfile.Profile()
+    pr.enable()
+    # ... do something ...
 
 
     a = CL1_Randomized("cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality',
@@ -662,13 +665,18 @@ if __name__ == "__main__":
                        number_of_shakes=0,
                        number_of_bad_adds=2,
                        sort_seeds_by="weight",
-                       care_about_cuts=True,
+                       care_about_cuts=False,
                        seed_from_all=True,
                        gsc_appearance_ratio_threshold=.9,
                        found_gsc_jaccard_threshold=.8,
                        gold_standard_filename="cl1_gold_standard/gold_standard/mips_3_100.txt")
 
-
+    pr.disable()
+    s = io.StringIO()
+    sortby = SortKey.CUMULATIVE
+    ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+    ps.print_stats()
+    print(s.getvalue())
 
 
 

@@ -105,8 +105,9 @@ def careful_find_best_2neighborhood_add(self, add_candidates, current_cluster, c
         # dict_gain[v]["in"]+=in_N_v_grabbed
         # print(v, d2n_to_grab)
         # factor = len(current_cluster)*.09
-        factor = logistic.cdf(len(current_cluster)/10)
+        # factor = logistic.cdf(len(current_cluster)/10)
         # factor = .2* logistic.cdf(len(current_cluster))
+        factor = len(current_cluster)/10
         numerator+= factor*neighborhood_gain[v]["in"]
         denominator+= factor*\
                       (neighborhood_gain[v]["in"] + neighborhood_gain[v]["out"])

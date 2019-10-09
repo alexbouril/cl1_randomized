@@ -13,6 +13,19 @@ import os
 import logging
 import pprint as pp
 from scipy.stats import logistic
+import cProfile, pstats, io
+from pstats import SortKey
+
+def profiler(cmd_str):
+    pr = cProfile.Profile()
+    pr.enable()
+    exec(cmd_str)
+    pr.disable()
+    s = io.StringIO()
+    sortby = SortKey.CUMULATIVE
+    ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+    ps.print_stats()
+    print(s.getvalue())
 
 class TwoN_Add:
     def __init(self, add_candidate, good_neighbors, prior_cohesiveness, proposed_score, post_cohesiveness):
