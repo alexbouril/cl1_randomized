@@ -7,7 +7,6 @@ def randomized_construction(cl1:CL1_Randomized):
     :param cl1:
     :return:
     """
-    print("here")
     considered_vertices = set()
     index = 0
     if cl1.sort_seeds_by == 'degree':
@@ -42,7 +41,6 @@ def randomized_construction(cl1:CL1_Randomized):
             ############################################################
             current_cluster, remove_candidates, add_candidates, current_score, current_cluster_weight_in, current_cluster_weight_out = \
                 initialize_complex(cl1, current_seed)
-
             current_cluster_construction_log.append(
                 ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
 
@@ -66,6 +64,7 @@ def randomized_construction(cl1:CL1_Randomized):
             # Grow the cluster
             ############################################################
             randomized_cluster_grower(cl1, cs, current_cluster_construction_log)
+            index+=1
 
 
 

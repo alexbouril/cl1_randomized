@@ -3,21 +3,20 @@ from src.common.common import *
 from src.construction.construction_operations import *
 
 def randomized_cluster_grower(cl1: CL1_Randomized,cs:ClusterState, current_cluster_construction_log):
-    print("there")
     def update_backup_cluster(cs, best_seen_cs):
         if cs.cohesiveness > best_seen_cs.cohesiveness:
             best_seen_cs = cs.make_backup()
 
     def try_step(cs, best_seen_cs, search_function, change_function, current_cluster_construction_log, change_type):
         cs.round_no+=1
-        search_function(cs, best_seen_cs)
+        search_function(cl1, cs)
         if cs.best_change:
-            change_function(cs, best_seen_cs)
+            change_function(cl1, cs)
             update_backup_cluster(cs, best_seen_cs)
             current_cluster_construction_log.append(Action(change_type, cs.best_change))
             current_cluster_construction_log.append(cs.make_backup())
         else:
-            current_cluster_construction_log.append(Action("failed to %s, current cohesiveness: %s" % str(change_type, cs.cohesiveness)))
+            current_cluster_construction_log.append(Action("failed to %s, current cohesiveness: %s" % (change_type, str(cs.cohesiveness))))
             if change_type == "adding":
                 cs.last_failed_add_round_no = cs.round_no
             else:
@@ -31,8 +30,6 @@ def randomized_cluster_grower(cl1: CL1_Randomized,cs:ClusterState, current_clust
     while (cs.add_candidates or cs.remove_candidates) and \
             abs(cs.last_failed_remove_round_no - cs.last_failed_add_round_no) != 1 \
             and remove_counter < 100:
-        print([v for v in cs.current_cluster])
-        print([v for v in cs.add_candidates])
         decider = numpy.random.rand()
         ############################################################
         # CONSIDER ADDING A VERTEX ON THE BOUNDARY
