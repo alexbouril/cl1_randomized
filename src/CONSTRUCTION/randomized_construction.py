@@ -1,4 +1,4 @@
-from src.construction.randomized_cluster_grower import *
+from src.CONSTRUCTION.randomized_cluster_grower import *
 from src.CL1R.cl1r import CL1_Randomized
 
 
@@ -33,7 +33,7 @@ def randomized_construction(cl1:CL1_Randomized):
             current_cluster_construction_log.append(Action("seed", current_seed))
             debug("Starting cluster #%s" % str(len(cl1.initial_clustering)))
             # time.sleep(3)
-            # TODO: ignore vertices that have been removed before during construction of current cluster
+            # TODO: ignore vertices that have been removed before during CONSTRUCTION of current cluster
             ignore_vertices = set()
 
             ############################################################
@@ -91,7 +91,7 @@ def randomized_construction(cl1:CL1_Randomized):
 
 
 # from src.COMMON.COMMON import *
-# from src.construction.construction_operations import *
+# from src.CONSTRUCTION.construction_operations import *
 # from src.QUALITY.cluster_quality import *
 #
 # def randomized_construction(self):
@@ -126,7 +126,7 @@ def randomized_construction(cl1:CL1_Randomized):
 #             current_cluster_construction_log.append(Action("seed", current_seed))
 #             debug("Starting cluster #%s" % str(len(self.initial_clustering)))
 #             # time.sleep(3)
-#             # TODO: ignore vertices that have been removed before during construction of current cluster
+#             # TODO: ignore vertices that have been removed before during CONSTRUCTION of current cluster
 #             ignore_vertices = set()
 #
 #             ############################################################
@@ -146,7 +146,7 @@ def randomized_construction(cl1:CL1_Randomized):
 #             round_no = 0
 #
 #             ############################################################
-#             # Set the number of shakes available to the current cluster construction
+#             # Set the number of shakes available to the current cluster CONSTRUCTION
 #             ############################################################
 #             local_number_of_shakes_remaining = self.number_of_shakes
 #

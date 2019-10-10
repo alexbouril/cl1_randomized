@@ -1,7 +1,7 @@
 from ..CL1R.cl1r import *
 from src.COMMON.cmn import *
-from src.construction.find import *
-from src.construction.modify import add, remove
+from src.CONSTRUCTION.find import *
+from src.CONSTRUCTION.modify import add, remove
 from src.QUALITY.quality import cohesiveness
 
 def randomized_cluster_grower(cl1: CL1_Randomized, cs:ClusterState, current_cluster_construction_log):

@@ -32,7 +32,7 @@ Add edges as disconnected lines in a single trace and nodes as a scatter trace
 '''
 
 ##############################################
-# Find all Nodes involved in this cluster's construction
+# Find all Nodes involved in this cluster's CONSTRUCTION
 ##############################################
 all_nodes = set()
 for cs in [entry for entry in current_cluster_construction_log if type(entry)==ClusterState]:
@@ -41,7 +41,7 @@ for cs in [entry for entry in current_cluster_construction_log if type(entry)==C
 all_nodes = list(all_nodes)
 # print(all_nodes)
 ##############################################
-# Find all the edges involved in this cluster's construction
+# Find all the edges involved in this cluster's CONSTRUCTION
 ##############################################
 all_edges = set()
 for i in all_nodes:
@@ -52,7 +52,7 @@ for i in all_nodes:
 all_edges = list(all_edges)
 # print(all_edges)
 ##############################################
-# Create a GRAPH G_plus will all the edges and nodes involved in this cluster's construction
+# Create a GRAPH G_plus will all the edges and nodes involved in this cluster's CONSTRUCTION
 ##############################################
 G_plus= nx.Graph()
 G_plus.add_weighted_edges_from(all_edges)

@@ -1,5 +1,5 @@
 print(dir())
-from src.construction.randomized_construction import *
+from src.CONSTRUCTION.randomized_construction import *
 from src.cluster_quality.quality import *
 
 # TODO: package/syspath,1-1 comparison, Cython, Threading, Command-line args, currying, class variable, hidden class variable, numpy, inheritance
@@ -11,7 +11,7 @@ from src.cluster_quality.quality import *
 #TODO GRAPH cluster with their 1,2,3 neighborhoods in the background
 #TODO Fix object saving
 
-#TODO try merging a run of add_shake enabled with a run of add_shake disabled
+#TODO try MERGING a run of add_shake enabled with a run of add_shake disabled
 
 
 #TODO: make the random proportional bad_adds option work for randomized_construction()
