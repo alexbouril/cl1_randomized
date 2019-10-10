@@ -8,14 +8,18 @@ def randomized_cluster_grower(cl1: CL1_Randomized,cs:ClusterState, current_clust
             best_seen_cs = cs.make_backup()
 
     def try_step(cs, best_seen_cs, search_function, change_function, current_cluster_construction_log, change_type):
+        print(search_function)
+        print(change_function)
         cs.round_no+=1
         search_function(cl1, cs)
         if cs.best_change:
+            print("yeah")
             change_function(cl1, cs)
             update_backup_cluster(cs, best_seen_cs)
             current_cluster_construction_log.append(Action(change_type, cs.best_change))
             current_cluster_construction_log.append(cs.make_backup())
         else:
+            print("nope")
             current_cluster_construction_log.append(Action("failed to %s, current cohesiveness: %s" % (change_type, str(cs.cohesiveness))))
             if change_type == "adding":
                 cs.last_failed_add_round_no = cs.round_no

@@ -147,12 +147,13 @@ def find_best_add(cl1:CL1_Randomized, cs:ClusterState):
                       cl1.penalty_value_per_node * (len(cs.current_cluster) + 1)
         proposed_score = numerator / denominator
         if proposed_score > best_change_score:
-            best_change = v
-            best_change_score = proposed_score
-    return best_change, best_change_score
+            cs.best_change = v
+            cs.best_change_score = proposed_score
+    return cs.best_change, cs.best_change_score
 
 
 def add(cl1:CL1_Randomized, cs):
+    print("add called", cs.best_change)
     #################################################################
     # update the overall weight into and out of the current_cluster #
     #################################################################
@@ -212,7 +213,6 @@ def add(cl1:CL1_Randomized, cs):
                                          num_edges_to,
                                          weight_from,
                                          num_edges_from)
-
     #######################################################################
     # iterate over neighbors of change_vertex, and update each Relationship
     #######################################################################
@@ -286,8 +286,8 @@ def remove(cl1: CL1_Randomized, cs:ClusterState):
     ###############################################################################################
     # Update the current_cluster 's score, and overall weight into and out of the current cluster #
     ###############################################################################################
-    change_vertex_in = cs.remove_candidates[cs.change_vertex]._in
-    change_vertex_out = cs.remove_candidates[cs.change_vertex]._out
+    change_vertex_in = cs.remove_candidates[cs.best_change]._in
+    change_vertex_out = cs.remove_candidates[cs.best_change]._out
     cs.current_cluster_weight_in -= change_vertex_in
     cs.current_cluster_weight_out = cs.current_cluster_weight_out - change_vertex_out + change_vertex_in
     #######################################################################
