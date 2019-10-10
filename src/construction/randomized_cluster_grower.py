@@ -1,30 +1,37 @@
-from  src.cl1_randomized.cl1_randomized import *
-from src.common.common import *
-from src.construction.construction_operations import *
+from ..CL1R.cl1r import *
+from src.COMMON.cmn import *
+from src.construction.find import *
+from src.construction.modify import add, remove
+from src.QUALITY.quality import cohesiveness
 
-def randomized_cluster_grower(cl1: CL1_Randomized,cs:ClusterState, current_cluster_construction_log):
+def randomized_cluster_grower(cl1: CL1_Randomized, cs:ClusterState, current_cluster_construction_log):
     def update_backup_cluster(cs, best_seen_cs):
+
         if cs.cohesiveness > best_seen_cs.cohesiveness:
-            best_seen_cs = cs.make_backup()
+            # TODO make this step faster by updating references, don't need to copy back objects
+            best_seen_cs.cohesiveness = cs.cohesiveness
+            best_seen_cs.current_cluster = cs.current_cluster.copy()
+            best_seen_cs.add_candidates = cs.add_candidates.copy()
+            best_seen_cs.remove_candidates = cs.remove_candidates.copy()
+            # TODO: figure out why the following line has strange result
+            # best_seen_cs = cs.make_backup()
 
     def try_step(cs, best_seen_cs, search_function, change_function, current_cluster_construction_log, change_type):
-        print(search_function)
-        print(change_function)
         cs.round_no+=1
         search_function(cl1, cs)
         if cs.best_change:
-            print("yeah")
             change_function(cl1, cs)
             update_backup_cluster(cs, best_seen_cs)
             current_cluster_construction_log.append(Action(change_type, cs.best_change))
             current_cluster_construction_log.append(cs.make_backup())
         else:
-            print("nope")
             current_cluster_construction_log.append(Action("failed to %s, current cohesiveness: %s" % (change_type, str(cs.cohesiveness))))
             if change_type == "adding":
                 cs.last_failed_add_round_no = cs.round_no
             else:
                 cs.last_failed_remove_round_no = cs.round_no
+        if abs(cs.cohesiveness, cohesiveness(cl1, [v for v in cs.current_cluster]))>.001:
+            exit(3)
 
     ############################################################
     # initialize the backup in a shake heuristic gets us stuck in a lower local optima
@@ -35,6 +42,7 @@ def randomized_cluster_grower(cl1: CL1_Randomized,cs:ClusterState, current_clust
             abs(cs.last_failed_remove_round_no - cs.last_failed_add_round_no) != 1 \
             and remove_counter < 100:
         decider = numpy.random.rand()
+        # print(cs.cohesiveness, [v for v in cs.current_cluster])
         ############################################################
         # CONSIDER ADDING A VERTEX ON THE BOUNDARY
         ############################################################
@@ -54,7 +62,7 @@ def randomized_cluster_grower(cl1: CL1_Randomized,cs:ClusterState, current_clust
                 #####################################################################
                 try_step(cs,
                           best_seen_cs,
-                          careful_find_best_2neighborhood_add(),
+                          careful_find_best_2neighborhood_add,
                           add,
                           current_cluster_construction_log,
                           "adding")
@@ -83,11 +91,11 @@ def randomized_cluster_grower(cl1: CL1_Randomized,cs:ClusterState, current_clust
         ############################################################
         if (decider > .5 or cs.last_failed_add_round_no == cs.round_no) and cs.last_failed_remove_round_no != cs.round_no:
             try_step(cs,
-                      best_seen_cs,
-                      find_best_add,
-                      remove,
-                      current_cluster_construction_log,
-                      "removing")
+                     best_seen_cs,
+                     find_best_remove,
+                     remove,
+                     current_cluster_construction_log,
+                     "removing")
 
         # TODO: make Bad Step work with the new object schema
 
@@ -101,4 +109,6 @@ def randomized_cluster_grower(cl1: CL1_Randomized,cs:ClusterState, current_clust
     # add current_cluster to the list of clusters
     cl1.initial_clustering.append(best_seen_cs.current_cluster)
     cl1.construction_log[tuple([protein for protein in best_seen_cs.current_cluster])] = current_cluster_construction_log
+    print("best_seen", best_seen_cs.cohesiveness,[v for v in best_seen_cs.current_cluster])
     print("CLUSTER #%s: %s" % (str(len(cl1.initial_clustering)), str([vertex for vertex in best_seen_cs.current_cluster])))
+    print("COHESIVENESS: ", best_seen_cs.cohesiveness)

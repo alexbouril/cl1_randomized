@@ -1,4 +1,4 @@
-from src.common.common import *
+from src.COMMON.cmn import *
 # -*- coding: utf-8 -*-
 a = 0
 b = 1

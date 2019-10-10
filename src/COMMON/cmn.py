@@ -38,7 +38,7 @@ def profiler(cmd_str):
 
 def setup_custom_logger(name):
     """ Setup logger """
-    LOGGING_FILE_PATH = './logs/cl1_randomized.log'
+    LOGGING_FILE_PATH = './logs/CL1R.log'
 
     if not os.path.exists(os.path.dirname(LOGGING_FILE_PATH)):
         os.makedirs(os.path.dirname(LOGGING_FILE_PATH), exist_ok=True)
@@ -112,92 +112,6 @@ class Relationship:
         return s
 
 
-class ClusterState:
-    def __init__(self,
-                 current_cluster,
-                 add_candidates,
-                 remove_candidates,
-                 cohesiveness,
-                 best_change=None,
-                 best_change_score=None,
-                 current_cluster_weight_in=None,
-                 current_cluster_weight_out=None,
-                 neighborhood_2=None,
-                 neighborhood_3=None,
-                 last_failed_add_round_no = None,
-                 last_failed_remove_round_no=None,
-                 round_no=None,
-                 number_of_shakes=None):
-        self.current_cluster = current_cluster.copy()
-        self.current_cluster = copy_relationship_dictionary(current_cluster)
-        self.add_candidates = add_candidates.copy()
-        self.add_candidates = {rel:add_candidates[rel].copy() for rel in add_candidates}
-        self.remove_candidates = remove_candidates.copy()
-        self.remove_candidates = {rel:remove_candidates[rel].copy() for rel in remove_candidates}
-        self.cohesiveness = cohesiveness
-        self.neighborhood_2 = neighborhood_2
-        self.neighborhood_3 = neighborhood_3
-
-        self.best_change=best_change
-        self.best_change_score=best_change_score
-        self.current_cluster_weight_in=current_cluster_weight_in
-        self.current_cluster_weight_out=current_cluster_weight_out
-
-        self.last_failed_add_round_no = last_failed_add_round_no
-        self.last_failed_remove_round_no = last_failed_remove_round_no
-        self.round_no = round_no
-        self.local_number_of_shakes_remaining = number_of_shakes
-
-    def make_backup(self):
-        return ClusterState(self.current_cluster, self.add_candidates, self.remove_candidates, self.cohesiveness)
-
-    def stringify_heavy(self, graph):
-        s=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
-        s+=f"CURRENT_COHESIVENESS: {self.cohesiveness}\n"
-        s += "\n"
-        s+="**************************************\n"
-        s += "********** CURRENT CLUSTER: **********\n"
-        s+="**************************************\n"
-        s += "\n"
-        for protein in self.current_cluster:
-            s+=str(protein)+", "+graph.id_to_name[protein]+"\n"
-            s+=self.current_cluster[protein].stringify()
-        s += "\n"
-        s += "*************************************\n"
-        s+="********** ADD CANDIDATES: **********\n"
-        s+="*************************************\n"
-        s += "\n"
-
-        for protein in self.add_candidates:
-            s+=str(protein)+", "+graph.id_to_name[protein]+"\n"
-            s+=self.add_candidates[protein].stringify()
-        s+="\n"
-        s+="****************************************\n"
-        s+="********** REMOVE CANDIDATES: **********\n"
-        s+="****************************************\n"
-        s += "\n"
-
-        for protein in self.remove_candidates:
-            s+=str(protein)+", "+graph.id_to_name[protein]+"\n"
-            s+=self.remove_candidates[protein].stringify()
-        s+=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
-        return s
-
-
-    def stringify_lite(self):
-        s=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
-        s+=f"CURRENT_COHESIVENESS: {self.cohesiveness}\n"
-        s += "********** CURRENT CLUSTER: **********\n"
-        s+= str([protein for protein in self.current_cluster])+"\n"
-        s+="********** ADD CANDIDATES : **********\n"
-        s+= str([protein for protein in self.add_candidates]) +"\n"
-        s+="********** REMOVE CANDIDATES: **********\n"
-        s+= str([protein for protein in self.remove_candidates]) +"\n"
-        s+=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
-        return s
-
-
-
 
 
 class Action:
@@ -249,9 +163,6 @@ def stringify_single_cluster_construction_log(construction_log, cluster_key, ver
     s += "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ END CLUSTER @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"
     return s
 
-
-def copy_relationship_dictionary(rd):
-    return {rel:rd[rel].copy() for rel in rd}
 
 
 def get_quality(gold_standard_filename, output_filename):

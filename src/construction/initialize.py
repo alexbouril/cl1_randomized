@@ -1,103 +1,15 @@
-from src.cl1_randomized.cl1_randomized import *
-
-def careful_find_best_2neighborhood_add(cl1: CL1_Randomized, cs:ClusterState):
-    # if len(current_cluster)<5:
-    #     return find_best_add(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
-    # best_change_list = find_best_add_list(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out)
-
-    cs.best_change = None
-    best_change_score = cs.cohesiveness
-    best_proposed_score = cs.cohesiveness
-    neighborhood_gain = {v: {"in": 0,
-                            "out": 0}
-                                        for v in cs.add_candidates}
-    good_neighbors = dict()
-    for v in cs.add_candidates:
-    # for v in best_change_list:
-        numerator = cs.current_cluster_weight_in + \
-                    cs.add_candidates[v]._in
-        denominator = cs.current_cluster_weight_in + \
-                      cs.current_cluster_weight_out + \
-                      cl1.penalty_value_per_node * (len(cs.current_cluster) + 1)+\
-                      cs.add_candidates[v]._out
-
-        actual_score = numerator/denominator
-        #################################################################
-        #  CONSIDER WHAT COULD BE GAINED ON THE NEWLY EXPOSED BOUNDARY  #
-        #################################################################
-        distance_2_neighbors = cl1.graph.hash_graph[v]
-        in_and_out_for_distance_2_neighbors = dict()
-        for d2n in distance_2_neighbors:
-            if d2n in cs.current_cluster:
-                #########################################
-                #  THIS HAS ALREADY BEEN ACCOUNTED FOR  #
-                #########################################
-                '''
-                already captured in the term current_cluster_weight_in
-                '''
-                continue
-            else:
-                in_and_out_for_distance_2_neighbors[d2n]={"to_current_cluster":0,
-                                  "to_v":0,
-                                  "to_N(v)": 0,
-                                  "out":0}
-                distance_3_neighbors = cl1.graph.hash_graph[d2n]
-                for d3n in distance_3_neighbors:
-                    edge_weight = cl1.graph.hash_graph[d2n][d3n]
-                    if d3n is v:
-                        in_and_out_for_distance_2_neighbors[d2n]["to_v"] += 3*edge_weight
-                    if d3n in cs.current_cluster:
-                        in_and_out_for_distance_2_neighbors[d2n]["to_current_cluster"] += 3 * edge_weight
-                    elif d3n in distance_2_neighbors:
-                        in_and_out_for_distance_2_neighbors[d2n]["to_N(v)"] = edge_weight
-                    else:
-                        in_and_out_for_distance_2_neighbors[d2n]["out"] = edge_weight
-        d2n_to_grab = set()
-        for d2n in in_and_out_for_distance_2_neighbors:
-            # TODO: figure out what to do with "to_N(v)"
-            inbound = in_and_out_for_distance_2_neighbors[d2n]["to_current_cluster"] + \
-                      in_and_out_for_distance_2_neighbors[d2n]["to_v"]
-            outbound = in_and_out_for_distance_2_neighbors[d2n]["out"]
-            if inbound>=outbound:
-            # if inbound/(inbound+outbound)>actual_score:
-                d2n_to_grab.add(d2n)
-                neighborhood_gain[v]["in"]+=inbound
-                neighborhood_gain[v]["out"]+=outbound
-        good_neighbors[v] = d2n_to_grab
-        # in_N_v_grabbed = 0
-        # for a in d2n_to_grab:
-        #     for b in d2n_to_grab:
-        #         if b in self.graph.hash_graph[a]:
-        #             in_N_v_grabbed += self.graph.hash_graph[a][b]
-        # dict_gain[v]["in"]+=in_N_v_grabbed
-        # print(v, d2n_to_grab)
-        # factor = len(current_cluster)*.09
-        # factor = logistic.cdf(len(current_cluster)/10)
-        # factor = .2* logistic.cdf(len(current_cluster))
-        factor = len(cs.current_cluster)/10
-        numerator+= factor*neighborhood_gain[v]["in"]
-        denominator+= factor*\
-                      (neighborhood_gain[v]["in"] + neighborhood_gain[v]["out"])
-
-        proposed_score = numerator / denominator
-        if proposed_score > best_proposed_score:
-            cs.best_change = v
-            cs.best_change_score = actual_score
-            best_proposed_score = proposed_score
-        sleep_debug(.25)
-    # print("-------------",best_change)
-    return cs.best_change, cs.best_change_score, good_neighbors[cs.best_change]
+from ..CL1R.cl1r import *
 
 
-def initialize_complex(self, current_seed):
+def initialize_complex(cl1:CL1_Randomized, current_seed):
     ###########################################
     # initalize the current cluster
     ###########################################
     current_cluster = dict()
     seed_weight_to = 0
     seed_num_edges_to = 0
-    seed_weight_from = sum([self.graph.hash_graph[current_seed][tar] for tar in self.graph.hash_graph[current_seed]])
-    seed_num_edges_from = len(self.graph.hash_graph[current_seed])
+    seed_weight_from = sum([cl1.graph.hash_graph[current_seed][tar] for tar in cl1.graph.hash_graph[current_seed]])
+    seed_num_edges_from = len(cl1.graph.hash_graph[current_seed])
     current_cluster[current_seed] = Relationship(seed_weight_to,
                                                  seed_num_edges_to,
                                                  seed_weight_from,
@@ -116,12 +28,12 @@ def initialize_complex(self, current_seed):
     # initialize the candidates for addition
     ###########################################
     add_candidates = dict()
-    for target in self.graph.hash_graph[current_seed]:
-        target_weight_to = self.graph.hash_graph[current_seed][target]
-        target_num_edges = len(self.graph.hash_graph[target])
+    for target in cl1.graph.hash_graph[current_seed]:
+        target_weight_to = cl1.graph.hash_graph[current_seed][target]
+        target_num_edges = len(cl1.graph.hash_graph[target])
         target_num_edges_to = 1
         target_num_edges_from = target_num_edges - 1
-        target_weight_from = sum([self.graph.hash_graph[target][tar] for tar in self.graph.hash_graph[target] if
+        target_weight_from = sum([cl1.graph.hash_graph[target][tar] for tar in cl1.graph.hash_graph[target] if
                            tar != current_seed])
         add_candidates[target] = Relationship(target_weight_to,
                                               target_num_edges_to,
@@ -135,210 +47,11 @@ def initialize_complex(self, current_seed):
            current_cluster_weight_out
 
 
-def find_best_add(cl1:CL1_Randomized, cs:ClusterState):
-    cs.best_change = None
-    best_change_score = cs.cohesiveness
-    for v in cs.add_candidates:
-        numerator = cs.current_cluster_weight_in +\
-                    cs.add_candidates[v]._in
-        denominator = cs.current_cluster_weight_in+\
-                      cs.current_cluster_weight_out +\
-                      cs.add_candidates[v]._out +\
-                      cl1.penalty_value_per_node * (len(cs.current_cluster) + 1)
-        proposed_score = numerator / denominator
-        if proposed_score > best_change_score:
-            cs.best_change = v
-            cs.best_change_score = proposed_score
-    return cs.best_change, cs.best_change_score
 
 
-def add(cl1:CL1_Randomized, cs):
-    print("add called", cs.best_change)
-    #################################################################
-    # update the overall weight into and out of the current_cluster #
-    #################################################################
-    change_vertex_in = cs.add_candidates[cs.best_change]._in
-    change_vertex_out = cs.add_candidates[cs.best_change]._out
-    cs.current_cluster_weight_in += change_vertex_in
-    cs.current_cluster_weight_out = cs.current_cluster_weight_out - change_vertex_in + change_vertex_out
-
-    ###################################
-    # Move the change vertex from cs.add_candidates to current_cluster
-    ###################################
-    to_add = cs.add_candidates[cs.best_change].copy()
-    del cs.add_candidates[cs.best_change]
-    cs.current_cluster[cs.best_change] = to_add.copy()
-
-    ###################################
-    # Change vertex to remove_candidates if applicable
-    ###################################
-    if to_add.num_edges_from:
-        cs.remove_candidates[cs.best_change] = to_add.copy()
-
-    def update_v(v, edge_weight, collection):
-        collection[v]._in += edge_weight
-        collection[v]._out -= edge_weight
-        collection[v].num_edges_to += 1
-        collection[v].num_edges_from -= 1
-        #######################
-        # sanity check
-        #######################
-        thresh = -.001
-        a = collection[v]._in < thresh
-        b = collection[v]._out < thresh
-        c = collection[v].num_edges_to < thresh
-        d = collection[v].num_edges_from < thresh
-        if a or b or c or d:
-            print("oh no %s; %s%s%s%s"%(str(v), a, b, c, d))
-            exit()
-
-    def initialize_new_add_candidate_for_V(add_vertex, cl1, cs):
-        num_edges_to = 0
-        weight_to = 0
-        num_edges_from = 0
-        weight_from = 0
-        ###################################
-        # iterate over the neighbors of v
-        ###################################
-        for neighbor in cl1.graph.hash_graph[add_vertex]:
-            weight_prime = cl1.graph.hash_graph[add_vertex][neighbor]
-            if neighbor in cs.current_cluster:
-                num_edges_to += 1
-                weight_to += weight_prime
-            else:
-                num_edges_from += 1
-                weight_from += weight_prime
-
-        cs.add_candidates[add_vertex] = Relationship(weight_to,
-                                         num_edges_to,
-                                         weight_from,
-                                         num_edges_from)
-    #######################################################################
-    # iterate over neighbors of change_vertex, and update each Relationship
-    #######################################################################
-    for v in cl1.graph.hash_graph[cs.best_change]:
-        edge_weight = cl1.graph.hash_graph[v][cs.best_change]
-        if v in cs.add_candidates:
-            update_v(v, edge_weight, cs.add_candidates)
-        if v in cs.current_cluster:
-            update_v(v, edge_weight, cs.current_cluster)
-        # note that v may be in both the current_cluster and in remove_candidates
-        # remove_candidates is a subset of current_cluster
-        if v in cs.remove_candidates:
-            update_v(v, edge_weight, cs.remove_candidates)
-            # Check that a candidate for removal is still on the boundary
-            if cs.remove_candidates[v].num_edges_from == 0:
-                del cs.remove_candidates[v]
-        # handle the case that v is on the new boundary
-        # add v to add_candidates
-        if v not in cs.add_candidates and v not in cs.current_cluster:
-            initialize_new_add_candidate_for_V(v, cl1, cs)
-    return cs.current_cluster_weight_in, cs.current_cluster_weight_out
 
 
-def find_best_remove(cl1:CL1_Randomized, cs:ClusterState):
-    cs.best_change = None
-    # check that
-    #   (1) the cluster has more than one element
-    if len(cs.current_cluster) > 1:
-        if cl1.care_about_cuts:
-            current_cluster_membership_hashset = [vertex for vertex in cs.current_cluster]
-        for v in cs.remove_candidates:
-            if cl1.care_about_cuts:
-                # TODO: check if there is a cut.
-                #   Implement more efficiently using a Dynamic Connectivity algorithm
-                is_a_cut = True
-                visted = set()
-                start_point = None
-                for potential_start_point in current_cluster_membership_hashset:
-                    if potential_start_point != v:
-                        start_point = potential_start_point
-                        # consider break statement here
-                # check that
-                #   (2) removal of vertex under consideration will not disconnect cluster
-                dfs(cl1, start_point, v, current_cluster_membership_hashset, visted)
 
-                if len(visted) == -1 + len(current_cluster_membership_hashset):
-                    is_a_cut = False
-                    debug("%s is NOT a CUT" % str(v))
-                if is_a_cut:
-                    debug("%s is a CUT!" % str(v))
-                debug("cluster: %s" % str(current_cluster_membership_hashset))
-                debug("visited by DFS: %s" % str(visted))
-            else:
-                is_a_cut = False
-
-            if not is_a_cut:
-                # TODO: check that this makes sense
-                numerator = cs.current_cluster_weight_in - cs.remove_candidates[v]._in
-                denominator = cs.current_cluster_weight_in + \
-                              cs.current_cluster_weight_out - \
-                              cs.remove_candidates[v]._out +\
-                              cl1.penalty_value_per_node * (len(cl1.current_cluster) - 1)
-                proposed_score = numerator / denominator
-                if proposed_score > cs.cohesiveness:
-                    cs.best_change = v
-                    cs.cohesiveness = proposed_score
-    return cs.best_change, cs.cohesiveness()
-
-
-def remove(cl1: CL1_Randomized, cs:ClusterState):
-    ###############################################################################################
-    # Update the current_cluster 's score, and overall weight into and out of the current cluster #
-    ###############################################################################################
-    change_vertex_in = cs.remove_candidates[cs.best_change]._in
-    change_vertex_out = cs.remove_candidates[cs.best_change]._out
-    cs.current_cluster_weight_in -= change_vertex_in
-    cs.current_cluster_weight_out = cs.current_cluster_weight_out - change_vertex_out + change_vertex_in
-    #######################################################################
-    # Remove the change vertex from remove_candidates and current_cluster #
-    #######################################################################
-    to_remove = cs.remove_candidates[cs.best_change].copy()
-    del cs.remove_candidates[cs.best_change]
-    del cs.current_cluster[cs.best_change]
-    ################################################
-    # Also add the change vertex to add_candidates #
-    ################################################
-    cs.add_candidates[cs.best_change] = to_remove
-    #########################################################################
-    # iterate over neighbors of change_vertex, and update each Relationship #
-    #########################################################################
-    def update_v(v, edge_weight, collection):
-        collection[v]._in -= edge_weight
-        collection[v]._out += edge_weight
-        collection[v].num_edges_to -= 1
-        collection[v].num_edges_from += 1
-
-    for v in cl1.graph.hash_graph[cs.best_change]:
-        edge_weight = cl1.graph.hash_graph[cs.best_change][v]
-        # note that v may be in both the current_cluster and in remove_candidates
-        if v in cs.remove_candidates:
-            update_v(v, edge_weight, cs.remove_candidates)
-        if v in cs.current_cluster:
-            update_v(v, edge_weight, cs.current_cluster)
-            if cs.current_cluster[v].num_edges_from == 1:
-                cs.remove_candidates[v] = cs.current_cluster[v].copy()
-        if v in cs.add_candidates:
-            update_v(v, edge_weight, cs.add_candidates)
-            if cs.add_candidates[v].num_edges_to == 0:
-                del cs.add_candidates[v]
-    return cs.current_cluster_weight_in, cs.current_cluster_weight_out
-
-
-def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
-    cs.best_change = None
-    cs.best_change_score = -10000
-    for v in cs.add_candidates:
-        numerator =  cs.current_cluster_weight_in + cs.add_candidates[v]._in
-        denominator = cs.current_cluster_weight_in +\
-                      cs.current_cluster_weight_out+ \
-                      cs.add_candidates[v]._out +\
-                      cl1.penalty_value_per_node * (len(cs.current_cluster) + 1)
-        proposed_score = numerator / denominator
-        if proposed_score > cs.best_change:
-            cs.best_change = v
-            cs.best_change_score = proposed_score
-    return cs.best_change, cs.best_change_score
 
 
 # def add_shake(self, add_candidates, remove_candidates, current_cluster, cc_weight_in, cc_weight_out, round_no, last_failed_add_round_no):
@@ -361,8 +74,8 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 #            last_failed_add_round_no
 
 
-# from graph import *
-# from src.common.common import *
+# from GRAPH import *
+# from src.COMMON.COMMON import *
 #
 # def find_best_add_list(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out):
 #     best_change_score = current_score
@@ -420,7 +133,7 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 #         #################################################################
 #         #  CONSIDER WHAT COULD BE GAINED ON THE NEWLY EXPOSED BOUNDARY  #
 #         #################################################################
-#         distance_2_neighbors = self.graph.hash_graph[v]
+#         distance_2_neighbors = self.GRAPH.hash_graph[v]
 #         in_and_out_for_distance_2_neighbors = dict()
 #         for d2n in distance_2_neighbors:
 #             if d2n in current_cluster:
@@ -436,9 +149,9 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 #                                   "to_v":0,
 #                                   "to_N(v)": 0,
 #                                   "out":0}
-#                 distance_3_neighbors = self.graph.hash_graph[d2n]
+#                 distance_3_neighbors = self.GRAPH.hash_graph[d2n]
 #                 for d3n in distance_3_neighbors:
-#                     edge_weight = self.graph.hash_graph[d2n][d3n]
+#                     edge_weight = self.GRAPH.hash_graph[d2n][d3n]
 #                     if d3n is v:
 #                         in_and_out_for_distance_2_neighbors[d2n]["to_v"] += 3*edge_weight
 #                     if d3n in current_cluster:
@@ -462,8 +175,8 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 #         # in_N_v_grabbed = 0
 #         # for a in d2n_to_grab:
 #         #     for b in d2n_to_grab:
-#         #         if b in self.graph.hash_graph[a]:
-#         #             in_N_v_grabbed += self.graph.hash_graph[a][b]
+#         #         if b in self.GRAPH.hash_graph[a]:
+#         #             in_N_v_grabbed += self.GRAPH.hash_graph[a][b]
 #         # dict_gain[v]["in"]+=in_N_v_grabbed
 #         # print(v, d2n_to_grab)
 #         # factor = len(current_cluster)*.09
@@ -540,19 +253,19 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 #         # CONSIDER WHAT COULD BE GAINED ON THE NEWLY EXPOSED BOUNDARY
 #         #####################
 #         # find the neighbors of v
-#         distance_2_neighbors = self.graph.hash_graph[v]
+#         distance_2_neighbors = self.GRAPH.hash_graph[v]
 #         for d2n in distance_2_neighbors:
 #             if d2n in current_cluster:
-#                 numerator += factor * self.graph.hash_graph[v][d2n]
+#                 numerator += factor * self.GRAPH.hash_graph[v][d2n]
 #             else:
-#                 distance_3_neighbors = self.graph.hash_graph[d2n]
+#                 distance_3_neighbors = self.GRAPH.hash_graph[d2n]
 #                 for d3n in distance_3_neighbors:
 #                     if d3n in current_cluster:
-#                         numerator += factor * self.graph.hash_graph[d2n][d3n]
+#                         numerator += factor * self.GRAPH.hash_graph[d2n][d3n]
 #                     # elif d3n in add_candidates:
-#                     #     numerator += self.graph.hash_graph[d2n][d3n]
+#                     #     numerator += self.GRAPH.hash_graph[d2n][d3n]
 #                     else:
-#                         denominator += factor * self.graph.hash_graph[d2n][d3n]
+#                         denominator += factor * self.GRAPH.hash_graph[d2n][d3n]
 #
 #         proposed_score = numerator / denominator
 #         if proposed_score > best_change_score:
@@ -588,8 +301,8 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 #     current_cluster = dict()
 #     seed_weight_to = 0
 #     seed_num_edges_to = 0
-#     seed_weight_from = sum([self.graph.hash_graph[current_seed][tar] for tar in self.graph.hash_graph[current_seed]])
-#     seed_num_edges_from = len(self.graph.hash_graph[current_seed])
+#     seed_weight_from = sum([self.GRAPH.hash_graph[current_seed][tar] for tar in self.GRAPH.hash_graph[current_seed]])
+#     seed_num_edges_from = len(self.GRAPH.hash_graph[current_seed])
 #     current_cluster[current_seed] = Relationship(seed_weight_to,
 #                                                  seed_num_edges_to,
 #                                                  seed_weight_from,
@@ -608,12 +321,12 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 #     # initialize the candidates for addition
 #     ###########################################
 #     add_candidates = dict()
-#     for target in self.graph.hash_graph[current_seed]:
-#         target_weight_to = self.graph.hash_graph[current_seed][target]
-#         target_num_edges = len(self.graph.hash_graph[target])
+#     for target in self.GRAPH.hash_graph[current_seed]:
+#         target_weight_to = self.GRAPH.hash_graph[current_seed][target]
+#         target_num_edges = len(self.GRAPH.hash_graph[target])
 #         target_num_edges_to = 1
 #         target_num_edges_from = target_num_edges - 1
-#         target_weight_from = sum([self.graph.hash_graph[target][tar] for tar in self.graph.hash_graph[target] if
+#         target_weight_from = sum([self.GRAPH.hash_graph[target][tar] for tar in self.GRAPH.hash_graph[target] if
 #                            tar != current_seed])
 #         add_candidates[target] = Relationship(target_weight_to,
 #                                               target_num_edges_to,
@@ -642,19 +355,19 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 #         # CONSIDER WHAT COULD BE GAINED ON THE NEWLY EXPOSED BOUNDARY
 #         #####################
 #         # find the neighbors of v
-#         distance_2_neighbors = self.graph.hash_graph[v]
+#         distance_2_neighbors = self.GRAPH.hash_graph[v]
 #         for d2n in distance_2_neighbors:
 #             if d2n in current_cluster:
-#                 numerator += factor * self.graph.hash_graph[v][d2n]
+#                 numerator += factor * self.GRAPH.hash_graph[v][d2n]
 #             else:
-#                 distance_3_neighbors = self.graph.hash_graph[d2n]
+#                 distance_3_neighbors = self.GRAPH.hash_graph[d2n]
 #                 for d3n in distance_3_neighbors:
 #                     if d3n in current_cluster:
-#                         numerator += factor * self.graph.hash_graph[d2n][d3n]
+#                         numerator += factor * self.GRAPH.hash_graph[d2n][d3n]
 #                     # elif d3n in add_candidates:
-#                     #     numerator += self.graph.hash_graph[d2n][d3n]
+#                     #     numerator += self.GRAPH.hash_graph[d2n][d3n]
 #                     else:
-#                         denominator += factor * self.graph.hash_graph[d2n][d3n]
+#                         denominator += factor * self.GRAPH.hash_graph[d2n][d3n]
 #
 #         proposed_score = numerator / denominator
 #         if proposed_score > best_change_score:
@@ -765,8 +478,8 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 #         ###################################
 #         # iterate over the neighbors of v
 #         ###################################
-#         for neighbor in self.graph.hash_graph[add_vertex]:
-#             weight_prime = self.graph.hash_graph[add_vertex][neighbor]
+#         for neighbor in self.GRAPH.hash_graph[add_vertex]:
+#             weight_prime = self.GRAPH.hash_graph[add_vertex][neighbor]
 #             if neighbor in current_cluster:
 #                 num_edges_to += 1
 #                 weight_to += weight_prime
@@ -782,8 +495,8 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 #     #######################################################################
 #     # iterate over neighbors of change_vertex, and update each Relationship
 #     #######################################################################
-#     for v in self.graph.hash_graph[change_vertex]:
-#         edge_weight = self.graph.hash_graph[v][change_vertex]
+#     for v in self.GRAPH.hash_graph[change_vertex]:
+#         edge_weight = self.GRAPH.hash_graph[v][change_vertex]
 #         if v in add_candidates:
 #             update_v(v, edge_weight, add_candidates)
 #         if v in current_cluster:
@@ -915,8 +628,8 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 #             print("oh no %s; %s%s%s%s"%(str(v), a, b, c, d))
 #             exit()
 #
-#     for v in self.graph.hash_graph[change_vertex]:
-#         edge_weight = self.graph.hash_graph[change_vertex][v]
+#     for v in self.GRAPH.hash_graph[change_vertex]:
+#         edge_weight = self.GRAPH.hash_graph[change_vertex][v]
 #         # note that v may be in both the current_cluster and in remove_candidates
 #         if v in remove_candidates:
 #             update_v(v, edge_weight, remove_candidates)
@@ -978,8 +691,8 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 #            last_failed_add_round_no
 
 
-# from graph import *
-# from src.common.common import *
+# from GRAPH import *
+# from src.COMMON.COMMON import *
 #
 # def find_best_add_list(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out):
 #     best_change_score = current_score
@@ -1037,7 +750,7 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 #         #################################################################
 #         #  CONSIDER WHAT COULD BE GAINED ON THE NEWLY EXPOSED BOUNDARY  #
 #         #################################################################
-#         distance_2_neighbors = self.graph.hash_graph[v]
+#         distance_2_neighbors = self.GRAPH.hash_graph[v]
 #         in_and_out_for_distance_2_neighbors = dict()
 #         for d2n in distance_2_neighbors:
 #             if d2n in current_cluster:
@@ -1053,9 +766,9 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 #                                   "to_v":0,
 #                                   "to_N(v)": 0,
 #                                   "out":0}
-#                 distance_3_neighbors = self.graph.hash_graph[d2n]
+#                 distance_3_neighbors = self.GRAPH.hash_graph[d2n]
 #                 for d3n in distance_3_neighbors:
-#                     edge_weight = self.graph.hash_graph[d2n][d3n]
+#                     edge_weight = self.GRAPH.hash_graph[d2n][d3n]
 #                     if d3n is v:
 #                         in_and_out_for_distance_2_neighbors[d2n]["to_v"] += 3*edge_weight
 #                     if d3n in current_cluster:
@@ -1079,8 +792,8 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 #         # in_N_v_grabbed = 0
 #         # for a in d2n_to_grab:
 #         #     for b in d2n_to_grab:
-#         #         if b in self.graph.hash_graph[a]:
-#         #             in_N_v_grabbed += self.graph.hash_graph[a][b]
+#         #         if b in self.GRAPH.hash_graph[a]:
+#         #             in_N_v_grabbed += self.GRAPH.hash_graph[a][b]
 #         # dict_gain[v]["in"]+=in_N_v_grabbed
 #         # print(v, d2n_to_grab)
 #         # factor = len(current_cluster)*.09
@@ -1157,19 +870,19 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 #         # CONSIDER WHAT COULD BE GAINED ON THE NEWLY EXPOSED BOUNDARY
 #         #####################
 #         # find the neighbors of v
-#         distance_2_neighbors = self.graph.hash_graph[v]
+#         distance_2_neighbors = self.GRAPH.hash_graph[v]
 #         for d2n in distance_2_neighbors:
 #             if d2n in current_cluster:
-#                 numerator += factor * self.graph.hash_graph[v][d2n]
+#                 numerator += factor * self.GRAPH.hash_graph[v][d2n]
 #             else:
-#                 distance_3_neighbors = self.graph.hash_graph[d2n]
+#                 distance_3_neighbors = self.GRAPH.hash_graph[d2n]
 #                 for d3n in distance_3_neighbors:
 #                     if d3n in current_cluster:
-#                         numerator += factor * self.graph.hash_graph[d2n][d3n]
+#                         numerator += factor * self.GRAPH.hash_graph[d2n][d3n]
 #                     # elif d3n in add_candidates:
-#                     #     numerator += self.graph.hash_graph[d2n][d3n]
+#                     #     numerator += self.GRAPH.hash_graph[d2n][d3n]
 #                     else:
-#                         denominator += factor * self.graph.hash_graph[d2n][d3n]
+#                         denominator += factor * self.GRAPH.hash_graph[d2n][d3n]
 #
 #         proposed_score = numerator / denominator
 #         if proposed_score > best_change_score:
@@ -1205,8 +918,8 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 #     current_cluster = dict()
 #     seed_weight_to = 0
 #     seed_num_edges_to = 0
-#     seed_weight_from = sum([self.graph.hash_graph[current_seed][tar] for tar in self.graph.hash_graph[current_seed]])
-#     seed_num_edges_from = len(self.graph.hash_graph[current_seed])
+#     seed_weight_from = sum([self.GRAPH.hash_graph[current_seed][tar] for tar in self.GRAPH.hash_graph[current_seed]])
+#     seed_num_edges_from = len(self.GRAPH.hash_graph[current_seed])
 #     current_cluster[current_seed] = Relationship(seed_weight_to,
 #                                                  seed_num_edges_to,
 #                                                  seed_weight_from,
@@ -1225,12 +938,12 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 #     # initialize the candidates for addition
 #     ###########################################
 #     add_candidates = dict()
-#     for target in self.graph.hash_graph[current_seed]:
-#         target_weight_to = self.graph.hash_graph[current_seed][target]
-#         target_num_edges = len(self.graph.hash_graph[target])
+#     for target in self.GRAPH.hash_graph[current_seed]:
+#         target_weight_to = self.GRAPH.hash_graph[current_seed][target]
+#         target_num_edges = len(self.GRAPH.hash_graph[target])
 #         target_num_edges_to = 1
 #         target_num_edges_from = target_num_edges - 1
-#         target_weight_from = sum([self.graph.hash_graph[target][tar] for tar in self.graph.hash_graph[target] if
+#         target_weight_from = sum([self.GRAPH.hash_graph[target][tar] for tar in self.GRAPH.hash_graph[target] if
 #                            tar != current_seed])
 #         add_candidates[target] = Relationship(target_weight_to,
 #                                               target_num_edges_to,
@@ -1259,19 +972,19 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 #         # CONSIDER WHAT COULD BE GAINED ON THE NEWLY EXPOSED BOUNDARY
 #         #####################
 #         # find the neighbors of v
-#         distance_2_neighbors = self.graph.hash_graph[v]
+#         distance_2_neighbors = self.GRAPH.hash_graph[v]
 #         for d2n in distance_2_neighbors:
 #             if d2n in current_cluster:
-#                 numerator += factor * self.graph.hash_graph[v][d2n]
+#                 numerator += factor * self.GRAPH.hash_graph[v][d2n]
 #             else:
-#                 distance_3_neighbors = self.graph.hash_graph[d2n]
+#                 distance_3_neighbors = self.GRAPH.hash_graph[d2n]
 #                 for d3n in distance_3_neighbors:
 #                     if d3n in current_cluster:
-#                         numerator += factor * self.graph.hash_graph[d2n][d3n]
+#                         numerator += factor * self.GRAPH.hash_graph[d2n][d3n]
 #                     # elif d3n in add_candidates:
-#                     #     numerator += self.graph.hash_graph[d2n][d3n]
+#                     #     numerator += self.GRAPH.hash_graph[d2n][d3n]
 #                     else:
-#                         denominator += factor * self.graph.hash_graph[d2n][d3n]
+#                         denominator += factor * self.GRAPH.hash_graph[d2n][d3n]
 #
 #         proposed_score = numerator / denominator
 #         if proposed_score > best_change_score:
@@ -1382,8 +1095,8 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 #         ###################################
 #         # iterate over the neighbors of v
 #         ###################################
-#         for neighbor in self.graph.hash_graph[add_vertex]:
-#             weight_prime = self.graph.hash_graph[add_vertex][neighbor]
+#         for neighbor in self.GRAPH.hash_graph[add_vertex]:
+#             weight_prime = self.GRAPH.hash_graph[add_vertex][neighbor]
 #             if neighbor in current_cluster:
 #                 num_edges_to += 1
 #                 weight_to += weight_prime
@@ -1399,8 +1112,8 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 #     #######################################################################
 #     # iterate over neighbors of change_vertex, and update each Relationship
 #     #######################################################################
-#     for v in self.graph.hash_graph[change_vertex]:
-#         edge_weight = self.graph.hash_graph[v][change_vertex]
+#     for v in self.GRAPH.hash_graph[change_vertex]:
+#         edge_weight = self.GRAPH.hash_graph[v][change_vertex]
 #         if v in add_candidates:
 #             update_v(v, edge_weight, add_candidates)
 #         if v in current_cluster:
@@ -1532,8 +1245,8 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 #             print("oh no %s; %s%s%s%s"%(str(v), a, b, c, d))
 #             exit()
 #
-#     for v in self.graph.hash_graph[change_vertex]:
-#         edge_weight = self.graph.hash_graph[change_vertex][v]
+#     for v in self.GRAPH.hash_graph[change_vertex]:
+#         edge_weight = self.GRAPH.hash_graph[change_vertex][v]
 #         # note that v may be in both the current_cluster and in remove_candidates
 #         if v in remove_candidates:
 #             update_v(v, edge_weight, remove_candidates)
@@ -1595,8 +1308,8 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 #            last_failed_add_round_no
 #
 #
-# # from graph import *
-# # from src.common.common import *
+# # from GRAPH import *
+# # from src.COMMON.COMMON import *
 # #
 # # def find_best_add_list(self, add_candidates, current_cluster, current_score, current_cluster_weight_in, current_cluster_weight_out):
 # #     best_change_score = current_score
@@ -1654,7 +1367,7 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 # #         #################################################################
 # #         #  CONSIDER WHAT COULD BE GAINED ON THE NEWLY EXPOSED BOUNDARY  #
 # #         #################################################################
-# #         distance_2_neighbors = self.graph.hash_graph[v]
+# #         distance_2_neighbors = self.GRAPH.hash_graph[v]
 # #         in_and_out_for_distance_2_neighbors = dict()
 # #         for d2n in distance_2_neighbors:
 # #             if d2n in current_cluster:
@@ -1670,9 +1383,9 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 # #                                   "to_v":0,
 # #                                   "to_N(v)": 0,
 # #                                   "out":0}
-# #                 distance_3_neighbors = self.graph.hash_graph[d2n]
+# #                 distance_3_neighbors = self.GRAPH.hash_graph[d2n]
 # #                 for d3n in distance_3_neighbors:
-# #                     edge_weight = self.graph.hash_graph[d2n][d3n]
+# #                     edge_weight = self.GRAPH.hash_graph[d2n][d3n]
 # #                     if d3n is v:
 # #                         in_and_out_for_distance_2_neighbors[d2n]["to_v"] += 3*edge_weight
 # #                     if d3n in current_cluster:
@@ -1696,8 +1409,8 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 # #         # in_N_v_grabbed = 0
 # #         # for a in d2n_to_grab:
 # #         #     for b in d2n_to_grab:
-# #         #         if b in self.graph.hash_graph[a]:
-# #         #             in_N_v_grabbed += self.graph.hash_graph[a][b]
+# #         #         if b in self.GRAPH.hash_graph[a]:
+# #         #             in_N_v_grabbed += self.GRAPH.hash_graph[a][b]
 # #         # dict_gain[v]["in"]+=in_N_v_grabbed
 # #         # print(v, d2n_to_grab)
 # #         # factor = len(current_cluster)*.09
@@ -1774,19 +1487,19 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 # #         # CONSIDER WHAT COULD BE GAINED ON THE NEWLY EXPOSED BOUNDARY
 # #         #####################
 # #         # find the neighbors of v
-# #         distance_2_neighbors = self.graph.hash_graph[v]
+# #         distance_2_neighbors = self.GRAPH.hash_graph[v]
 # #         for d2n in distance_2_neighbors:
 # #             if d2n in current_cluster:
-# #                 numerator += factor * self.graph.hash_graph[v][d2n]
+# #                 numerator += factor * self.GRAPH.hash_graph[v][d2n]
 # #             else:
-# #                 distance_3_neighbors = self.graph.hash_graph[d2n]
+# #                 distance_3_neighbors = self.GRAPH.hash_graph[d2n]
 # #                 for d3n in distance_3_neighbors:
 # #                     if d3n in current_cluster:
-# #                         numerator += factor * self.graph.hash_graph[d2n][d3n]
+# #                         numerator += factor * self.GRAPH.hash_graph[d2n][d3n]
 # #                     # elif d3n in add_candidates:
-# #                     #     numerator += self.graph.hash_graph[d2n][d3n]
+# #                     #     numerator += self.GRAPH.hash_graph[d2n][d3n]
 # #                     else:
-# #                         denominator += factor * self.graph.hash_graph[d2n][d3n]
+# #                         denominator += factor * self.GRAPH.hash_graph[d2n][d3n]
 # #
 # #         proposed_score = numerator / denominator
 # #         if proposed_score > best_change_score:
@@ -1822,8 +1535,8 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 # #     current_cluster = dict()
 # #     seed_weight_to = 0
 # #     seed_num_edges_to = 0
-# #     seed_weight_from = sum([self.graph.hash_graph[current_seed][tar] for tar in self.graph.hash_graph[current_seed]])
-# #     seed_num_edges_from = len(self.graph.hash_graph[current_seed])
+# #     seed_weight_from = sum([self.GRAPH.hash_graph[current_seed][tar] for tar in self.GRAPH.hash_graph[current_seed]])
+# #     seed_num_edges_from = len(self.GRAPH.hash_graph[current_seed])
 # #     current_cluster[current_seed] = Relationship(seed_weight_to,
 # #                                                  seed_num_edges_to,
 # #                                                  seed_weight_from,
@@ -1842,12 +1555,12 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 # #     # initialize the candidates for addition
 # #     ###########################################
 # #     add_candidates = dict()
-# #     for target in self.graph.hash_graph[current_seed]:
-# #         target_weight_to = self.graph.hash_graph[current_seed][target]
-# #         target_num_edges = len(self.graph.hash_graph[target])
+# #     for target in self.GRAPH.hash_graph[current_seed]:
+# #         target_weight_to = self.GRAPH.hash_graph[current_seed][target]
+# #         target_num_edges = len(self.GRAPH.hash_graph[target])
 # #         target_num_edges_to = 1
 # #         target_num_edges_from = target_num_edges - 1
-# #         target_weight_from = sum([self.graph.hash_graph[target][tar] for tar in self.graph.hash_graph[target] if
+# #         target_weight_from = sum([self.GRAPH.hash_graph[target][tar] for tar in self.GRAPH.hash_graph[target] if
 # #                            tar != current_seed])
 # #         add_candidates[target] = Relationship(target_weight_to,
 # #                                               target_num_edges_to,
@@ -1876,19 +1589,19 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 # #         # CONSIDER WHAT COULD BE GAINED ON THE NEWLY EXPOSED BOUNDARY
 # #         #####################
 # #         # find the neighbors of v
-# #         distance_2_neighbors = self.graph.hash_graph[v]
+# #         distance_2_neighbors = self.GRAPH.hash_graph[v]
 # #         for d2n in distance_2_neighbors:
 # #             if d2n in current_cluster:
-# #                 numerator += factor * self.graph.hash_graph[v][d2n]
+# #                 numerator += factor * self.GRAPH.hash_graph[v][d2n]
 # #             else:
-# #                 distance_3_neighbors = self.graph.hash_graph[d2n]
+# #                 distance_3_neighbors = self.GRAPH.hash_graph[d2n]
 # #                 for d3n in distance_3_neighbors:
 # #                     if d3n in current_cluster:
-# #                         numerator += factor * self.graph.hash_graph[d2n][d3n]
+# #                         numerator += factor * self.GRAPH.hash_graph[d2n][d3n]
 # #                     # elif d3n in add_candidates:
-# #                     #     numerator += self.graph.hash_graph[d2n][d3n]
+# #                     #     numerator += self.GRAPH.hash_graph[d2n][d3n]
 # #                     else:
-# #                         denominator += factor * self.graph.hash_graph[d2n][d3n]
+# #                         denominator += factor * self.GRAPH.hash_graph[d2n][d3n]
 # #
 # #         proposed_score = numerator / denominator
 # #         if proposed_score > best_change_score:
@@ -1999,8 +1712,8 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 # #         ###################################
 # #         # iterate over the neighbors of v
 # #         ###################################
-# #         for neighbor in self.graph.hash_graph[add_vertex]:
-# #             weight_prime = self.graph.hash_graph[add_vertex][neighbor]
+# #         for neighbor in self.GRAPH.hash_graph[add_vertex]:
+# #             weight_prime = self.GRAPH.hash_graph[add_vertex][neighbor]
 # #             if neighbor in current_cluster:
 # #                 num_edges_to += 1
 # #                 weight_to += weight_prime
@@ -2016,8 +1729,8 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 # #     #######################################################################
 # #     # iterate over neighbors of change_vertex, and update each Relationship
 # #     #######################################################################
-# #     for v in self.graph.hash_graph[change_vertex]:
-# #         edge_weight = self.graph.hash_graph[v][change_vertex]
+# #     for v in self.GRAPH.hash_graph[change_vertex]:
+# #         edge_weight = self.GRAPH.hash_graph[v][change_vertex]
 # #         if v in add_candidates:
 # #             update_v(v, edge_weight, add_candidates)
 # #         if v in current_cluster:
@@ -2149,8 +1862,8 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
 # #             print("oh no %s; %s%s%s%s"%(str(v), a, b, c, d))
 # #             exit()
 # #
-# #     for v in self.graph.hash_graph[change_vertex]:
-# #         edge_weight = self.graph.hash_graph[change_vertex][v]
+# #     for v in self.GRAPH.hash_graph[change_vertex]:
+# #         edge_weight = self.GRAPH.hash_graph[change_vertex][v]
 # #         # note that v may be in both the current_cluster and in remove_candidates
 # #         if v in remove_candidates:
 # #             update_v(v, edge_weight, remove_candidates)

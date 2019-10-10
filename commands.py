@@ -1,7 +1,7 @@
 #exec(open("commands.py").read())
 #exec(open("commands.py").read())
 #python commands.py
-from src.cl1_randomized.cl1_randomized import *
+from src.CL1R.cl1r import *
 import matplotlib.pyplot as plt
 plt.style.use('seaborn-whitegrid')
 import numpy as np

@@ -1,5 +1,5 @@
 from src.construction.randomized_cluster_grower import *
-from src.cl1_randomized.cl1_randomized import CL1_Randomized
+from src.CL1R.cl1r import CL1_Randomized
 
 
 def randomized_construction(cl1:CL1_Randomized):
@@ -90,9 +90,9 @@ def randomized_construction(cl1:CL1_Randomized):
 
 
 
-# from src.common.common import *
+# from src.COMMON.COMMON import *
 # from src.construction.construction_operations import *
-# from src.quality.cluster_quality import *
+# from src.QUALITY.cluster_quality import *
 #
 # def randomized_construction(self):
 #     """

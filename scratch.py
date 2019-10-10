@@ -1,4 +1,4 @@
-from src.common.common import *
+from src.COMMON.cmn import *
 
 nice_comment("hello world.  what's going on?")
 print(nice_comment("DETERMINE THE QUALITY OF THE RESULT USING ORIGINAL AUTHORS' MEASURES"))
