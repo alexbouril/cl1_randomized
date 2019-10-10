@@ -1,10 +1,12 @@
-from __init__ import *
-from src.common.common import *
-from graph import Graph
-from src.construction.randomized_construction import randomized_construction
-from original_construction import oc
-from src.quality.cluster_quality import *
+from src.graph.graph import *
 import sys
+from src.common.common import *
+from src.construction.randomized_construction import *
+# from original_construction import oc
+from src.quality.cluster_quality import *
+
+# TODO: 1-1 comparison, Cython, Threading, Command-line args
+
 
 
 #TODO implement find 1, 2, 3 neighborhood of current cluster

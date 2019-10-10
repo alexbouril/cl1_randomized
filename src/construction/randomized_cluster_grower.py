@@ -1,8 +1,9 @@
-from  src.cl1_randomized import cl1_randomized
+from  src.cl1_randomized.cl1_randomized import *
 from src.common.common import *
 from src.construction.construction_operations import *
 
-def randomized_cluster_grower(cl1: cl1_randomized ,cs:ClusterState, current_cluster_construction_log):
+def randomized_cluster_grower(cl1: CL1_Randomized,cs:ClusterState, current_cluster_construction_log):
+    print("there")
     def update_backup_cluster(cs, best_seen_cs):
         if cs.cohesiveness > best_seen_cs.cohesiveness:
             best_seen_cs = cs.make_backup()
@@ -30,7 +31,8 @@ def randomized_cluster_grower(cl1: cl1_randomized ,cs:ClusterState, current_clus
     while (cs.add_candidates or cs.remove_candidates) and \
             abs(cs.last_failed_remove_round_no - cs.last_failed_add_round_no) != 1 \
             and remove_counter < 100:
-        
+        print([v for v in cs.current_cluster])
+        print([v for v in cs.add_candidates])
         decider = numpy.random.rand()
         ############################################################
         # CONSIDER ADDING A VERTEX ON THE BOUNDARY
@@ -57,19 +59,17 @@ def randomized_cluster_grower(cl1: cl1_randomized ,cs:ClusterState, current_clus
                           "adding")
                 if cs.best_change:
                     for counter in range(4):
-                        try_step(cs,
-                                  best_seen_cs,
-                                  find_best_suboptimal_add,
-                                  add,
-                                  current_cluster_construction_log,
-                                  "adding")
+                        try_step(cs, best_seen_cs,
+                                find_best_suboptimal_add,
+                                add,
+                                current_cluster_construction_log,
+                                "adding")
                     for counter in range(2):
-                        try_step(cs,
-                                  best_seen_cs,
-                                  find_best_add,
-                                  add,
-                                  current_cluster_construction_log,
-                                  "adding")
+                        try_step(cs, best_seen_cs,
+                                find_best_add,
+                                add,
+                                current_cluster_construction_log,
+                                "adding")
             else:
                 try_step(cs,
                           best_seen_cs,
@@ -100,5 +100,4 @@ def randomized_cluster_grower(cl1: cl1_randomized ,cs:ClusterState, current_clus
     # add current_cluster to the list of clusters
     cl1.initial_clustering.append(best_seen_cs.current_cluster)
     cl1.construction_log[tuple([protein for protein in best_seen_cs.current_cluster])] = current_cluster_construction_log
-
     print("CLUSTER #%s: %s" % (str(len(cl1.initial_clustering)), str([vertex for vertex in best_seen_cs.current_cluster])))
