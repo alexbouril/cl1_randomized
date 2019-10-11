@@ -1,7 +1,4 @@
-print("okay")
-from ..CL1R.cl1r import CL1_Randomized
-
-def cohesiveness(cl1:CL1_Randomized, list_of_proteins) -> float:
+def cohesiveness(cl1, list_of_proteins) -> float:
     """Returns the cohesiveness of a potential complex.
 
     Searches the neighbors of each protein in the list, keeping track of weights of

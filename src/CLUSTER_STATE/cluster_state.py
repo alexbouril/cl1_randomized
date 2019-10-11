@@ -61,7 +61,7 @@ class ClusterState(Basic_Cluster_State):
                                           cohesiveness=cohesiveness)
 
     def make_backup(self):
-        return ClusterState(self.current_cluster, self.add_candidates, self.remove_candidates, self.cohesiveness)
+        return Basic_Cluster_State(self.current_cluster, self.add_candidates, self.remove_candidates, self.cohesiveness)
 
     def stringify_heavy(self, graph):
         s=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"

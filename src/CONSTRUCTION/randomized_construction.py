@@ -1,8 +1,9 @@
-from src.CONSTRUCTION.randomized_cluster_grower import *
-from src.CL1R.cl1r import CL1_Randomized
+from src.COMMON.cmn import *
+from src.CONSTRUCTION.initialize import *
+from src.CLUSTER_STATE.cluster_state import *
+from src.CONSTRUCTION.randomized_cluster_grower import rcg
 
-
-def randomized_construction(cl1:CL1_Randomized):
+def randomized_construction(cl1):
     """
     :param cl1:
     :return:
@@ -63,7 +64,7 @@ def randomized_construction(cl1:CL1_Randomized):
             ############################################################
             # Grow the cluster
             ############################################################
-            randomized_cluster_grower(cl1, cs, current_cluster_construction_log)
+            rcg(cl1, cs, current_cluster_construction_log)
             index+=1
 
 

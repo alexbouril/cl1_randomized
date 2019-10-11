@@ -1,7 +1,6 @@
-from ..CL1R.cl1r import *
+from src.COMMON.cmn import *
 
-
-def initialize_complex(cl1:CL1_Randomized, current_seed):
+def initialize_complex(cl1, current_seed):
     ###########################################
     # initalize the current cluster
     ###########################################

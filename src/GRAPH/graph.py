@@ -1,6 +1,9 @@
-def dfs(self, current_vertex, ignore_vertex, current_cluster_membership_hashset, visited):
+from src.COMMON.cmn import *
+
+
+def dfs(cl1, current_vertex, ignore_vertex, current_cluster_membership_hashset, visited):
     visited.add(current_vertex)
-    for neighbor in self.graph.hash_graph[current_vertex]:
+    for neighbor in cl1.graph.hash_graph[current_vertex]:
         if neighbor not in current_cluster_membership_hashset:
             continue
         elif neighbor in visited:
@@ -8,8 +11,7 @@ def dfs(self, current_vertex, ignore_vertex, current_cluster_membership_hashset,
         elif neighbor == ignore_vertex:
             continue
         else:
-            dfs(self, neighbor, ignore_vertex, current_cluster_membership_hashset, visited)
-
+            dfs(cl1, neighbor, ignore_vertex, current_cluster_membership_hashset, visited)
 
 class Graph:
     #  expects a file with every line as:
@@ -44,7 +46,7 @@ class Graph:
         return h, num_edges
 
     #  expects a file with every line as:
-    # source_id_int target_id_int weight
+    #       source_id_int target_id_int weight
     def get_list_of_names(self):
         f = open(self.original_filename, "r")
         li = []

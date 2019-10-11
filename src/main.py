@@ -1,12 +1,13 @@
-import cProfile, pstats, io
-from pstats import SortKey
-import src.CL1R
+from src.CL1R.cl1r import CL1_Randomized
+from src.COMMON.cmn import *
 
 if __name__=="__main__":
     pr = cProfile.Profile()
     pr.enable()
     # ... do something ...
-    a = CL1_Randomized("../../cl1_datasets/datasets", "gavin2006_socioaffinities_rescaled.txt", 'Dummy_quality',
+    a = CL1_Randomized("../cl1_datasets/datasets",
+                       "gavin2006_socioaffinities_rescaled.txt",
+                       'Dummy_quality',
                        density_threshold=.3,
                        merge_threshold=.9,
                        penalty_value_per_node=2,
@@ -19,7 +20,7 @@ if __name__=="__main__":
                        seed_from_all=True,
                        gsc_appearance_ratio_threshold=.9,
                        found_gsc_jaccard_threshold=.8,
-                       gold_standard_filename="../../cl1_gold_standard/gold_standard/mips_3_100.txt")
+                       gold_standard_filename="../cl1_gold_standard/gold_standard/mips_3_100.txt")
 
     pr.disable()
     s = io.StringIO()

@@ -1,8 +1,8 @@
-print(dir())
-from src.CONSTRUCTION.randomized_construction import *
-from src.cluster_quality.quality import *
-
-# TODO: package/syspath,1-1 comparison, Cython, Threading, Command-line args, currying, class variable, hidden class variable, numpy, inheritance
+from src.COMMON.cmn import *
+from src.GRAPH.graph import *
+from src.CONSTRUCTION.randomized_construction import randomized_construction
+from src.QUALITY.quality import density, cohesiveness
+# TODO: package/syspath,1-1 comparison, Cython, Threading, Command-line args, currying, class variable, hidden class variable, numpy, inheritance, tracemalloc
 
 
 
@@ -321,7 +321,7 @@ class CL1_Randomized:
         # WRITE THE FINAL RESULT INTO A TEXT FILE
         ############################################################
         def write_final_clusters():
-            f = open("../../complexes/" + self.output_filename, "w+")
+            f = open("../complexes/" + self.output_filename, "w+")
             counter = 1
             for cluster in self.densityThreshold_sizeThreshold_merged_cluster_list:
                 s = ""
@@ -534,9 +534,9 @@ class CL1_Randomized:
         def get_quality():
             import subprocess
             res = subprocess.check_output(["python2",
-                                           "../../cl1_reproducibility/reproducibility/scripts/match_standalone.py",
+                                           "../cl1_reproducibility/reproducibility/scripts/match_standalone.py",
                                            self.gold_standard_filename,
-                                           "../../complexes/" + self.output_filename])
+                                           "../complexes/" + self.output_filename])
             for line in res.splitlines():
                 print(line)
                 a = str(line)
@@ -560,14 +560,14 @@ class CL1_Randomized:
         # STORE THE CURRENT OBJECT USING PICKLE
         ############################################################
         def store_self():
-            f_name = "../../pickles/pickle+" + self.run_title
+            f_name = "../pickles/pickle+" + self.run_title
             f = open(f_name, 'ab')
             pickle.dump(self, f)
             f.close()
 
         store_self()
 
-        f_name = "../../pickles/most_recent"
+        f_name = "../pickles/most_recent"
         f = open(f_name, 'wb')
         title = {'title': "pickles/pickle+"+self.run_title}
         pickle.dump(title, f)

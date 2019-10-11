@@ -1,8 +1,10 @@
-import src.CL1R
+from src.CLUSTER_STATE.cluster_state import ClusterState
+from src.COMMON.cmn import *
+from src.GRAPH.graph import dfs
 
-def find_best_add(cl1:CL1_Randomized, cs:ClusterState):
+def find_best_add(cl1, cs:ClusterState):
     cs.best_change = None
-    best_change_score = cs.cohesiveness
+    cs.best_change_score = cs.cohesiveness
     for v in cs.add_candidates:
         numerator = cs.current_cluster_weight_in +\
                     cs.add_candidates[v]._in
@@ -11,13 +13,13 @@ def find_best_add(cl1:CL1_Randomized, cs:ClusterState):
                       cs.add_candidates[v]._out +\
                       cl1.penalty_value_per_node * (len(cs.current_cluster) + 1)
         proposed_score = numerator / denominator
-        if proposed_score > best_change_score:
+        if proposed_score > cs.best_change_score:
             cs.best_change = v
             cs.best_change_score = proposed_score
     return cs.best_change, cs.best_change_score
 
 
-def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
+def find_best_suboptimal_add(cl1, cs:ClusterState):
     cs.best_change = None
     cs.best_change_score = -10000
     for v in cs.add_candidates:
@@ -34,7 +36,7 @@ def find_best_suboptimal_add(cl1:CL1_Randomized, cs:ClusterState):
     return cs.best_change, cs.best_change_score
 
 
-def find_best_remove(cl1:CL1_Randomized, cs:ClusterState):
+def find_best_remove(cl1, cs:ClusterState):
     cs.best_change = None
     # check that
     #   (1) the cluster has more than one element
@@ -81,7 +83,7 @@ def find_best_remove(cl1:CL1_Randomized, cs:ClusterState):
 
 
 
-def careful_find_best_2neighborhood_add(cl1: CL1_Randomized, cs:ClusterState):
+def careful_find_best_2neighborhood_add(cl1, cs:ClusterState):
     cs.best_change = None
     best_change_score = cs.cohesiveness
     best_proposed_score = cs.cohesiveness

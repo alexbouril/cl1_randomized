@@ -1,7 +1,18 @@
-from src.CL1R.cl1r import CL1_Randomized
+from src.CLUSTER_STATE.cluster_state import *
 from src.COMMON.cmn import *
 
-def add(cl1:CL1_Randomized, cs):
+def update_v_sanity_check(collection, v):
+    thresh = -.001
+    a = collection[v]._in < thresh
+    b = collection[v]._out < thresh
+    c = collection[v].num_edges_to < 0
+    d = collection[v].num_edges_from < 0
+    #TODO: give more informative output
+    if a or b or c or d:
+        print("oh no %s; %s%s%s%s" % (str(v), a, b, c, d))
+        exit()
+
+def add(cl1, cs:ClusterState):
     #################################################################
     # update the overall weight into and out of the current_cluster #
     #################################################################
@@ -9,14 +20,12 @@ def add(cl1:CL1_Randomized, cs):
     change_vertex_out = cs.add_candidates[cs.best_change]._out
     cs.current_cluster_weight_in += change_vertex_in
     cs.current_cluster_weight_out = cs.current_cluster_weight_out - change_vertex_in + change_vertex_out
-
     ###################################
     # Move the change vertex from cs.add_candidates to current_cluster
     ###################################
     to_add = cs.add_candidates[cs.best_change].copy()
     del cs.add_candidates[cs.best_change]
     cs.current_cluster[cs.best_change] = to_add.copy()
-
     ###################################
     # Change vertex to remove_candidates if applicable
     ###################################
@@ -28,17 +37,8 @@ def add(cl1:CL1_Randomized, cs):
         collection[v]._out -= edge_weight
         collection[v].num_edges_to += 1
         collection[v].num_edges_from -= 1
-        #######################
-        # sanity check
-        #######################
-        thresh = -.001
-        a = collection[v]._in < thresh
-        b = collection[v]._out < thresh
-        c = collection[v].num_edges_to < thresh
-        d = collection[v].num_edges_from < thresh
-        if a or b or c or d:
-            print("oh no %s; %s%s%s%s"%(str(v), a, b, c, d))
-            exit()
+        update_v_sanity_check(collection, v)
+
 
     def initialize_new_add_candidate_for_V(add_vertex, cl1, cs):
         num_edges_to = 0
@@ -85,7 +85,7 @@ def add(cl1:CL1_Randomized, cs):
 
 
 
-def remove(cl1: CL1_Randomized, cs:ClusterState):
+def remove(cl1, cs:ClusterState):
     ###############################################################################################
     # Update the current_cluster 's score, and overall weight into and out of the current cluster #
     ###############################################################################################
@@ -111,10 +111,10 @@ def remove(cl1: CL1_Randomized, cs:ClusterState):
         collection[v]._out += edge_weight
         collection[v].num_edges_to -= 1
         collection[v].num_edges_from += 1
+        update_v_sanity_check(collection,v)
 
     for v in cl1.graph.hash_graph[cs.best_change]:
         edge_weight = cl1.graph.hash_graph[cs.best_change][v]
-        # note that v may be in both the current_cluster and in remove_candidates
         if v in cs.remove_candidates:
             update_v(v, edge_weight, cs.remove_candidates)
         if v in cs.current_cluster:
