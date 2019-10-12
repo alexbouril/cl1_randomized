@@ -58,6 +58,11 @@ def randomized_construction(cl1):
             ############################################################
             rcg(cl1, cs, current_cluster_construction_log)
             index+=1
+            ############################################################
+            # If we aren't seeding from each node, mark used nodes
+            ############################################################
+            if not cl1.seed_from_all:
+                considered_vertices.union(set([v for v in cs.current_cluster]))
 
 
 
