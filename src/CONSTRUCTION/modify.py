@@ -86,6 +86,7 @@ def add(cl1, cs:ClusterState):
 
 
 def remove(cl1, cs:ClusterState):
+    starting = len(cs.current_cluster)
     ###############################################################################################
     # Update the current_cluster 's score, and overall weight into and out of the current cluster #
     ###############################################################################################

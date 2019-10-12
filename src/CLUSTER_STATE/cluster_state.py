@@ -67,25 +67,19 @@ class ClusterState(Basic_Cluster_State):
         s=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
         s+=f"CURRENT_COHESIVENESS: {self.cohesiveness}\n"
         s += "\n"
-        s+="**************************************\n"
         s += "********** CURRENT CLUSTER: **********\n"
-        s+="**************************************\n"
         s += "\n"
         for protein in self.current_cluster:
             s+=str(protein)+", "+graph.id_to_name[protein]+"\n"
             s+=self.current_cluster[protein].stringify()
         s += "\n"
-        s += "*************************************\n"
         s+="********** ADD CANDIDATES: **********\n"
-        s+="*************************************\n"
         s += "\n"
         for protein in self.add_candidates:
             s+=str(protein)+", "+graph.id_to_name[protein]+"\n"
             s+=self.add_candidates[protein].stringify()
         s+="\n"
-        s+="****************************************\n"
         s+="********** REMOVE CANDIDATES: **********\n"
-        s+="****************************************\n"
         s += "\n"
         for protein in self.remove_candidates:
             s+=str(protein)+", "+graph.id_to_name[protein]+"\n"

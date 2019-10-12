@@ -38,7 +38,7 @@ def find_best_suboptimal_add(cl1, cs:ClusterState):
 
 def find_best_remove(cl1, cs:ClusterState):
     cs.best_change = None
-    # cs.best_change_score = cs.cohesiveness##########TODO: uncomment
+    cs.best_change_score = cs.cohesiveness##########TODO: uncomment
     if len(cs.current_cluster) > 1:
         if cl1.care_about_cuts:
             current_cluster_membership_hashset = [vertex for vertex in cs.current_cluster]
@@ -71,10 +71,11 @@ def find_best_remove(cl1, cs:ClusterState):
                               cs.remove_candidates[v]._out +\
                               cl1.penalty_value_per_node * (len(cs.current_cluster) - 1)
                 proposed_score = numerator / denominator
-                if proposed_score > cs.cohesiveness:##############################TODO cs.best_change_score
+                if proposed_score > cs.best_change_score:
                     cs.best_change = v
-                    cs.cohesiveness = proposed_score#####################TODO cs.best_change_score
-    return cs.best_change, cs.best_change_score#################################TODO cs.best_change_score
+                    cs.best_change_score = proposed_score
+    print(cs.best_change, cs.best_change_score, cs.cohesiveness)
+    return cs.best_change, cs.best_change_score
 
 
 def careful_find_best_2neighborhood_add(cl1, cs:ClusterState):

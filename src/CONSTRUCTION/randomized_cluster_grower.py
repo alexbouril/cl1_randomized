@@ -16,6 +16,7 @@ def rcg(cl1, cs, current_cluster_construction_log):
         cs.round_no+=1
         search_function(cl1, cs)
         if cs.best_change:
+            cs.cohesiveness = cs.best_change_score
             change_function(cl1, cs)
             update_backup_cluster(cs, best_seen_cs)
             current_cluster_construction_log.append(Action(change_type, cs.best_change))
@@ -26,6 +27,12 @@ def rcg(cl1, cs, current_cluster_construction_log):
                 cs.last_failed_add_round_no = cs.round_no
             else:
                 cs.last_failed_remove_round_no = cs.round_no
+        ##############################################
+        # SANITY CHECK
+        ##############################################
+        if cs.best_change:
+            if cs.cohesiveness!=cs.best_change_score:
+                print("---------------------------------why----------------------------------", cs.cohesiveness, cs.best_change_score)
         ##############################################
         # SANITY CHECK
         ##############################################
@@ -50,6 +57,7 @@ def rcg(cl1, cs, current_cluster_construction_log):
         # CONSIDER ADDING A VERTEX ON THE BOUNDARY
         ############################################################
         if  (decider <= .5 or cs.last_failed_remove_round_no == cs.round_no) and cs.last_failed_add_round_no != cs.round_no:
+            print("add")
             if len(cs.current_cluster) > 5 and cs.round_no % 4 == 1:
                 cs.round_no += 1
                 # ######################################################################
@@ -91,6 +99,7 @@ def rcg(cl1, cs, current_cluster_construction_log):
         # CONSIDER REMOVING A VERTEX ON THE BOUNDARY
         ############################################################
         if (decider > .5 or cs.last_failed_add_round_no == cs.round_no) and cs.last_failed_remove_round_no != cs.round_no:
+            print("remove")
             try_step(cs, best_seen_cs,
                      find_best_remove,
                      remove,
