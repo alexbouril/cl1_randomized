@@ -29,7 +29,7 @@ CHECK_OPTIMUM = False
 
 def maxWeightMatching(edges, maxcardinality=False):
     """Compute a maximum-weighted matching in the general undirected
-    weighted graph given by "edges".  If "maxcardinality" is true,
+    weighted GRAPH given by "edges".  If "maxcardinality" is true,
     only maximum-cardinality matchings are considered as solutions.
 
     Edges is a sequence of tuples (i, j, wt) describing an undirected
@@ -838,7 +838,7 @@ if __name__ == '__main__':
     class MaxWeightMatchingTests(unittest.TestCase):
 
         def test10_empty(self):
-            # empty input graph
+            # empty input GRAPH
             self.assertEqual(maxWeightMatching([]), [])
 
         def test11_singleedge(self):

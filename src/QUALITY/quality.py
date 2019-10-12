@@ -1,4 +1,4 @@
-def cohesiveness(self, list_of_proteins) -> float:
+def cohesiveness(cl1, list_of_proteins) -> float:
     """Returns the cohesiveness of a potential complex.
 
     Searches the neighbors of each protein in the list, keeping track of weights of
@@ -12,8 +12,8 @@ def cohesiveness(self, list_of_proteins) -> float:
     weight_in = 0
     weight_out = 0
     for source in list_of_proteins:
-        for target in self.graph.hash_graph[source]:
-            edge_weight = self.graph.hash_graph[source][target]
+        for target in cl1.graph.hash_graph[source]:
+            edge_weight = cl1.graph.hash_graph[source][target]
             if target in list_of_proteins:
                 weight_in += edge_weight/2.0
             else:

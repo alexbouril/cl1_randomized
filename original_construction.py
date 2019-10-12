@@ -1,4 +1,4 @@
-from src.construction.construction_operations import *
+from src.CONSTRUCTION.initialize import *
 
 
 def oc(self):
@@ -24,7 +24,7 @@ def oc(self):
             current_cluster_construction_log.append(Action("seed", current_seed))
             debug("Starting cluster #%s" % str(len(self.initial_clustering)))
             # time.sleep(3)
-            # TODO: ignore vertices that have been removed before during construction of current cluster
+            # TODO: ignore vertices that have been removed before during CONSTRUCTION of current cluster
             ignore_vertices = set()
 
             ############################################################

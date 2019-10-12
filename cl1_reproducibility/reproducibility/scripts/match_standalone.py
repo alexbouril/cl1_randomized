@@ -138,7 +138,7 @@ class MatchApplication(object):
         parser = optparse.OptionParser(usage=dedent(sys.modules[__name__].__doc__).strip())
 
         parser.add_option("-m", "--measure", action="append", dest="measures", default=[],
-                metavar="MEASURE", help="calculate the quality measure given by MEASURE. "
+                metavar="MEASURE", help="calculate the QUALITY measure given by MEASURE. "
                 "Possible values are: %s. May be given multiple times." %
                 ", ".join(sorted(self.measures.keys())))
         parser.add_option("-n", "--network", metavar="FILE", dest="network",

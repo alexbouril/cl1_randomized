@@ -1,4 +1,3 @@
-from graph import *
 import plotly.graph_objects as go
 import networkx as nx
 
@@ -8,7 +7,7 @@ import networkx as nx
 name = loadData('pickles/most_recent')['title']
 print(name)
 x = loadData(name)
-# print(len(x.graph.hash_graph[49]))
+# print(len(x.GRAPH.hash_graph[49]))
 # exit()
 id_to_name = x.graph.id_to_name
 
@@ -33,7 +32,7 @@ Add edges as disconnected lines in a single trace and nodes as a scatter trace
 '''
 
 ##############################################
-# Find all Nodes involved in this cluster's construction
+# Find all Nodes involved in this cluster's CONSTRUCTION
 ##############################################
 all_nodes = set()
 for cs in [entry for entry in current_cluster_construction_log if type(entry)==ClusterState]:
@@ -42,7 +41,7 @@ for cs in [entry for entry in current_cluster_construction_log if type(entry)==C
 all_nodes = list(all_nodes)
 # print(all_nodes)
 ##############################################
-# Find all the edges involved in this cluster's construction
+# Find all the edges involved in this cluster's CONSTRUCTION
 ##############################################
 all_edges = set()
 for i in all_nodes:
@@ -53,7 +52,7 @@ for i in all_nodes:
 all_edges = list(all_edges)
 # print(all_edges)
 ##############################################
-# Create a graph G_plus will all the edges and nodes involved in this cluster's construction
+# Create a GRAPH G_plus will all the edges and nodes involved in this cluster's CONSTRUCTION
 ##############################################
 G_plus= nx.Graph()
 G_plus.add_weighted_edges_from(all_edges)
@@ -210,7 +209,7 @@ for cs in cluster_states:
     #                         text="Python code: <a href='https://plot.ly/ipython-notebooks/network-graphs/'> https://plot.ly/ipython-notebooks/network-graphs/</a>",
     fig = go.Figure(data=[edge_trace_inside_cluster,edge_trace2_outside_cluster, node_trace],
                  layout=go.Layout(
-                    title='<br>Network graph made with Python',
+                    title='<br>Network GRAPH made with Python',
                     titlefont_size=16,
                     showlegend=False,
                     hovermode='closest',

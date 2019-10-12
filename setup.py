@@ -1,7 +1,7 @@
 # python setup.py build_ext --inplace
 from setuptools import setup, find_packages, Extension
 from Cython.Distutils import build_ext
-package = "cl1_randomized"
+package = "CL1R"
 file = "fib"
 ext_modules=[
     Extension("%s"%(file),    # location of the resulting .so

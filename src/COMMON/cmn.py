@@ -4,8 +4,11 @@ DEBUG = False
 SLEEP_DEBUG = False
 import os
 import logging
-import cProfile, pstats, io
 from pstats import SortKey
+import cProfile
+import io
+import pstats
+import sys
 import numpy
 import heapq
 import datetime
@@ -20,25 +23,25 @@ def profiler(cmd_str):
     ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
     ps.print_stats()
     print(s.getvalue())
-
-class TwoN_Add:
-    def __init(self, add_candidate, good_neighbors, prior_cohesiveness, proposed_score, post_cohesiveness):
-        self.add_candidate = add_candidate
-        self.good_neighbors = good_neighbors
-        self.prior_cohesiveness = prior_cohesiveness
-        self.proposed_score = proposed_score
-        self.post_cohesiveness = post_cohesiveness
-
-class checking_2n_add:
-    def __init__(self):
-        self.changes_made =[TwoN_Add]
-        self.final_cohesiveness = None
+#
+# class TwoN_Add:
+#     def __init(self, add_candidate, good_neighbors, prior_cohesiveness, proposed_score, post_cohesiveness):
+#         self.add_candidate = add_candidate
+#         self.good_neighbors = good_neighbors
+#         self.prior_cohesiveness = prior_cohesiveness
+#         self.proposed_score = proposed_score
+#         self.post_cohesiveness = post_cohesiveness
+#
+# class checking_2n_add:
+#     def __init__(self):
+#         self.changes_made =[TwoN_Add]
+#         self.final_cohesiveness = None
 
 
 
 def setup_custom_logger(name):
     """ Setup logger """
-    LOGGING_FILE_PATH = './logs/cl1_randomized.log'
+    LOGGING_FILE_PATH = './logs/CL1R.log'
 
     if not os.path.exists(os.path.dirname(LOGGING_FILE_PATH)):
         os.makedirs(os.path.dirname(LOGGING_FILE_PATH), exist_ok=True)
@@ -112,65 +115,6 @@ class Relationship:
         return s
 
 
-class ClusterState:
-    def __init__(self, current_cluster, add_candidates, remove_candidates, cohesiveness, neighborhood_2=None, neighborhood_3=None):
-        self.current_cluster = current_cluster.copy()
-        self.current_cluster = copy_relationship_dictionary(current_cluster)
-        self.add_candidates = add_candidates.copy()
-        self.add_candidates = {rel:add_candidates[rel].copy() for rel in add_candidates}
-        self.remove_candidates = remove_candidates.copy()
-        self.remove_candidates = {rel:remove_candidates[rel].copy() for rel in remove_candidates}
-        self.cohesiveness = cohesiveness
-        self.neighborhood_2 = neighborhood_2
-        self.neighborhood_3 = neighborhood_3
-
-    def stringify_heavy(self, graph):
-        s=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
-        s+=f"CURRENT_COHESIVENESS: {self.cohesiveness}\n"
-        s += "\n"
-        s+="**************************************\n"
-        s += "********** CURRENT CLUSTER: **********\n"
-        s+="**************************************\n"
-        s += "\n"
-        for protein in self.current_cluster:
-            s+=str(protein)+", "+graph.id_to_name[protein]+"\n"
-            s+=self.current_cluster[protein].stringify()
-        s += "\n"
-        s += "*************************************\n"
-        s+="********** ADD CANDIDATES: **********\n"
-        s+="*************************************\n"
-        s += "\n"
-
-        for protein in self.add_candidates:
-            s+=str(protein)+", "+graph.id_to_name[protein]+"\n"
-            s+=self.add_candidates[protein].stringify()
-        s+="\n"
-        s+="****************************************\n"
-        s+="********** REMOVE CANDIDATES: **********\n"
-        s+="****************************************\n"
-        s += "\n"
-
-        for protein in self.remove_candidates:
-            s+=str(protein)+", "+graph.id_to_name[protein]+"\n"
-            s+=self.remove_candidates[protein].stringify()
-        s+=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
-        return s
-
-
-    def stringify_lite(self):
-        s=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
-        s+=f"CURRENT_COHESIVENESS: {self.cohesiveness}\n"
-        s += "********** CURRENT CLUSTER: **********\n"
-        s+= str([protein for protein in self.current_cluster])+"\n"
-        s+="********** ADD CANDIDATES : **********\n"
-        s+= str([protein for protein in self.add_candidates]) +"\n"
-        s+="********** REMOVE CANDIDATES: **********\n"
-        s+= str([protein for protein in self.remove_candidates]) +"\n"
-        s+=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
-        return s
-
-
-
 
 
 class Action:
@@ -222,9 +166,6 @@ def stringify_single_cluster_construction_log(construction_log, cluster_key, ver
     s += "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ END CLUSTER @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"
     return s
 
-
-def copy_relationship_dictionary(rd):
-    return {rel:rd[rel].copy() for rel in rd}
 
 
 def get_quality(gold_standard_filename, output_filename):
