@@ -20,7 +20,7 @@ if __name__=="__main__":
                        seed_from_all=False,
                        gsc_appearance_ratio_threshold=.9,
                        found_gsc_jaccard_threshold=.8,
-                       gold_standard_filename="../cl1_gold_standard/gold_standard/mips_3_100.txt") 
+                       gold_standard_filename="../cl1_gold_standard/gold_standard/mips_3_100.txt")
 
     pr.disable()
     s = io.StringIO()
