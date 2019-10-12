@@ -1,7 +1,9 @@
 from src.COMMON.cmn import *
 from src.GRAPH.graph import *
 from src.CONSTRUCTION.randomized_construction import randomized_construction
+from src.CONSTRUCTION.original_construction import original_construction
 from src.QUALITY.quality import density, cohesiveness
+
 # TODO: package/syspath,1-1 comparison, Cython, Threading, Command-line args, currying, class variable, hidden class variable, numpy, inheritance, tracemalloc
 
 
@@ -131,8 +133,8 @@ class CL1_Randomized:
         if self.randomized_construction_bool:
             randomized_construction(self)
         # TODO reimplement the oc function using new classes and package framework
-        # else:
-        #     oc(self)
+        else:
+            original_construction(self)
 
         ############################################################
         # GET THE INITIAL CLUSTER LIST

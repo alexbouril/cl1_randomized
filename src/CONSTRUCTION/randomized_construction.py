@@ -22,21 +22,13 @@ def randomized_construction(cl1):
 
     while index < len(sorted_seeds):
         current_seed = sorted_seeds[index][0]
-        current_seed_degree = sorted_seeds[index][1]
-        debug("current_seed: %s" %str(current_seed), "current_seed_degree: %s" %str(current_seed_degree))
         if current_seed in considered_vertices:
-            debug("SKIP %s" % str(current_seed))
             index += 1
             continue
         else:
             current_cluster_construction_log = []
             cl1.initial_clustering_seeds.append(current_seed)
             current_cluster_construction_log.append(Action("seed", current_seed))
-            debug("Starting cluster #%s" % str(len(cl1.initial_clustering)))
-            # time.sleep(3)
-            # TODO: ignore vertices that have been removed before during CONSTRUCTION of current cluster
-            ignore_vertices = set()
-
             ############################################################
             # INITIALIZE THE CURRENT CLUSTER STATE STARTING WITH THE SELECTED SEED
             ############################################################

@@ -74,7 +74,11 @@ def find_best_remove(cl1, cs:ClusterState):
                 if proposed_score > cs.best_change_score:
                     cs.best_change = v
                     cs.best_change_score = proposed_score
-    print(cs.best_change, cs.best_change_score, cs.cohesiveness)
+    ###################
+    # sanity check: showing improvement from removing
+    ##################
+    # if cs.best_change:
+    #     print(cs.best_change, cs.best_change_score, cs.cohesiveness)
     return cs.best_change, cs.best_change_score
 
 

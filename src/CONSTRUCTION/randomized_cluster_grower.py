@@ -30,17 +30,11 @@ def rcg(cl1, cs, current_cluster_construction_log):
         ##############################################
         # SANITY CHECK
         ##############################################
-        if cs.best_change:
-            if cs.cohesiveness!=cs.best_change_score:
-                print("---------------------------------why----------------------------------", cs.cohesiveness, cs.best_change_score)
-        ##############################################
-        # SANITY CHECK
-        ##############################################
-        # a = cs.cohesiveness
-        # b = cohesiveness(cl1, [v for v in cs.current_cluster])
-        # offby=abs(a-b )
-        # if offby >.005:
-        #     print("math problem", a, b, offby)
+        a = cs.cohesiveness
+        b = cohesiveness(cl1, [v for v in cs.current_cluster])
+        offby=abs(a-b )
+        if offby >.005:
+            print("math problem", a, b, offby)
 
 
     ############################################################
@@ -52,12 +46,10 @@ def rcg(cl1, cs, current_cluster_construction_log):
             abs(cs.last_failed_remove_round_no - cs.last_failed_add_round_no) != 1 \
             and remove_counter < 100:
         decider = numpy.random.rand()
-        # print(cs.cohesiveness, [v for v in cs.current_cluster])
         ############################################################
         # CONSIDER ADDING A VERTEX ON THE BOUNDARY
         ############################################################
         if  (decider <= .5 or cs.last_failed_remove_round_no == cs.round_no) and cs.last_failed_add_round_no != cs.round_no:
-            print("add")
             if len(cs.current_cluster) > 5 and cs.round_no % 4 == 1:
                 cs.round_no += 1
                 # ######################################################################
@@ -77,12 +69,18 @@ def rcg(cl1, cs, current_cluster_construction_log):
                          current_cluster_construction_log,
                          "adding")
                 if cs.best_change:
+                    ######################################################################
+                    # TRY TO ADD SUBOPTIMALLY A FEW TIMES
+                    #####################################################################
                     for counter in range(4):
                         try_step(cs, best_seen_cs,
                                 find_best_suboptimal_add,
                                 add,
                                 current_cluster_construction_log,
                                 "adding")
+                    ######################################################################
+                    # TRY TO ADD REGULARLY A FEW TIMES
+                    #####################################################################
                     for counter in range(2):
                         try_step(cs, best_seen_cs,
                                 find_best_add,
@@ -99,7 +97,6 @@ def rcg(cl1, cs, current_cluster_construction_log):
         # CONSIDER REMOVING A VERTEX ON THE BOUNDARY
         ############################################################
         if (decider > .5 or cs.last_failed_add_round_no == cs.round_no) and cs.last_failed_remove_round_no != cs.round_no:
-            print("remove")
             try_step(cs, best_seen_cs,
                      find_best_remove,
                      remove,
