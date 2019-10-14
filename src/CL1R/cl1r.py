@@ -3,6 +3,8 @@ from src.GRAPH.graph import *
 from src.CONSTRUCTION.randomized_construction import randomized_construction
 from src.CONSTRUCTION.original_construction import original_construction
 from src.QUALITY.quality import density, cohesiveness
+from src.MERGING.merge import merge
+from src.THRESHOLDING.thresholding_functions import sizeThreshold, densityThreshold
 
 # TODO: package/syspath,1-1 comparison, Cython, Threading, Command-line args, currying, class variable, hidden class variable, numpy, inheritance, tracemalloc
 
@@ -154,63 +156,8 @@ class CL1_Randomized:
         ############################################################
         # MERGE THE INITIAL CLUSTERS
         ############################################################
-        def merger():  # takes a list of clusters
-            threshold = self.merge_threshold
-            hash_graph = dict()
-
-            def similarity(A, B):
-                """Implements the overlap score described in the paper
-
-                :param A: a set
-                :param B: a set
-                :return: the overlap score
-                """
-                numerator = len(A.intersection(B)) ** 2
-                denominator = len(A) * len(B)
-                return numerator / denominator
-
-            def dfs(index, local_visited):
-                local_visited.add(index)
-                for neigbor in hash_graph[index]:
-                    if neigbor not in local_visited:
-                        dfs(neigbor, local_visited)
-
-            for i in range(len(self.initial_cluster_list)):
-                if i not in hash_graph:
-                    hash_graph[i] = set()
-                for j in range(i + 1, len(self.initial_cluster_list)):
-                    if similarity(self.initial_cluster_list[i], self.initial_cluster_list[j]) > threshold:
-                        if i in hash_graph:
-                            hash_graph[i].add(j)
-                        else:
-                            hash_graph[i] = {j}
-                        if j in hash_graph:
-                            hash_graph[j].add(i)
-                        else:
-                            hash_graph[j] = {i}
-
-            global_visited = set()
-            merge_indices = list()
-            for index in range(len(self.initial_cluster_list)):
-                if index not in global_visited:
-                    local_visited = set()
-                    dfs(index, local_visited)
-                    # TODO: is the copy necessary?
-                    merge_indices.append(local_visited.copy())
-                    for reached in local_visited:
-                        global_visited.add(reached)
-
-            new_clusters = list()
-            for group in merge_indices:
-                new_cluster = set()
-                for cluster_index in group:
-                    new_cluster = new_cluster.union(self.initial_cluster_list[cluster_index])
-                new_clusters.append(new_cluster)
-
-            self.merged_cluster_list = new_clusters
-
-        merger()
-
+        self.merged_cluster_list+= merge(merge_threshold=self.merge_threshold,
+                                         source=self.initial_cluster_list)
         ############################################################
         # ZIPPER MERGE COMPLEXES
         ############################################################
@@ -290,35 +237,14 @@ class CL1_Randomized:
         ############################################################
         # THRESHOLD BASED ON SIZE
         ############################################################
-        def sizeThreshold():
-            self.sizeThreshold_merged_cluster_list = [cluster for cluster in self.merged_cluster_list if
-                                                      len(cluster) > 2]
-
-        sizeThreshold()
-
+        self.sizeThreshold_merged_cluster_list+=sizeThreshold(source=self.merged_cluster_list,
+                                                              size_thresh=2)
         ############################################################
         # THRESHOLD BASED ON DENSITY
         ############################################################
-        def densityThreshold():
-            def checkDensity(cluster_set):
-                in_weight = 0
-                for source in cluster_set:
-                    for target in self.graph.hash_graph[source]:
-                        if target in cluster_set:
-                            in_weight += self.graph.hash_graph[source][target]
-                n = len(cluster_set)
-                # TODO: check that authors didn't mean n* (n+1)/2
-                denominator = (n * (n - 1)) / 2
-                return in_weight / denominator
-
-            for cluster_set in self.sizeThreshold_merged_cluster_list:
-                density = checkDensity(cluster_set)
-                if density > self.density_threshold:
-                    self.densityThreshold_sizeThreshold_merged_cluster_list.append(cluster_set)
-            return "Dummy"
-
-        densityThreshold()
-
+        self.densityThreshold_sizeThreshold_merged_cluster_list +=densityThreshold(hash_graph=self.graph.hash_graph,
+                                                                                   li=self.sizeThreshold_merged_cluster_list,
+                                                                                   dens_thresh=self.density_threshold)
         ############################################################
         # WRITE THE FINAL RESULT INTO A TEXT FILE
         ############################################################

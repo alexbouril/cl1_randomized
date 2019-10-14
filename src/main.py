@@ -4,11 +4,11 @@ from src.COMMON.cmn import *
 if __name__=="__main__":
     pr = cProfile.Profile()
     pr.enable()
-    # ... do something ...
+    # # ... do something ...
     a = CL1_Randomized("../cl1_datasets/datasets",
                        "gavin2006_socioaffinities_rescaled.txt",
                        'Dummy_quality',
-                       density_threshold=.3,
+                       density_threshold=.15,
                        merge_threshold=.9,
                        penalty_value_per_node=2,
                        randomized_construction_bool=True,
@@ -30,7 +30,15 @@ if __name__=="__main__":
     print(s.getvalue())
 
 
-
+"""
+189 reference complexes, 305 predicted complexes
+b'acc = 0.3919'
+b'cws = 0.3744'
+b'frac = 0.4180'
+b'mmr = 0.2144'
+b'ppv = 0.4102'
+b'sep = 0.2162'
+"""
 
 
 
@@ -40,7 +48,7 @@ if __name__=="__main__":
     # b = CL1_Randomized("../cl1_datasets/datasets",
     #                    "gavin2006_socioaffinities_rescaled.txt",
     #                    'Dummy_quality',
-    #                    density_threshold=.3,
+    #                    density_threshold=.15,
     #                    merge_threshold=.9,
     #                    penalty_value_per_node=2,
     #                    randomized_construction_bool=False,
@@ -49,7 +57,7 @@ if __name__=="__main__":
     #                    number_of_bad_adds=2,
     #                    sort_seeds_by="weight",
     #                    care_about_cuts=False,
-    #                    seed_from_all=True,
+    #                    seed_from_all=False,
     #                    gsc_appearance_ratio_threshold=.9,
     #                    found_gsc_jaccard_threshold=.8,
     #                    gold_standard_filename="../cl1_gold_standard/gold_standard/mips_3_100.txt")
@@ -60,6 +68,19 @@ if __name__=="__main__":
     # ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
     # ps.print_stats()
     # print(s.getvalue())
+"""
+    189
+    reference
+    complexes, 303
+    predicted
+    complexes
+    b'acc = 0.3883'
+    b'cws = 0.3630'
+    b'frac = 0.4127'
+    b'mmr = 0.2211'
+    b'ppv = 0.4155'
+    b'sep = 0.2296'
+    """
 
 # To beat: my implementation of the original
 # ORIGINAL
