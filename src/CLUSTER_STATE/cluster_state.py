@@ -1,3 +1,6 @@
+from src.CONSTRUCTION.initialize import initialize_complex
+from src.CONSTRUCTION.modify import add
+from src.QUALITY.quality import cohesiveness
 
 def copy_relationship_dictionary(rd):
     return {rel:rd[rel].copy() for rel in rd}
@@ -24,6 +27,30 @@ class Basic_Cluster_State:
         return s
 
 
+def generate_cluster_state_given_current_cluster_list(cl1, current_cluster_list):
+    current_seed  = current_cluster_list[0]
+    current_cluster, remove_candidates, add_candidates, current_score, current_cluster_weight_in, current_cluster_weight_out = \
+        initialize_complex(cl1, current_seed)
+    cs =  ClusterState(current_cluster,
+                              add_candidates,
+                              remove_candidates,
+                              current_score,
+                              current_cluster_weight_in=current_cluster_weight_in,
+                              current_cluster_weight_out=current_cluster_weight_out)
+    remaining_vertices_to_add = set(current_cluster_list)
+    remaining_vertices_to_add.remove(current_seed)
+    while remaining_vertices_to_add:
+        for to_add in remaining_vertices_to_add:
+            if to_add in cs.add_candidates:
+                cs.best_change = to_add
+                add(cl1, cs)
+                remaining_vertices_to_add.remove(to_add)
+                break
+    cs.best_change_score = cohesiveness(cl1, current_cluster_list)
+    return cs
+
+
+
 class ClusterState(Basic_Cluster_State):
     __output_level = "verbose"
 
@@ -42,6 +69,8 @@ class ClusterState(Basic_Cluster_State):
                  last_failed_remove_round_no=None,
                  round_no=None,
                  number_of_shakes=None):
+
+
         self.neighborhood_2 = neighborhood_2
         self.neighborhood_3 = neighborhood_3
 

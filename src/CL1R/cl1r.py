@@ -4,7 +4,9 @@ from src.CONSTRUCTION.randomized_construction import randomized_construction
 from src.CONSTRUCTION.original_construction import original_construction
 from src.QUALITY.quality import density, cohesiveness
 from src.MERGING.merge import merge
+from src.MERGING.zipper_merge import zipper_merge
 from src.THRESHOLDING.thresholding_functions import sizeThreshold, densityThreshold
+
 
 # TODO: package/syspath,1-1 comparison, Cython, Threading, Command-line args, currying, class variable, hidden class variable, numpy, inheritance, tracemalloc
 
@@ -51,17 +53,15 @@ class CL1_Randomized:
         self.time_of_run = str(datetime.datetime.now()).replace(" ","_").replace(".",":")
         self.run_title = original_graph_filename.replace(".txt", "")+"+"+self.time_of_run
         self.argument_dict = locals()
-
         ############################################################
         # STORE ARGUMENTS
         ############################################################
         self.base_file_path = base_file_path
+        self.original_graph_filename = original_graph_filename
         self.graph = Graph(base_file_path+"/"+original_graph_filename)
-
         print("size of GRAPH in bytes: %s"%str(sys.getsizeof(self.graph.hash_graph)))
         print("number of nodes: %s"%str(self.graph.num_proteins))
         print("number of edges: %s"%str(self.graph.num_edges))
-
         self.vertices_by_degree = sort_vertices_by_degree(self)
         self.vertices_by_weight = sort_vertices_by_weight(self)
         self.quality_function_name = quality_function_name
@@ -86,13 +86,11 @@ class CL1_Randomized:
         self.gsc_appearance_density_threshold = gsc_appearance_density_threshold
         self.found_gsc_jaccard_threshold = found_gsc_jaccard_threshold
         self.gold_standard_filename = gold_standard_filename
-
         ############################################################
         # SET UP THE LOGGER
         ############################################################
         # self.logger = setup_custom_logger('CL1R')
         # self.logger.info(f'(RUN:{self.run_title}) Starting CL1R v{__version__} ({__status__}) [{__website__}]')
-
         ############################################################
         # OUTPUTS OF CALCULATIONS
         ############################################################
@@ -116,17 +114,14 @@ class CL1_Randomized:
         self.gsc_appearing_stats = dict()
         self.gsc_appearing_found_stats = dict()
         self.gsc_appearing_notFound_stats = dict()
-
         ############################################################
         # STORE INFORMATION ABOUT STATES OF CLUSTER DURING CONSTRUCTION
         ############################################################
         self.construction_log = dict()
-
         ############################################################
         # RUN THE ALGORITHM
         ############################################################
         self.process()
-
 
     def process(self):
         ############################################################
@@ -137,7 +132,6 @@ class CL1_Randomized:
         # TODO reimplement the oc function using new classes and package framework
         else:
             original_construction(self)
-
         ############################################################
         # GET THE INITIAL CLUSTER LIST
         ############################################################
@@ -152,88 +146,23 @@ class CL1_Randomized:
 
             self.initial_cluster_list = [set(cluster) for cluster in get_initial_clusters()]
         make_initial_cluster_list()
-
         ############################################################
         # MERGE THE INITIAL CLUSTERS
         ############################################################
         self.merged_cluster_list+= merge(merge_threshold=self.merge_threshold,
                                          source=self.initial_cluster_list)
+        print("len(self.merged_cluster_list)",len(self.merged_cluster_list))
+        time.sleep(1)
         ############################################################
         # ZIPPER MERGE COMPLEXES
         ############################################################
-        def zipper_merger():  # takes a list of clusters
-            threshold = self.merge_threshold
-            hash_graph = dict()
-
-            def find_one_neighborhood_of_complex(complex):
-                complex_set = set([v for v in complex])
-                neighbor_set = set()
-                for v in complex_set:
-                    for u in self.graph.hash_graph[v]:
-                        if u not in complex_set:
-                            neighbor_set.add(u)
-                return complex_set, neighbor_set
-
-            def similarity(A, B):
-                A_complex_set, A_neighbor_set = find_one_neighborhood_of_complex(A)
-                B_complex_set, B_neighbor_set = find_one_neighborhood_of_complex(B)
-
-
-
-                """Implements the overlap score described in the paper
-
-                :param A: a set
-                :param B: a set
-                :return: the overlap score
-                """
-                numerator = len(A.intersection(B)) ** 2
-                denominator = len(A) * len(B)
-                return numerator / denominator
-
-            def dfs(index, local_visited):
-                local_visited.add(index)
-                for neigbor in hash_graph[index]:
-                    if neigbor not in local_visited:
-                        dfs(neigbor, local_visited)
-
-            for i in range(len(self.initial_cluster_list)):
-                if i not in hash_graph:
-                    hash_graph[i] = set()
-                for j in range(i + 1, len(self.initial_cluster_list)):
-                    if similarity(self.initial_cluster_list[i], self.initial_cluster_list[j]) > threshold:
-                        if i in hash_graph:
-                            hash_graph[i].add(j)
-                        else:
-                            hash_graph[i] = {j}
-                        if j in hash_graph:
-                            hash_graph[j].add(i)
-                        else:
-                            hash_graph[j] = {i}
-
-            global_visited = set()
-            merge_indices = list()
-            for index in range(len(self.initial_cluster_list)):
-                if index not in global_visited:
-                    local_visited = set()
-                    dfs(index, local_visited)
-                    # TODO: is the copy necessary?
-                    merge_indices.append(local_visited.copy())
-                    for reached in local_visited:
-                        global_visited.add(reached)
-
-            new_clusters = list()
-            for group in merge_indices:
-                new_cluster = set()
-                for cluster_index in group:
-                    new_cluster = new_cluster.union(self.initial_cluster_list[cluster_index])
-                new_clusters.append(new_cluster)
-
-            self.merged_cluster_list = new_clusters
-
-        # merger()
-
-
-
+        # print("____________________________zipper_merge_________________________________")
+        # time.sleep(1)
+        # zipper_merged_clusters = zipper_merge(self, self.initial_cluster_list)
+        # # add the zipper merged clusters to the merged cluster list
+        # self.merged_cluster_list+=zipper_merged_clusters
+        # print("len(self.merged_cluster_list)", len(self.merged_cluster_list))
+        # time.sleep(1)
         ############################################################
         # THRESHOLD BASED ON SIZE
         ############################################################
@@ -245,13 +174,28 @@ class CL1_Randomized:
         self.densityThreshold_sizeThreshold_merged_cluster_list +=densityThreshold(hash_graph=self.graph.hash_graph,
                                                                                    li=self.sizeThreshold_merged_cluster_list,
                                                                                    dens_thresh=self.density_threshold)
+        # self.densityThreshold_sizeThreshold_merged_cluster_list  = self.sizeThreshold_merged_cluster_list
+        ############################################################
+        # count the number of duplicates
+        ############################################################
+        result = self.densityThreshold_sizeThreshold_merged_cluster_list
+        to_delete = set()
+        for idx, cluster in enumerate(result):
+            for idx2, cluster2 in enumerate(result):
+                if idx == idx2 or idx2 in to_delete:
+                    continue
+                if cluster == cluster2:
+                    to_delete.add(idx2)
+        print("number of duplicates: ", len(to_delete))
+        time.sleep(1)
         ############################################################
         # WRITE THE FINAL RESULT INTO A TEXT FILE
         ############################################################
-        def write_final_clusters():
-            f = open("../complexes/" + self.output_filename, "w+")
+
+        def write_final_clusters(collection, filename):
+            f = open(filename, "w+")
             counter = 1
-            for cluster in self.densityThreshold_sizeThreshold_merged_cluster_list:
+            for cluster in collection:
                 s = ""
                 for id in cluster:
                     s += self.graph.id_to_name[id] + "\t"
@@ -261,12 +205,12 @@ class CL1_Randomized:
                 counter += 1
             f.close()
 
-        write_final_clusters()
-
-
+        write_final_clusters(self.densityThreshold_sizeThreshold_merged_cluster_list,
+                             "../complexes/" + self.output_filename)
         ############################################################
         # DETERMINE WHICH GOLD STANDARD COMPLEXES APPEAR IN CURRENT DATASET
         ############################################################
+
         def gold_standard_complex_appearance(gold_standard_filename=""):
             if gold_standard_filename:
                 gsf = gold_standard_filename
@@ -305,11 +249,10 @@ class CL1_Randomized:
             return final
 
         gold_standard_complex_appearance()
-
-
         ############################################################
         # DETERMINE WHICH APPEARING GSC ARE FOUND BY ALGORITHM
         ############################################################
+
         def found_gsc():
             retval = []
             for A in self.gold_standard_complexes_appearing_in_dataset:
@@ -320,12 +263,10 @@ class CL1_Randomized:
             return retval
 
         found_gsc()
-
-
-
         ############################################################
         # DETERMINE WHICH GSC APPEARING IN DATASET ARE NOT FOUND BY ALGORITHM
         ############################################################
+
         def not_found_gsc():
             retval = []
             for A in self.gold_standard_complexes_appearing_in_dataset:
@@ -339,10 +280,10 @@ class CL1_Randomized:
             return retval
 
         not_found_gsc()
-
         ############################################################
         # FUNCTION TO CALCULATE STATS ABOUT A LIST OF CLUSTERS
         ############################################################
+
         def calculate_clusters_stats(cluster_list, output_map):
             output_map['clusters'] = dict()
             total_density = 0
@@ -377,14 +318,12 @@ class CL1_Randomized:
         calculate_clusters_stats(
             self.densityThreshold_sizeThreshold_merged_cluster_list,
             self.final_clusters_stats)
-
         ############################################################
         # CALCULATE STATS ABOUT THE GSC APPEARING IN DATASET
         ############################################################
         calculate_clusters_stats(
             self.gold_standard_complexes_appearing_in_dataset,
             self.gsc_appearing_stats)
-
         ############################################################
         # CALCULATE STATS ABOUT THE GSC APPEARING IN DATASET FOUND BY ALGORITHM
         ############################################################
@@ -392,14 +331,12 @@ class CL1_Randomized:
         calculate_clusters_stats(
             self.found,
             self.gsc_appearing_found_stats)
-
         ############################################################
         # CALCULATE STATS ABOUT THE GSC APPEARING IN DATASET NOT FOUND BY ALGORITHM
         ############################################################
         calculate_clusters_stats(
             self.not_found,
             self.gsc_appearing_notFound_stats)
-
         ############################################################
         # DISPLAY DETAILS OF THE GSC THAT APPEARED IN THE DATASET BASED ON WHETHER OR NOT THE ALGORITHM FOUND THEM
         ############################################################
@@ -459,22 +396,69 @@ class CL1_Randomized:
         ##########################################################################
         print("################ QUALITY #######################")
 
-        def get_quality():
+        def get_quality(reference_file, complexes_file):
             import subprocess
             res = subprocess.check_output(["python2",
                                            "../cl1_reproducibility/reproducibility/scripts/match_standalone.py",
-                                           self.gold_standard_filename,
-                                           "../complexes/" + self.output_filename])
+                                           reference_file,
+                                           complexes_file])
             for line in res.splitlines():
                 print(line)
                 a = str(line)
                 a = a.replace("b", "").replace("=", "").replace("\'", "").split()
                 self.quality_report[a[0]] = float(a[1])
-
             print(self.run_title)
+        if self.original_graph_filename=="gavin2006_socioaffinities_rescaled.txt":
+            print("using mips_3_100.txt")
+            print("Mine")
+            get_quality(self.gold_standard_filename, "../complexes/" + self.output_filename)
+            print("Theirs")
+            get_quality(self.gold_standard_filename, "../cl1_datasets/datasets/cyto_gavin_paper_defaults.txt")
+            self.gold_standard_filename = "../cl1_gold_standard/gold_standard/sgd.txt"
+            print("using sgd.txt")
+            print("Mine")
+            get_quality(self.gold_standard_filename, "../complexes/" + self.output_filename)
+            print("Theirs")
+            get_quality(self.gold_standard_filename, "../cl1_datasets/datasets/cyto_gavin_paper_defaults.txt")
 
-        get_quality()
+        if self.original_graph_filename=="collins2007.txt":
+            print("using mips_3_100.txt")
+            print("Mine")
+            get_quality(self.gold_standard_filename, "../complexes/" + self.output_filename)
+            print("Theirs")
+            get_quality(self.gold_standard_filename, "../cl1_datasets/datasets/cyto_collins_paper_defaults.txt")
+            self.gold_standard_filename = "../cl1_gold_standard/gold_standard/sgd.txt"
+            print("using sgd.txt")
+            print("Mine")
+            get_quality(self.gold_standard_filename, "../complexes/" + self.output_filename)
+            print("Theirs")
+            get_quality(self.gold_standard_filename, "../cl1_datasets/datasets/cyto_collins_paper_defaults.txt")
 
+        if self.original_graph_filename=="krogan2006_extended.txt":
+            print("using mips_3_100.txt")
+            print("Mine")
+            get_quality(self.gold_standard_filename, "../complexes/" + self.output_filename)
+            print("Theirs")
+            get_quality(self.gold_standard_filename, "../cl1_datasets/datasets/cyto_krogan_paper_defaults.txt")
+            self.gold_standard_filename = "../cl1_gold_standard/gold_standard/sgd.txt"
+            print("using sgd.txt")
+            print("Mine")
+            get_quality(self.gold_standard_filename, "../complexes/" + self.output_filename)
+            print("Theirs")
+            get_quality(self.gold_standard_filename, "../cl1_datasets/datasets/cyto_krogan_paper_defaults.txt")
+
+        if self.original_graph_filename=="biogrid_yeast_physical_unweighted+naively_weighted.txt":
+            print("using mips_3_100.txt")
+            print("Mine")
+            get_quality(self.gold_standard_filename, "../complexes/" + self.output_filename)
+            print("Theirs")
+            get_quality(self.gold_standard_filename, "../cl1_datasets/datasets/cyto_biog+nW_cl1_fromUnused_overlapPoint8.txt")
+            self.gold_standard_filename = "../cl1_gold_standard/gold_standard/sgd.txt"
+            print("using sgd.txt")
+            print("Mine")
+            get_quality(self.gold_standard_filename, "../complexes/" + self.output_filename)
+            print("Theirs")
+            get_quality(self.gold_standard_filename, "../cl1_datasets/datasets/cyto_biog+nW_cl1_fromUnused_overlapPoint8.txt")
         ############################################################
         # LOG RUN INFO
         ############################################################
@@ -483,7 +467,6 @@ class CL1_Randomized:
         f.write(str(self.argument_dict)+"\n")
         f.write(str(self.quality_report)+"\n\n")
         f.close()
-
         ############################################################
         # STORE THE CURRENT OBJECT USING PICKLE
         ############################################################
@@ -492,9 +475,7 @@ class CL1_Randomized:
             f = open(f_name, 'ab')
             pickle.dump(self, f)
             f.close()
-
         store_self()
-
         f_name = "../pickles/most_recent"
         f = open(f_name, 'wb')
         title = {'title': "pickles/pickle+"+self.run_title}

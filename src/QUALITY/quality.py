@@ -20,7 +20,7 @@ def cohesiveness(cl1, list_of_proteins) -> float:
                 weight_out += edge_weight
     # TODO: check that all is good with the calculation
     return weight_in / \
-           ((weight_in + weight_out)+2*len(list_of_proteins))
+           ((weight_in + weight_out)+cl1.penalty_value_per_node*len(list_of_proteins))
 
 
 def density(self, list_of_proteins):

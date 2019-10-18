@@ -13,11 +13,11 @@ def ocg(cl1, cs, current_cluster_construction_log):
         ##############################################
         # SANITY CHECK
         ##############################################
-        a = cs.cohesiveness
-        b = cohesiveness(cl1, [v for v in cs.current_cluster])
-        offby=abs(a-b )
-        if offby >.005:
-            print("math problem", a, b, offby)
+        # a = cs.cohesiveness
+        # b = cohesiveness(cl1, [v for v in cs.current_cluster])
+        # offby=abs(a-b )
+        # if offby >.005:
+        #     print("math problem", a, b, offby)
 
     def figure_out_which_move_is_best(c1, cs):
         ############
@@ -76,7 +76,10 @@ def ocg(cl1, cs, current_cluster_construction_log):
     ##############################################
     # add current_cluster to the list of clusters
     #############################################
-    cl1.initial_clustering.append(cs.current_cluster.copy())
     cl1.construction_log[tuple([protein for protein in cs.current_cluster])] = current_cluster_construction_log
     print("CLUSTER #%s: %s" % (str(len(cl1.initial_clustering)), str([vertex for vertex in cs.current_cluster])))
     print("COHESIVENESS: ", cs.cohesiveness)
+    print("LENGTH: ", len(cs.current_cluster))
+
+    return cs.current_cluster.copy()
+

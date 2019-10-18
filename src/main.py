@@ -1,16 +1,19 @@
 from src.CL1R.cl1r import CL1_Randomized
 from src.COMMON.cmn import *
 
+# krogan2006_extended.txt
+# collins2007.txt
+# biogrid_yeast_physical_unweighted+naively_weighted.txt
 if __name__=="__main__":
     pr = cProfile.Profile()
     pr.enable()
-    # # ... do something ...
+    # ... do something ...
     a = CL1_Randomized("../cl1_datasets/datasets",
-                       "gavin2006_socioaffinities_rescaled.txt",
+                       "biogrid_yeast_physical_unweighted+naively_weighted.txt",
                        'Dummy_quality',
                        density_threshold=.15,
                        merge_threshold=.9,
-                       penalty_value_per_node=2,
+                       penalty_value_per_node=10,
                        randomized_construction_bool=True,
                        rng_seed=None,
                        number_of_shakes=0,
@@ -28,17 +31,6 @@ if __name__=="__main__":
     ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
     ps.print_stats()
     print(s.getvalue())
-
-
-"""
-189 reference complexes, 305 predicted complexes
-b'acc = 0.3919'
-b'cws = 0.3744'
-b'frac = 0.4180'
-b'mmr = 0.2144'
-b'ppv = 0.4102'
-b'sep = 0.2162'
-"""
 
 
 

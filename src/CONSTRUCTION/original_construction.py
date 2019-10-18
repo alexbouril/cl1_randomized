@@ -48,11 +48,15 @@ def original_construction(cl1):
             ############################################################
             # Grow the cluster
             ############################################################
-            ocg(cl1, cs, current_cluster_construction_log)
-            index+=1
+            new_cluster = ocg(cl1, cs, current_cluster_construction_log)
+            ############################################################
+            # add the cluster to the initial_clustering
+            ############################################################
+            cl1.initial_clustering.append(new_cluster)
             ############################################################
             # If we aren't seeding from each node, mark used nodes
             ############################################################
+            index+=1
             if not cl1.seed_from_all:
                 add_to_considered = set([v for v in cs.current_cluster])
                 considered_vertices = considered_vertices.union(add_to_considered)

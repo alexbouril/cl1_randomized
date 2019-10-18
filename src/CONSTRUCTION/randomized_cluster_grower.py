@@ -30,11 +30,11 @@ def rcg(cl1, cs, current_cluster_construction_log):
         ##############################################
         # SANITY CHECK
         ##############################################
-        a = cs.cohesiveness
-        b = cohesiveness(cl1, [v for v in cs.current_cluster])
-        offby=abs(a-b )
-        if offby >.005:
-            print("math problem", a, b, offby)
+        # a = cs.cohesiveness
+        # b = cohesiveness(cl1, [v for v in cs.current_cluster])
+        # offby=abs(a-b )
+        # if offby >.005:
+        #     print("math problem", a, b, offby)
 
 
     ############################################################
@@ -112,8 +112,9 @@ def rcg(cl1, cs, current_cluster_construction_log):
     ##############################################
     # add current_cluster to the list of clusters
     #############################################
-    cl1.initial_clustering.append(best_seen_cs.current_cluster)
     cl1.construction_log[tuple([protein for protein in best_seen_cs.current_cluster])] = current_cluster_construction_log
     print("best_seen", best_seen_cs.cohesiveness,[v for v in best_seen_cs.current_cluster])
     print("CLUSTER #%s: %s" % (str(len(cl1.initial_clustering)), str([vertex for vertex in best_seen_cs.current_cluster])))
     print("COHESIVENESS: ", best_seen_cs.cohesiveness)
+    print("LENGTH: ", len(cs.current_cluster))
+    return best_seen_cs.current_cluster

@@ -1,4 +1,3 @@
-from src.CLUSTER_STATE.cluster_state import *
 from src.COMMON.cmn import *
 
 def update_v_sanity_check(collection, v):
@@ -12,7 +11,7 @@ def update_v_sanity_check(collection, v):
         print("oh no %s; %s%s%s%s" % (str(v), a, b, c, d))
         exit()
 
-def add(cl1, cs:ClusterState):
+def add(cl1, cs):
     #################################################################
     # update the overall weight into and out of the current_cluster #
     #################################################################
@@ -85,7 +84,7 @@ def add(cl1, cs:ClusterState):
 
 
 
-def remove(cl1, cs:ClusterState):
+def remove(cl1, cs):
     starting = len(cs.current_cluster)
     ###############################################################################################
     # Update the current_cluster 's score, and overall weight into and out of the current cluster #

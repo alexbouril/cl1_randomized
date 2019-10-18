@@ -175,7 +175,6 @@ class MatchApplication(object):
                     continue
                 if cluster == cluster2:
                     to_delete.add(idx2)
-
         result = [r for i, r in enumerate(result) if i not in to_delete]
         return result
 

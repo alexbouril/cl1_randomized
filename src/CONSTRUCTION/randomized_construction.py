@@ -19,8 +19,11 @@ def randomized_construction(cl1):
     ############################################################
     numpy.random.set_state(cl1.rng_initial_state)
     # cl1.logger.info(f'(RUN:{cl1.run_title}) rng_seed is {cl1.rng_seed}')
-
+    #TODO remove counter
+    # counter=0
     while index < len(sorted_seeds):
+        #     and counter<2:
+        # counter+=1
         current_seed = sorted_seeds[index][0]
         if current_seed in considered_vertices:
             index += 1
@@ -56,14 +59,18 @@ def randomized_construction(cl1):
             ############################################################
             # Grow the cluster
             ############################################################
-            rcg(cl1, cs, current_cluster_construction_log)
-            index+=1
+            new_cluster = rcg(cl1, cs, current_cluster_construction_log)
+            ############################################################
+            # add the cluster
+            ############################################################
+            cl1.initial_clustering.append(new_cluster)
             ############################################################
             # If we aren't seeding from each node, mark used nodes
             ############################################################
             if not cl1.seed_from_all:
                 add_to_considered = set([v for v in cs.current_cluster])
                 considered_vertices = considered_vertices.union(add_to_considered)
+            index+=1
 
 
 
