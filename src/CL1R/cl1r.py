@@ -127,11 +127,15 @@ class CL1_Randomized:
         ############################################################
         # INITIAL CONSTRUCTION
         ############################################################
-        if self.randomized_construction_bool:
-            randomized_construction(self)
-        # TODO reimplement the oc function using new classes and package framework
-        else:
-            original_construction(self)
+        # if self.randomized_construction_bool:
+        #     randomized_construction(self)
+        # # TODO reimplement the oc function using new classes and package framework
+        # else:
+        #     original_construction(self)
+        randomized_construction(self)
+        asdfa = len(self.initial_clustering)
+        original_construction(self)
+        bsdfa = len(self.initial_clustering)
         ############################################################
         # GET THE INITIAL CLUSTER LIST
         ############################################################
@@ -163,6 +167,10 @@ class CL1_Randomized:
         # self.merged_cluster_list+=zipper_merged_clusters
         # print("len(self.merged_cluster_list)", len(self.merged_cluster_list))
         # time.sleep(1)
+        ############################################################
+        # THRESHOLD BASED ON COHESIVENESS???
+        ############################################################
+        # todo
         ############################################################
         # THRESHOLD BASED ON SIZE
         ############################################################
@@ -480,6 +488,7 @@ class CL1_Randomized:
         f = open(f_name, 'wb')
         title = {'title': "pickles/pickle+"+self.run_title}
         pickle.dump(title, f)
+        print(asdfa, bsdfa)
 
 
 

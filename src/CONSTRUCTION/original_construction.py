@@ -60,4 +60,6 @@ def original_construction(cl1):
             if not cl1.seed_from_all:
                 add_to_considered = set([v for v in cs.current_cluster])
                 considered_vertices = considered_vertices.union(add_to_considered)
+                considered_vertices.add(current_seed)
+
 

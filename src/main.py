@@ -1,6 +1,7 @@
 from src.CL1R.cl1r import CL1_Randomized
 from src.COMMON.cmn import *
 
+# gavin2006_socioaffinities_rescaled.txt
 # krogan2006_extended.txt
 # collins2007.txt
 # biogrid_yeast_physical_unweighted+naively_weighted.txt
@@ -9,7 +10,7 @@ if __name__=="__main__":
     pr.enable()
     # ... do something ...
     a = CL1_Randomized("../cl1_datasets/datasets",
-                       "biogrid_yeast_physical_unweighted+naively_weighted.txt",
+                       "gavin2006_socioaffinities_rescaled.txt",
                        'Dummy_quality',
                        density_threshold=.15,
                        merge_threshold=.9,
@@ -20,7 +21,7 @@ if __name__=="__main__":
                        number_of_bad_adds=2,
                        sort_seeds_by="weight",
                        care_about_cuts=False,
-                       seed_from_all=False,
+                       seed_from_all=True,
                        gsc_appearance_ratio_threshold=.9,
                        found_gsc_jaccard_threshold=.8,
                        gold_standard_filename="../cl1_gold_standard/gold_standard/mips_3_100.txt")

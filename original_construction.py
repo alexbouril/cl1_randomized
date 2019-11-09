@@ -32,7 +32,7 @@ def oc(self):
             ############################################################
             current_cluster, remove_candidates, add_candidates, current_score, current_cluster_weight_in, current_cluster_weight_out = \
                 initialize_complex(self, current_seed)
-            current_cluster_construction_log.append(ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
+            # current_cluster_construction_log.append(ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
 
             while (add_candidates or remove_candidates) and not end_construction:
                 debug("Current cluster #%s" % str(len(self.initial_clustering)))
@@ -66,8 +66,8 @@ def oc(self):
                                     current_cluster_weight_in,
                                     current_cluster_weight_out)
                             current_cluster_construction_log.append(Action("adding", best_add_change))
-                            current_cluster_construction_log.append(
-                                ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
+                            # current_cluster_construction_log.append(
+                            #     ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
 
                     ############################################################
                     # REMOVE A VERTEX ON THE BOUNDARY
@@ -78,8 +78,8 @@ def oc(self):
                         current_cluster_weight_in, current_cluster_weight_out = \
                             remove(self, remove_candidates, add_candidates, current_cluster, best_remove_change, best_remove_change_score, current_cluster_weight_in, current_cluster_weight_out)
                         current_cluster_construction_log.append(Action("removing", best_remove_change))
-                        current_cluster_construction_log.append(
-                            ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
+                        # current_cluster_construction_log.append(
+                        #     ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
 
             # add current_cluster to the list of clusters
             self.initial_clustering.append(current_cluster)

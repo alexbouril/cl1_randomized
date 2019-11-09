@@ -8,6 +8,7 @@ from pstats import SortKey
 import cProfile
 import io
 import pstats
+import tracemalloc
 import sys
 import numpy
 import heapq
@@ -23,20 +24,6 @@ def profiler(cmd_str):
     ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
     ps.print_stats()
     print(s.getvalue())
-#
-# class TwoN_Add:
-#     def __init(self, add_candidate, good_neighbors, prior_cohesiveness, proposed_score, post_cohesiveness):
-#         self.add_candidate = add_candidate
-#         self.good_neighbors = good_neighbors
-#         self.prior_cohesiveness = prior_cohesiveness
-#         self.proposed_score = proposed_score
-#         self.post_cohesiveness = post_cohesiveness
-#
-# class checking_2n_add:
-#     def __init__(self):
-#         self.changes_made =[TwoN_Add]
-#         self.final_cohesiveness = None
-
 
 
 def setup_custom_logger(name):
@@ -61,12 +48,17 @@ def debug(*argv):
         for arg in argv:
             print(arg)
 
+
 def sleep_debug(t, m = ""):
     if SLEEP_DEBUG:
         print(m)
         time.sleep(t)
 
+
 def loadData(f_name):
+    """
+    :return: an object stored in the pickle
+    """
     # for reading also binary mode is important
     f = open(f_name, 'rb')
     obj = pickle.load(f)
@@ -82,6 +74,7 @@ def sort_vertices_by_degree(self) -> list:
     retval.sort(key=lambda x: x[1], reverse=True)
     return retval
 
+
 def sort_vertices_by_weight(self) -> list:
     """
     :return: a sorted list of tuples corresponding to (vertex id, weight)
@@ -89,6 +82,7 @@ def sort_vertices_by_weight(self) -> list:
     retval = [[k, sum([self.graph.hash_graph[k][target] for target in self.graph.hash_graph[k]])] for k in self.graph.hash_graph]
     retval.sort(key=lambda x: x[1], reverse=True)
     return retval
+
 
 def jaccard_similarity(a,b):
     a = set(a.copy())
@@ -133,7 +127,6 @@ class Action:
         return s
 
 
-
 def stringify_construction_log(construction_log, verbose = False, graph = None):
     s = ""
     for key in construction_log:
@@ -151,6 +144,7 @@ def stringify_construction_log(construction_log, verbose = False, graph = None):
 
     return s
 
+
 def stringify_single_cluster_construction_log(construction_log, cluster_key, verbose = False, graph = None):
     s = ""
     s += "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ NEW CLUSTER @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"
@@ -165,7 +159,6 @@ def stringify_single_cluster_construction_log(construction_log, cluster_key, ver
             s += entry.stringify()
     s += "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ END CLUSTER @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"
     return s
-
 
 
 def get_quality(gold_standard_filename, output_filename):

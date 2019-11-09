@@ -11,6 +11,7 @@ def cohesiveness(cl1, list_of_proteins) -> float:
     """
     weight_in = 0
     weight_out = 0
+    print(list_of_proteins)
     for source in list_of_proteins:
         for target in cl1.graph.hash_graph[source]:
             edge_weight = cl1.graph.hash_graph[source][target]

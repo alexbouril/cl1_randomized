@@ -1,5 +1,6 @@
 from src.QUALITY.quality import cohesiveness
 from src.CLUSTER_STATE.cluster_state import generate_cluster_state_given_current_cluster_list, ClusterState
+from src.CONSTRUCTION.randomized_cluster_grower import rcg
 from src.CONSTRUCTION.original_cluster_grower import ocg
 # def zipper_merger():  # takes a list of clusters
 #     threshold = self.merge_threshold
@@ -110,9 +111,9 @@ def zipper_merge(cl1, source):  # takes a list of clusters
 
         current_cohesiveness = cohesiveness(cl1, complex_union_list)
         for neighbor in neighbor_intersection:
-            c = cohesiveness(cl1, complex_union_list+[neighbor])
-            if c>current_cohesiveness:
-                fuse_points.add(neighbor)
+            # c = cohesiveness(cl1, complex_union_list+[neighbor])
+            # if c>current_cohesiveness:
+            fuse_points.add(neighbor)
 
         if fuse_points and len(fuse_points)>=3:
             print(cohesiveness(cl1, list(A_complex_set)),
@@ -122,8 +123,11 @@ def zipper_merge(cl1, source):  # takes a list of clusters
                   current_cohesiveness,
                   cohesiveness(cl1, list(A_complex_set)+list(B_complex_set)+list(fuse_points)))
             print("len(fuse_points)", len(fuse_points))
+            print('hello')
             new_starting_complex_list = complex_union_list+list(fuse_points)
+            print('beautiful')
             new_cluster_state = generate_cluster_state_given_current_cluster_list(cl1,new_starting_complex_list)
+            print('world')
             # print(new_cluster_state.cohesiveness)
             pre = cohesiveness(cl1, [x for x in new_cluster_state.current_cluster])
             print("pre:",pre)
@@ -139,10 +143,11 @@ def zipper_merge(cl1, source):  # takes a list of clusters
     new_clusters = list()
 
     for i,a in enumerate(source):
-        for j,b in enumerate(source):
-            if i!=j:
-                c = find_fuse(a,b)
-                if c:
-                    new_clusters.append(c)
+        for j in range(i+1, len(source)):
+            print(i,j)
+            b = source[j]
+            c = find_fuse(a,b)
+            if c:
+                new_clusters.append(c)
 
     return new_clusters
