@@ -19,7 +19,7 @@ def ocg(cl1, cs, current_cluster_construction_log):
         # if offby >.005:
         #     print("math problem", a, b, offby)
 
-    def figure_out_which_move_is_best(c1, cs):
+    def figure_out_which_move_is_best(cl1, cs):
         ############
         # reset
         ############
@@ -56,6 +56,7 @@ def ocg(cl1, cs, current_cluster_construction_log):
             cs.best_change = best_remove
             cs.best_change_score = best_remove_score
             return 2
+
     while True:
         choice = figure_out_which_move_is_best(cl1, cs)
         if choice is None:
@@ -77,5 +78,6 @@ def ocg(cl1, cs, current_cluster_construction_log):
     print("CLUSTER #%s: %s" % (str(len(cl1.initial_clustering)), str([vertex for vertex in cs.current_cluster])))
     print("COHESIVENESS: ", cs.cohesiveness)
     print("LENGTH: ", len(cs.current_cluster))
+    # TODO: remove this copy
     return cs.current_cluster.copy()
 

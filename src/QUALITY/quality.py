@@ -23,6 +23,15 @@ def cohesiveness(cl1, list_of_proteins) -> float:
     return weight_in / \
            ((weight_in + weight_out)+cl1.penalty_value_per_node*len(list_of_proteins))
 
+def num_edges_inside(cl1, list_of_proteins):
+    num_edges = 0
+    for source in list_of_proteins:
+        for target in cl1.graph.hash_graph[source]:
+            if target in list_of_proteins:
+                num_edges+=1
+    num_edges/=2
+    return num_edges
+
 
 def density(self, list_of_proteins):
     # TODO: check that density is calculated with degree, not weights

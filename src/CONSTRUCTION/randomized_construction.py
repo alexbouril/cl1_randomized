@@ -18,7 +18,7 @@ def randomized_construction(cl1):
     ############################################################
     # set the state of the random number generator
     ############################################################
-    numpy.random.set_state(cl1.rng_initial_state)
+    np.random.set_state(cl1.rng_initial_state)
     # cl1.logger.info(f'(RUN:{cl1.run_title}) rng_seed is {cl1.rng_seed}')
     while index < len(sorted_seeds):
         current_seed = sorted_seeds[index][0]

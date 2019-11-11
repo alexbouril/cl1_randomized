@@ -112,7 +112,6 @@ def remove(cl1, cs):
         collection[v].num_edges_to -= 1
         collection[v].num_edges_from += 1
         update_v_sanity_check(collection,v)
-
     for v in cl1.graph.hash_graph[cs.best_change]:
         edge_weight = cl1.graph.hash_graph[cs.best_change][v]
         if v in cs.remove_candidates:

@@ -1,6 +1,7 @@
 from src.CL1R.cl1r import CL1_Randomized
 from src.COMMON.cmn import *
 
+
 # gavin2006_socioaffinities_rescaled.txt
 # krogan2006_extended.txt
 # collins2007.txt
@@ -10,7 +11,7 @@ if __name__=="__main__":
     pr.enable()
     # ... do something ...
     a = CL1_Randomized("../cl1_datasets/datasets",
-                       "gavin2006_socioaffinities_rescaled.txt",
+                       "krogan2006_extended.txt",
                        'Dummy_quality',
                        density_threshold=.15,
                        merge_threshold=.9,

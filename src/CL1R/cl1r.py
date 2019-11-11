@@ -10,6 +10,8 @@ from src.THRESHOLDING.thresholding_functions import sizeThreshold, densityThresh
 
 # TODO: package/syspath,1-1 comparison, Cython, Threading, Command-line args, currying, class variable, hidden class variable, numpy, inheritance, tracemalloc
 
+# TODO: check the effect of using weights for density, not just number edges
+# TODO: check about setting upper bound for lengths!  should we allow complexes with length greater than 300?
 
 
 #TODO implement find 1, 2, 3 neighborhood of current cluster
@@ -71,8 +73,8 @@ class CL1_Randomized:
         self.penalty_value_per_node = penalty_value_per_node
         self.randomized_construction_bool = randomized_construction_bool
         self.rng_seed = rng_seed
-        numpy.random.seed(rng_seed)
-        self.rng_initial_state = numpy.random.get_state()
+        np.random.seed(rng_seed)
+        self.rng_initial_state = np.random.get_state()
         self.number_of_shakes = number_of_shakes
         self.number_of_bad_adds = number_of_bad_adds
         self.bad_add_probability = bad_add_probability
@@ -156,7 +158,6 @@ class CL1_Randomized:
         self.merged_cluster_list+= merge(merge_threshold=self.merge_threshold,
                                          source=self.initial_cluster_list)
         print("len(self.merged_cluster_list)",len(self.merged_cluster_list))
-        time.sleep(1)
         ############################################################
         # ZIPPER MERGE COMPLEXES
         ############################################################

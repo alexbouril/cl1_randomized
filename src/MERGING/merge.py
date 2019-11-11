@@ -1,11 +1,13 @@
-
+import collections
 
 def merge(merge_threshold, source):  # takes a list of clusters
-    hash_graph = dict()
+    hash_graph = collections.defaultdict(set)
 
     def similarity(A, B):
         """Implements the overlap score described in the paper
         """
+        # fst, snd = (A, B) if len(A) < len(B) else (B, A)
+        # numerator = len(fst.intersection(snd)) **2
         numerator = len(A.intersection(B)) ** 2
         denominator = len(A) * len(B)
         return numerator / denominator
@@ -17,18 +19,10 @@ def merge(merge_threshold, source):  # takes a list of clusters
                 dfs(neigbor, local_visited)
 
     for i in range(len(source)):
-        if i not in hash_graph:
-            hash_graph[i] = set()
         for j in range(i + 1, len(source)):
             if similarity(source[i], source[j]) > merge_threshold:
-                if i in hash_graph:
-                    hash_graph[i].add(j)
-                else:
-                    hash_graph[i] = {j}
-                if j in hash_graph:
-                    hash_graph[j].add(i)
-                else:
-                    hash_graph[j] = {i}
+                hash_graph[i].add(j)
+                hash_graph[j].add(i)
 
     global_visited = set()
     merge_indices = list()
@@ -37,7 +31,8 @@ def merge(merge_threshold, source):  # takes a list of clusters
             local_visited = set()
             dfs(index, local_visited)
             # TODO: is the copy necessary?
-            merge_indices.append(local_visited.copy())
+            # merge_indices.append(local_visited.copy())
+            merge_indices.append(local_visited)
             for reached in local_visited:
                 global_visited.add(reached)
 

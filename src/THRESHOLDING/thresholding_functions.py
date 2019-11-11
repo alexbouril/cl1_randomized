@@ -1,7 +1,7 @@
-
+upper_size_limit = 3000
 def sizeThreshold(source, size_thresh):
     retval = [cluster for cluster in source if
-                                              len(cluster) > size_thresh]
+                                              len(cluster) > size_thresh and len(cluster)<upper_size_limit]
     return retval
 
 
