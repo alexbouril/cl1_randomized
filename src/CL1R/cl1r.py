@@ -161,13 +161,19 @@ class CL1_Randomized:
         ############################################################
         # ZIPPER MERGE COMPLEXES
         ############################################################
-        # print("____________________________zipper_merge_________________________________")
-        # time.sleep(1)
-        # zipper_merged_clusters = zipper_merge(self, self.initial_cluster_list)
-        # # add the zipper merged clusters to the merged cluster list
-        # self.merged_cluster_list+=zipper_merged_clusters
-        # print("len(self.merged_cluster_list)", len(self.merged_cluster_list))
-        # time.sleep(1)
+        print("____________________________zipper_merge_________________________________")
+        time.sleep(1)
+        zipper_merged_clusters = zipper_merge(self, self.initial_cluster_list)
+        # add the zipper merged clusters to the merged cluster list
+        self.merged_cluster_list+=zipper_merged_clusters
+        print("len(zipper_merged_clusters)", len(zipper_merged_clusters))
+        time.sleep(1)
+        ############################################################
+        # REMERGE
+        ############################################################
+        # self.merged_cluster_list= merge(merge_threshold=self.merge_threshold,
+        #                                  source=self.merged_cluster_list)
+        # print("len(self.merged_cluster_list)",len(self.merged_cluster_list))
         ############################################################
         # THRESHOLD BASED ON COHESIVENESS???
         ############################################################
@@ -411,63 +417,39 @@ class CL1_Randomized:
                                            "../cl1_reproducibility/reproducibility/scripts/match_standalone.py",
                                            reference_file,
                                            complexes_file])
+            composite_score = 0
             for line in res.splitlines():
                 print(line)
                 a = str(line)
                 a = a.replace("b", "").replace("=", "").replace("\'", "").split()
                 self.quality_report[a[0]] = float(a[1])
+                if a[0] in ['acc', "cws", "frac"]:
+                    composite_score+=float(a[1])
             print(self.run_title)
-        if self.original_graph_filename=="gavin2006_socioaffinities_rescaled.txt":
-            print("using mips_3_100.txt")
-            print("Mine")
-            get_quality(self.gold_standard_filename, "../complexes/" + self.output_filename)
-            print("Theirs")
-            get_quality(self.gold_standard_filename, "../cl1_datasets/datasets/cyto_gavin_paper_defaults.txt")
-            self.gold_standard_filename = "../cl1_gold_standard/gold_standard/sgd.txt"
-            print("using sgd.txt")
-            print("Mine")
-            get_quality(self.gold_standard_filename, "../complexes/" + self.output_filename)
-            print("Theirs")
-            get_quality(self.gold_standard_filename, "../cl1_datasets/datasets/cyto_gavin_paper_defaults.txt")
+            return composite_score
 
-        if self.original_graph_filename=="collins2007.txt":
+        scores = {}
+        dataset_to_cyto_default_result = {"gavin2006_socioaffinities_rescaled.txt": "cyto_gavin_paper_defaults.txt",
+                                          "collins2007.txt":"cyto_collins_paper_defaults.txt",
+                                          "krogan2006_extended.txt":"cyto_krogan_paper_defaults.txt",
+                                          "biogrid_yeast_physical_unweighted+naively_weighted.txt":"cyto_biog+nW_cl1_fromUnused_overlapPoint8.txt"
+        }
+        if self.original_graph_filename in dataset_to_cyto_default_result:
+            scores["mips"]={}
+            scores["sgd"]={}
             print("using mips_3_100.txt")
             print("Mine")
-            get_quality(self.gold_standard_filename, "../complexes/" + self.output_filename)
+            scores["mips"]['mine'] = get_quality(self.gold_standard_filename, "../complexes/" + self.output_filename)
             print("Theirs")
-            get_quality(self.gold_standard_filename, "../cl1_datasets/datasets/cyto_collins_paper_defaults.txt")
+            scores["mips"]['theirs'] =get_quality(self.gold_standard_filename, "../cl1_datasets/datasets/%s"%dataset_to_cyto_default_result[self.original_graph_filename])
             self.gold_standard_filename = "../cl1_gold_standard/gold_standard/sgd.txt"
             print("using sgd.txt")
             print("Mine")
-            get_quality(self.gold_standard_filename, "../complexes/" + self.output_filename)
+            scores["sgd"]['mine'] =get_quality(self.gold_standard_filename, "../complexes/" + self.output_filename)
             print("Theirs")
-            get_quality(self.gold_standard_filename, "../cl1_datasets/datasets/cyto_collins_paper_defaults.txt")
+            scores["sgd"]['theirs']=get_quality(self.gold_standard_filename, "../cl1_datasets/datasets/%s"%dataset_to_cyto_default_result[self.original_graph_filename])
 
-        if self.original_graph_filename=="krogan2006_extended.txt":
-            print("using mips_3_100.txt")
-            print("Mine")
-            get_quality(self.gold_standard_filename, "../complexes/" + self.output_filename)
-            print("Theirs")
-            get_quality(self.gold_standard_filename, "../cl1_datasets/datasets/cyto_krogan_paper_defaults.txt")
-            self.gold_standard_filename = "../cl1_gold_standard/gold_standard/sgd.txt"
-            print("using sgd.txt")
-            print("Mine")
-            get_quality(self.gold_standard_filename, "../complexes/" + self.output_filename)
-            print("Theirs")
-            get_quality(self.gold_standard_filename, "../cl1_datasets/datasets/cyto_krogan_paper_defaults.txt")
 
-        if self.original_graph_filename=="biogrid_yeast_physical_unweighted+naively_weighted.txt":
-            print("using mips_3_100.txt")
-            print("Mine")
-            get_quality(self.gold_standard_filename, "../complexes/" + self.output_filename)
-            print("Theirs")
-            get_quality(self.gold_standard_filename, "../cl1_datasets/datasets/cyto_biog+nW_cl1_fromUnused_overlapPoint8.txt")
-            self.gold_standard_filename = "../cl1_gold_standard/gold_standard/sgd.txt"
-            print("using sgd.txt")
-            print("Mine")
-            get_quality(self.gold_standard_filename, "../complexes/" + self.output_filename)
-            print("Theirs")
-            get_quality(self.gold_standard_filename, "../cl1_datasets/datasets/cyto_biog+nW_cl1_fromUnused_overlapPoint8.txt")
         ############################################################
         # LOG RUN INFO
         ############################################################
@@ -490,6 +472,8 @@ class CL1_Randomized:
         title = {'title': "pickles/pickle+"+self.run_title}
         pickle.dump(title, f)
         print(asdfa, bsdfa)
+        print(scores)
+        self.scores = scores
 
 
 

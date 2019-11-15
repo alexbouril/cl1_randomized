@@ -73,7 +73,6 @@ from src.CONSTRUCTION.original_cluster_grower import ocg
 def zipper_merge(cl1, source):  # takes a list of clusters
     hash_graph = dict()
 
-
     def find_one_neighborhood_of_complex(complex):
         complex_set = set([v for v in complex])
         neighbor_set = set()
@@ -83,71 +82,51 @@ def zipper_merge(cl1, source):  # takes a list of clusters
                     neighbor_set.add(u)
         return complex_set, neighbor_set
 
-    def find_v_weight_into_outOf_complex(v, complex):
-        weight_in = 0
-        weight_out = 0
-        edge_weights = [cl1.graph.hash_graph[v][neighbor] for neighbor in cl1.graph.hash_graph[v]]
-        for weight, neighbor in zip(edge_weights, cl1.graph.hash_graph[v]):
-            if neighbor in complex:
-                weight_in+=weight
-            else:
-                weight_out+=weight
-        return weight_in, weight_out
-
-
-
-    def find_fuse(A, B):
+    def find_fuse(i, j):
         """Implements the overlap score described in the paper
         """
-        A_complex_set, A_neighbor_set = find_one_neighborhood_of_complex(A)
-        B_complex_set, B_neighbor_set = find_one_neighborhood_of_complex(B)
-
-        neighbor_intersection = A_neighbor_set.intersection(B_neighbor_set)
-
-        complex_union = A_complex_set.union(B_complex_set)
-        complex_union_list = list(complex_union)
-
-        fuse_points = set()
-
-        current_cohesiveness = cohesiveness(cl1, complex_union_list)
-        for neighbor in neighbor_intersection:
-            # c = cohesiveness(cl1, complex_union_list+[neighbor])
-            # if c>current_cohesiveness:
-            fuse_points.add(neighbor)
-
-        if fuse_points and len(fuse_points)>=3:
-            print(cohesiveness(cl1, list(A_complex_set)),
-                  len(A_complex_set),
-                  cohesiveness(cl1, list(B_complex_set)),
-                  len(B_complex_set),
-                  current_cohesiveness,
-                  cohesiveness(cl1, list(A_complex_set)+list(B_complex_set)+list(fuse_points)))
-            print("len(fuse_points)", len(fuse_points))
-            print('hello')
+        A_complex_set, A_neighbor_set = neighborhoods_of_sources[i]
+        B_complex_set, B_neighbor_set = neighborhoods_of_sources[j]
+        fuse_points = A_neighbor_set.intersection(B_neighbor_set)
+        if fuse_points and len(fuse_points)>=7:
+            complex_union = A_complex_set.union(B_complex_set)
+            complex_union_list = list(complex_union)
             new_starting_complex_list = complex_union_list+list(fuse_points)
-            print('beautiful')
             new_cluster_state = generate_cluster_state_given_current_cluster_list(cl1,new_starting_complex_list)
-            print('world')
-            # print(new_cluster_state.cohesiveness)
-            pre = cohesiveness(cl1, [x for x in new_cluster_state.current_cluster])
-            print("pre:",pre)
-
-            new_cluster = [x for x in ocg(cl1, new_cluster_state, [])]
-            post = cohesiveness(cl1, new_cluster)
-            print('############## post:', post, len(new_cluster))
-
-            if post>pre:
-                print('^^^^^^^^^^^^^^^IMPROVEMENT^^^^^^^^^^^^^^^^^', post-pre)
-            return new_cluster
+            pre = new_cluster_state.best_change_score
+            new_cluster = ocg(cl1, new_cluster_state, [])
+            new_cluster_list = [x for x in new_cluster]
+            post = new_cluster_state.best_change_score
+            #TODO use weighted average of cohesiveness scores of original clusters A, B to compare post against
+            threshold = (cohesiveness_of_sources[i] * len(source[i]) + cohesiveness_of_sources[j] * len(source[j]))\
+                        /(len(source[i])+len(source[j]))
+            if post>threshold*3:
+                print("pre:", pre)
+                print("cohesiveness(A):", cohesiveness_of_sources[i])
+                print("cohesiveness(B):", cohesiveness_of_sources[j])
+                print("threshold:", threshold)
+                print("|A|:", len(A_complex_set), "|B|:", len(B_complex_set), "len(fuse_points)", len(fuse_points),
+                      "|new_cluster_list|:", len(new_cluster_list))
+                print('############## post:', post)
+                print('^^^^^^^^^^^^^^^IMPROVEMENT^^^^^^^^^^^^^^^^^', post-threshold, post -pre)
+                retval = new_cluster_list
+            else:
+                retval = None
+        else:
+            retval = None
+        return retval
 
     new_clusters = list()
-
-    for i,a in enumerate(source):
-        for j in range(i+1, len(source)):
-            print(i,j)
-            b = source[j]
-            c = find_fuse(a,b)
+    source = [x for x in source if len(x)<=20]
+    neighborhoods_of_sources = list(map(find_one_neighborhood_of_complex,source))
+    cohesiveness_of_sources = [cohesiveness(cl1, x) for x in source]
+    for i in range(200): #len(source)):
+        # TODO calculate partial starting cluster state
+        print("##################################################################### ", i)
+        for j in range(i+1, 100):#len(source)):
+            c = find_fuse(i,j)
             if c:
                 new_clusters.append(c)
+                print("len(new_clusters):",len(new_clusters))
 
     return new_clusters

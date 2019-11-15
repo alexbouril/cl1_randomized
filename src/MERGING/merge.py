@@ -2,16 +2,8 @@ import collections
 
 def merge(merge_threshold, source):  # takes a list of clusters
     hash_graph = collections.defaultdict(set)
-
-    def similarity(A, B):
-        """Implements the overlap score described in the paper
-        """
-        # fst, snd = (A, B) if len(A) < len(B) else (B, A)
-        # numerator = len(fst.intersection(snd)) **2
-        numerator = len(A.intersection(B)) ** 2
-        denominator = len(A) * len(B)
-        return numerator / denominator
-
+    # TODO clean this up
+    source = [set(x) for x in source]
     def dfs(index, local_visited):
         local_visited.add(index)
         for neigbor in hash_graph[index]:
@@ -20,7 +12,7 @@ def merge(merge_threshold, source):  # takes a list of clusters
 
     for i in range(len(source)):
         for j in range(i + 1, len(source)):
-            if similarity(source[i], source[j]) > merge_threshold:
+            if (len(source[i].intersection(source[j])) **2) / (len(source[i])*len(source[j])) > merge_threshold:
                 hash_graph[i].add(j)
                 hash_graph[j].add(i)
 

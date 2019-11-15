@@ -25,32 +25,6 @@ def find_best_density_add(cl1, cs: ClusterState):
     return cs.best_change, cs.best_change_score
 
 
-def find_best_mixed_measure_add(cl1, cs: ClusterState):
-    cs.best_change = None
-    cs.best_change_score = cs.cohesiveness
-    original_density = density(cl1, [v for v in cs.current_cluster])
-    best_adder = 0
-    for v in cs.add_candidates:
-
-        numerator = cs.current_cluster_weight_in + \
-                    cs.add_candidates[v]._in
-        denominator = cs.current_cluster_weight_in + \
-                      cs.current_cluster_weight_out + \
-                      cs.add_candidates[v]._out + \
-                      cl1.penalty_value_per_node * (len(cs.current_cluster) + 1)
-        proposed_score = numerator / denominator
-
-        density_gain = density(cl1, [x for x in cs.current_cluster]+[v]) - original_density
-        cohesiveness_gain = proposed_score -cs.cohesiveness
-        adder = density_gain+cohesiveness_gain
-        inward = cs.add_candidates[v].num_edges_to
-        if adder > best_adder:
-            cs.best_change = v
-            cs.best_change_score = proposed_score
-            best_adder = adder
-    return cs.best_change, cs.best_change_score
-
-
 def find_best_mixed_measure_add2(cl1, cs: ClusterState):
     cs.best_change = None
     cs.best_change_score = cs.cohesiveness

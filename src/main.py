@@ -1,7 +1,7 @@
 from src.CL1R.cl1r import CL1_Randomized
 from src.COMMON.cmn import *
-
-
+import pprint as pp
+import collections
 # gavin2006_socioaffinities_rescaled.txt
 # krogan2006_extended.txt
 # collins2007.txt
@@ -9,9 +9,51 @@ from src.COMMON.cmn import *
 if __name__=="__main__":
     pr = cProfile.Profile()
     pr.enable()
+    scores = dict()
+    for dataset in [
+        "gavin2006_socioaffinities_rescaled.txt",
+        "krogan2006_extended.txt",
+        "collins2007.txt",
+        "biogrid_yeast_physical_unweighted+naively_weighted.txt"]:
+        result = CL1_Randomized("../cl1_datasets/datasets",
+                           dataset,
+                           'Dummy_quality',
+                           density_threshold=.15,
+                           merge_threshold=.9,
+                           penalty_value_per_node=10,
+                           randomized_construction_bool=True,
+                           rng_seed=None,
+                           number_of_shakes=0,
+                           number_of_bad_adds=2,
+                           sort_seeds_by="weight",
+                           care_about_cuts=False,
+                           seed_from_all=True,
+                           gsc_appearance_ratio_threshold=.9,
+                           found_gsc_jaccard_threshold=.8,
+                           gold_standard_filename="../cl1_gold_standard/gold_standard/mips_3_100.txt")
+        scores[dataset]=result.scores
+    pp.pprint(scores)
+    improvements = collections.defaultdict(dict)
+    for dataset in scores:
+        for ref in scores[dataset]:
+            improvements[dataset][ref] = -1 + (scores[dataset][ref]['mine'] / scores[dataset][ref]['theirs'])
+    pr.disable()
+    s = io.StringIO()
+    sortby = SortKey.CUMULATIVE
+    ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+    ps.print_stats()
+    print(s.getvalue())
+    pp.pprint(improvements)
+    exit()
+
+
+
+
+    pr = cProfile.Profile()
+    pr.enable()
     # ... do something ...
-    a = CL1_Randomized("../cl1_datasets/datasets",
-                       "krogan2006_extended.txt",
+    scores = CL1_Randomized("../cl1_datasets/datasets",
+                       "collins2007.txt",
                        'Dummy_quality',
                        density_threshold=.15,
                        merge_threshold=.9,
