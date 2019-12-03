@@ -71,6 +71,8 @@ class CL1_Randomized:
         self.density_threshold = density_threshold
         self.merge_threshold = merge_threshold
         self.penalty_value_per_node = penalty_value_per_node
+        self.penalty_value_per_node = .5 * sum([len(self.graph.hash_graph[v]) for v in self.graph.hash_graph])/len(self.graph.hash_graph)
+        self.penalty_value_per_node = sum([sum([self.graph.hash_graph[v][u] for u in self.graph.hash_graph[v]]) for v in self.graph.hash_graph])/len(self.graph.hash_graph)
         self.randomized_construction_bool = randomized_construction_bool
         self.rng_seed = rng_seed
         np.random.seed(rng_seed)
@@ -136,8 +138,8 @@ class CL1_Randomized:
         #     original_construction(self)
         randomized_construction(self)
         asdfa = len(self.initial_clustering)
-        original_construction(self)
-        bsdfa = len(self.initial_clustering)
+        # original_construction(self)
+        # bsdfa = len(self.initial_clustering)
         ############################################################
         # GET THE INITIAL CLUSTER LIST
         ############################################################
@@ -161,13 +163,13 @@ class CL1_Randomized:
         ############################################################
         # ZIPPER MERGE COMPLEXES
         ############################################################
-        print("____________________________zipper_merge_________________________________")
-        time.sleep(1)
-        zipper_merged_clusters = zipper_merge(self, self.initial_cluster_list)
-        # add the zipper merged clusters to the merged cluster list
-        self.merged_cluster_list+=zipper_merged_clusters
-        print("len(zipper_merged_clusters)", len(zipper_merged_clusters))
-        time.sleep(1)
+        # print("____________________________zipper_merge_________________________________")
+        # time.sleep(1)
+        # zipper_merged_clusters = zipper_merge(self, self.initial_cluster_list)
+        # # add the zipper merged clusters to the merged cluster list
+        # self.merged_cluster_list+=zipper_merged_clusters
+        # print("len(zipper_merged_clusters)", len(zipper_merged_clusters))
+        # time.sleep(1)
         ############################################################
         # REMERGE
         ############################################################
@@ -418,15 +420,29 @@ class CL1_Randomized:
                                            reference_file,
                                            complexes_file])
             composite_score = 0
+            acc = -1
+            cws = -1
+            frac= -1
+            mmr = -1
             for line in res.splitlines():
                 print(line)
                 a = str(line)
                 a = a.replace("b", "").replace("=", "").replace("\'", "").split()
                 self.quality_report[a[0]] = float(a[1])
-                if a[0] in ['acc', "cws", "frac"]:
-                    composite_score+=float(a[1])
+                if a[0] in ['acc', "frac","mmr"]:# "cws"]:
+                    val =float(a[1])
+                    composite_score+=val
+                    attribute = a[0]
+                    if attribute=='acc':
+                        acc = val
+                    elif attribute=="cws":
+                        cws= val
+                    elif attribute=='frac':
+                        frac=val
+                    elif attribute =='mmr':
+                        mmr=val
             print(self.run_title)
-            return composite_score
+            return composite_score, acc, cws, frac, mmr
 
         scores = {}
         dataset_to_cyto_default_result = {"gavin2006_socioaffinities_rescaled.txt": "cyto_gavin_paper_defaults.txt",
@@ -435,19 +451,39 @@ class CL1_Randomized:
                                           "biogrid_yeast_physical_unweighted+naively_weighted.txt":"cyto_biog+nW_cl1_fromUnused_overlapPoint8.txt"
         }
         if self.original_graph_filename in dataset_to_cyto_default_result:
-            scores["mips"]={}
-            scores["sgd"]={}
+            scores["mips"]={"mine":{}, "theirs":{}}
+            scores["sgd"]={"mine":{}, "theirs":{}}
             print("using mips_3_100.txt")
             print("Mine")
-            scores["mips"]['mine'] = get_quality(self.gold_standard_filename, "../complexes/" + self.output_filename)
+            scores["mips"]['mine']["total"],\
+            scores["mips"]['mine']["acc"],\
+            scores["mips"]['mine']["cws"], \
+            scores["mips"]['mine']["frac"],\
+            scores["mips"]['mine']["mmr"]\
+                = get_quality(self.gold_standard_filename, "../complexes/" + self.output_filename)
             print("Theirs")
-            scores["mips"]['theirs'] =get_quality(self.gold_standard_filename, "../cl1_datasets/datasets/%s"%dataset_to_cyto_default_result[self.original_graph_filename])
+            scores["mips"]['theirs']["total"],\
+            scores["mips"]['theirs']["acc"],\
+            scores["mips"]['theirs']["cws"],\
+            scores["mips"]['theirs']["frac"],\
+            scores["mips"]['theirs']["mmr"]\
+                =get_quality(self.gold_standard_filename, "../cl1_datasets/datasets/%s"%dataset_to_cyto_default_result[self.original_graph_filename])
             self.gold_standard_filename = "../cl1_gold_standard/gold_standard/sgd.txt"
             print("using sgd.txt")
             print("Mine")
-            scores["sgd"]['mine'] =get_quality(self.gold_standard_filename, "../complexes/" + self.output_filename)
+            scores["sgd"]['mine']["total"], \
+            scores["sgd"]['mine']["acc"], \
+            scores["sgd"]['mine']["cws"], \
+            scores["sgd"]['mine']["frac"], \
+            scores["sgd"]['mine']["mmr"] \
+                =get_quality(self.gold_standard_filename, "../complexes/" + self.output_filename)
             print("Theirs")
-            scores["sgd"]['theirs']=get_quality(self.gold_standard_filename, "../cl1_datasets/datasets/%s"%dataset_to_cyto_default_result[self.original_graph_filename])
+            scores["sgd"]['theirs']["total"], \
+            scores["sgd"]['theirs']["acc"], \
+            scores["sgd"]['theirs']["cws"], \
+            scores["sgd"]['theirs']["frac"], \
+            scores["sgd"]['theirs']["mmr"] \
+                =get_quality(self.gold_standard_filename, "../cl1_datasets/datasets/%s"%dataset_to_cyto_default_result[self.original_graph_filename])
 
 
         ############################################################
@@ -471,7 +507,7 @@ class CL1_Randomized:
         f = open(f_name, 'wb')
         title = {'title': "pickles/pickle+"+self.run_title}
         pickle.dump(title, f)
-        print(asdfa, bsdfa)
+        # print(asdfa, bsdfa)
         print(scores)
         self.scores = scores
 

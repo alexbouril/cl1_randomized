@@ -2,19 +2,19 @@ from src.CL1R.cl1r import CL1_Randomized
 from src.COMMON.cmn import *
 import pprint as pp
 import collections
-# gavin2006_socioaffinities_rescaled.txt
-# krogan2006_extended.txt
-# collins2007.txt
-# biogrid_yeast_physical_unweighted+naively_weighted.txt
+import numpy as np
+import matplotlib.pyplot as plt
+import re
 if __name__=="__main__":
     pr = cProfile.Profile()
     pr.enable()
     scores = dict()
-    for dataset in [
-        "gavin2006_socioaffinities_rescaled.txt",
-        "krogan2006_extended.txt",
-        "collins2007.txt",
-        "biogrid_yeast_physical_unweighted+naively_weighted.txt"]:
+    datasets=[]
+    datasets.append("gavin2006_socioaffinities_rescaled.txt")
+    datasets.append("krogan2006_extended.txt")
+    datasets.append("collins2007.txt")
+    datasets.append("biogrid_yeast_physical_unweighted+naively_weighted.txt")
+    for dataset in datasets:
         result = CL1_Randomized("../cl1_datasets/datasets",
                            dataset,
                            'Dummy_quality',
@@ -36,14 +36,111 @@ if __name__=="__main__":
     improvements = collections.defaultdict(dict)
     for dataset in scores:
         for ref in scores[dataset]:
-            improvements[dataset][ref] = -1 + (scores[dataset][ref]['mine'] / scores[dataset][ref]['theirs'])
+            improvements[dataset][ref] = -1 + (scores[dataset][ref]['mine']['total'] / scores[dataset][ref]['theirs']['total'])
+
     pr.disable()
     s = io.StringIO()
     sortby = SortKey.CUMULATIVE
     ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
     ps.print_stats()
     print(s.getvalue())
+    pp.pprint(scores)
     pp.pprint(improvements)
+    #
+    # import matplotlib.pyplot as plt
+    # for gold_standard in ['mips', 'sgd']:
+    #     N = len(datasets)
+    #     fracs = tuple([scores[d][gold_standard]["mine"]['frac'] for d in datasets])
+    #     accs = tuple([scores[d][gold_standard]["mine"]['acc'] for d in datasets])
+    #     mmrs = tuple([scores[d][gold_standard]["mine"]['mmr'] for d in datasets])
+    #     ind = np.arange(N)  # the x locations for the groups
+    #     width = 0.35  # the width of the bars: can also be len(x) sequence
+    #     p1 = plt.bar(ind, fracs, width)
+    #     p2 = plt.bar(ind, accs, width,
+    #                  bottom=fracs)
+    #     p3 = plt.bar(ind, mmrs, width,
+    #                  bottom=fracs)
+    #     plt.ylabel('Scores')
+    #     plt.title('Scores')
+    #     plt.xticks(ind, (d for d in datasets))
+    #     plt.yticks(np.arange(0, 2, .1))
+    #     plt.legend((p1[0], p2[0], p3[0]), ('Fraction Matched', 'Accuracy', 'Maximum Matching Ratio'))
+    #     plt.show()
+
+
+#########################################
+    datasets = tuple(datasets)
+    segments = 3
+
+    # multi-dimensional data
+    for gold_standard in ['mips', 'sgd']:
+        elements = 2*len(datasets)
+        fracs = np.empty((elements,))
+        accs = np.empty((elements,))
+        mmrs = np.empty((elements,))
+        for measure, result in zip(['frac', 'acc', "mmr"],[fracs, accs, mmrs]):
+            mine = [scores[d][gold_standard]["mine"][measure] for d in datasets]
+            theirs = [scores[d][gold_standard]["theirs"][measure] for d in datasets]
+            result[0::2] = theirs
+            result[1::2] = mine
+
+        data =np.array( [fracs,
+                         accs,
+                         mmrs
+                         ])
+        section_labels = data.transpose()
+        print(data)
+        print(section_labels)
+        y_pos = np.arange(len(datasets)*2)
+
+        fig = plt.figure(figsize=(10, 8))
+        ax = fig.add_subplot(111)
+        colors = ['#7bdb7c','#f0c37a','#6face8']
+        patch_handles = []
+        # left alignment of data starts at zero
+        left = np.zeros(len(datasets*2))
+        for i, d in enumerate(data):
+            print(y_pos, d)
+            to_append = ax.barh(y_pos, d, color=colors[i % len(colors)],align='center', left=left)
+            patch_handles.append(to_append)
+            left += d
+        print("patch_handles",patch_handles)
+        # search all of the bar segments and annotate
+        for j in range(len(patch_handles)):
+            for i, patch in enumerate(patch_handles[j].get_children()):
+                bl = patch.get_xy()
+                x = 0.5 * patch.get_width() + bl[0]
+                y = 0.5 * patch.get_height() + bl[1]
+                print(patch.get_height(), patch.get_width())
+                ax.text(x, y, "%s" % (str(section_labels[i, j])), ha='center')
+                if j+1 == len(patch_handles):
+                    x = patch.get_width() + bl[0]
+                    y = 0.5*patch.get_height() + bl[1]
+                    ax.text(x,
+                            y,
+                            "%s" % (np.sum(section_labels[i]).round(decimals=3)),
+                            ha='left',
+                            bbox={"facecolor":"red", "alpha":.5})
+
+        ax.set_yticks(y_pos)
+        y_tick_labels = []
+        for d in datasets:
+            short_name = re.split(r'[\._]', d)[0]
+            y_tick_labels.append(short_name+" THEIRS")
+            y_tick_labels.append(short_name+" MINE")
+        ax.set_yticklabels(y_tick_labels)
+        ax.set_xlabel('Composite Score')
+        plt.title('Composite Scores Using %s'%gold_standard.upper())
+        plt.legend((patch_handles[0], patch_handles[1], patch_handles[2]),
+                   ('Fraction Matched', 'Accuracy', 'Maximum Matching Ratio'),
+                   loc='upper left',
+                   framealpha=.25,
+                   bbox_to_anchor=(1,1))
+
+        plt.show()
+
+
+
     exit()
 
 

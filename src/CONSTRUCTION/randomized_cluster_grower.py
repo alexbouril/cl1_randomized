@@ -196,7 +196,6 @@ def rcg(cl1, cs, current_cluster_construction_log):
     cl1.construction_log[tuple([protein for protein in best_seen_cs.current_cluster])] = current_cluster_construction_log
     print("best_seen", best_seen_cs.cohesiveness,[v for v in best_seen_cs.current_cluster])
     print("CLUSTER #%s: %s" % (str(len(cl1.initial_clustering)), str([vertex for vertex in best_seen_cs.current_cluster])))
-    print("COHESIVENESS: ", best_seen_cs.cohesiveness)
-    print("LENGTH: ", len(cs.current_cluster))
-    print("number_of_calls_to_find_best_2_neighborhood_add: ",number_of_calls_to_find_best_2_neighborhood_add)
+    print("COHESIVENESS: ", best_seen_cs.cohesiveness, " LENGTH: ", len(cs.current_cluster))
+    # print("number_of_calls_to_find_best_2_neighborhood_add: ",number_of_calls_to_find_best_2_neighborhood_add)
     return best_seen_cs.current_cluster
