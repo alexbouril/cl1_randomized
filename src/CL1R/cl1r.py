@@ -39,8 +39,13 @@ class CL1_Randomized:
                  density_threshold = .3,
                  merge_threshold = .8,
                  penalty_value_per_node = 2,
+                 use_original_penalty=True,
                  randomized_construction_bool= False,
                  rng_seed = None,
+                 use_mixed_measure_find=False,
+                 number_consecutive_mixed_measure_finds=1,
+                 use_suboptimal_adds=False,
+                 number_consecutive_suboptimal_adds=1,
                  number_of_shakes = 0,
                  number_of_bad_adds = 0,
                  bad_add_probability = 0,
@@ -51,7 +56,9 @@ class CL1_Randomized:
                  gsc_appearance_ratio_threshold=1,
                  gsc_appearance_density_threshold = 0,
                  found_gsc_jaccard_threshold = 1,
-                 gold_standard_filename = ""):
+                 gold_standard_filename = "",
+                 save_self=False,
+                 process=True):
         self.time_of_run = str(datetime.datetime.now()).replace(" ","_").replace(".",":")
         self.run_title = original_graph_filename.replace(".txt", "")+"+"+self.time_of_run
         self.argument_dict = locals()
@@ -70,12 +77,18 @@ class CL1_Randomized:
         self.output_filename = "complexes+" + self.run_title+".txt"
         self.density_threshold = density_threshold
         self.merge_threshold = merge_threshold
-        self.penalty_value_per_node = penalty_value_per_node
-        self.penalty_value_per_node = .5 * sum([len(self.graph.hash_graph[v]) for v in self.graph.hash_graph])/len(self.graph.hash_graph)
-        self.penalty_value_per_node = sum([sum([self.graph.hash_graph[v][u] for u in self.graph.hash_graph[v]]) for v in self.graph.hash_graph])/len(self.graph.hash_graph)
+        if use_original_penalty:
+            self.penalty_value_per_node = penalty_value_per_node
+        else:
+            self.penalty_value_per_node = .5 * sum([len(self.graph.hash_graph[v]) for v in self.graph.hash_graph])/len(self.graph.hash_graph)
+            self.penalty_value_per_node = sum([sum([self.graph.hash_graph[v][u] for u in self.graph.hash_graph[v]]) for v in self.graph.hash_graph])/len(self.graph.hash_graph)
         self.randomized_construction_bool = randomized_construction_bool
         self.rng_seed = rng_seed
         np.random.seed(rng_seed)
+        self.use_mixed_measure_find = use_mixed_measure_find
+        self.number_consecutive_mixed_measure_finds = number_consecutive_mixed_measure_finds
+        self.use_suboptimal_adds=use_suboptimal_adds
+        self.number_consecutive_suboptimal_adds=number_consecutive_suboptimal_adds
         self.rng_initial_state = np.random.get_state()
         self.number_of_shakes = number_of_shakes
         self.number_of_bad_adds = number_of_bad_adds
@@ -90,6 +103,7 @@ class CL1_Randomized:
         self.gsc_appearance_density_threshold = gsc_appearance_density_threshold
         self.found_gsc_jaccard_threshold = found_gsc_jaccard_threshold
         self.gold_standard_filename = gold_standard_filename
+        self.save_self = save_self
         ############################################################
         # SET UP THE LOGGER
         ############################################################
@@ -125,7 +139,8 @@ class CL1_Randomized:
         ############################################################
         # RUN THE ALGORITHM
         ############################################################
-        self.process()
+        if process:
+            self.process()
 
     def process(self):
         ############################################################
@@ -137,7 +152,8 @@ class CL1_Randomized:
         # else:
         #     original_construction(self)
         randomized_construction(self)
-        asdfa = len(self.initial_clustering)
+        # self.seed_from_all=False
+        # randomized_construction(self)
         # original_construction(self)
         # bsdfa = len(self.initial_clustering)
         ############################################################
@@ -221,7 +237,6 @@ class CL1_Randomized:
                 f.write(s + "\n")
                 counter += 1
             f.close()
-
         write_final_clusters(self.densityThreshold_sizeThreshold_merged_cluster_list,
                              "../complexes/" + self.output_filename)
         ############################################################
@@ -497,17 +512,17 @@ class CL1_Randomized:
         ############################################################
         # STORE THE CURRENT OBJECT USING PICKLE
         ############################################################
-        def store_self():
-            f_name = "../pickles/pickle+" + self.run_title
-            f = open(f_name, 'ab')
-            pickle.dump(self, f)
-            f.close()
-        store_self()
-        f_name = "../pickles/most_recent"
-        f = open(f_name, 'wb')
-        title = {'title': "pickles/pickle+"+self.run_title}
-        pickle.dump(title, f)
-        # print(asdfa, bsdfa)
+        if self.save_self:
+            def store_self():
+                f_name = "../pickles/pickle+" + self.run_title
+                f = open(f_name, 'ab')
+                pickle.dump(self, f)
+                f.close()
+            store_self()
+            f_name = "../pickles/most_recent"
+            f = open(f_name, 'wb')
+            title = {'title': "pickles/pickle+"+self.run_title}
+            pickle.dump(title, f)
         print(scores)
         self.scores = scores
 

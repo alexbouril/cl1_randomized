@@ -49,9 +49,7 @@ def rcg(cl1, cs, current_cluster_construction_log):
     ############################################################
     best_seen_cs = cs.make_backup()
     remove_counter = 0
-    number_of_calls_to_find_best_2_neighborhood_add = 0
-    tries_2_neighborhood = 0
-    max_tries = 2
+    # todo: reintroduce 2neighborhood ... random walks to speed up?
     # TODO: evaluate if it makes sense to use the remove_counter as a condition
     while (cs.add_candidates or cs.remove_candidates) and \
             abs(cs.last_failed_remove_round_no - cs.last_failed_add_round_no) != 1\
@@ -61,81 +59,34 @@ def rcg(cl1, cs, current_cluster_construction_log):
         # CONSIDER ADDING A VERTEX ON THE BOUNDARY
         ############################################################
         if  (decider <= .5 or cs.last_failed_remove_round_no == cs.round_no) and cs.last_failed_add_round_no != cs.round_no:
-            if cs.round_no %7==1:
+            if cl1.use_suboptimal_adds and cs.round_no %7==1:
                 # TODO: should we only pad with suboptimal adds if there is not an add that increases the cohesiveness
-                # for counter in range(4):
-                #     try_step(cs, best_seen_cs,
-                #              find_best_suboptimal_add,
-                #              add,
-                #              current_cluster_construction_log,
-                #              "adding")
                 try_step(cs, best_seen_cs,
                              find_best_suboptimal_add,
                              add,
                              current_cluster_construction_log,
                              "adding",
-                            number_of_steps=4)
-            elif cs.round_no%5==0 and len(cs.current_cluster)>4:
+                            number_of_steps=cl1.number_consecutive_suboptimal_adds)
+            elif cl1.use_mixed_measure_find and cs.round_no%5==0 and len(cs.current_cluster)>4:
                 try_step(cs, best_seen_cs,
                          find_best_mixed_measure_add2,
                          add,
                          current_cluster_construction_log,
-                         "adding")
-                # for counter in range(3):
-                #     try_step(cs, best_seen_cs,
-                #              find_best_suboptimal_add,
-                #              add,
-                #              current_cluster_construction_log,
-                #              "adding")
+                         "adding",
+                         number_of_steps=cl1.number_consecutive_mixed_measure_finds)
                 try_step(cs, best_seen_cs,
                              find_best_suboptimal_add,
                              add,
                              current_cluster_construction_log,
                              "adding",
                             number_of_steps=3)
-            # elif len(cs.current_cluster) > 5 and cs.round_no % 20 == 1:
-            #     # ######################################################################
-            #     # # JUST FOR COMPARISON
-            #     # #####################################################################
-            #     # find_best_add(cl1, cs)
-            #     # if cs.best_change is None:
-            #     #     print("NO REGULAR ADD AVAILABLE")
-            #     # if cs.best_change:
-            #     #     print("REGULAR BEST CHANGE AVAILABLE WITH SCORE OF: %s" % str(cs.best_change_score))
-            #     ######################################################################
-            #     # NOW FOR THE REAL CALL
-            #     #####################################################################
-            #     number_of_calls_to_find_best_2_neighborhood_add+=1
-            #     try_step(cs, best_seen_cs,
-            #              careful_find_best_2neighborhood_add,
-            #              add,
-            #              current_cluster_construction_log,
-            #              "adding")
-            #     if cs.best_change:
-            #         ######################################################################
-            #         # TRY TO ADD SUBOPTIMALLY A FEW TIMES
-            #         #####################################################################
-            #         for counter in range(4):
-            #             try_step(cs, best_seen_cs,
-            #                     find_best_suboptimal_add,
-            #                     add,
-            #                     current_cluster_construction_log,
-            #                     "adding")
-            #         ######################################################################
-            #         # TRY TO ADD REGULARLY A FEW TIMES
-            #         #####################################################################
-            #         for counter in range(2):
-            #             try_step(cs, best_seen_cs,
-            #                     find_best_add,
-            #                     add,
-            #                     current_cluster_construction_log,
-            #                     "adding")
             else:
                 try_step(cs, best_seen_cs,
                          find_best_add,
                          add,
                          current_cluster_construction_log,
-                         "adding")
+                         "adding",
+                         number_of_steps=2)
         ############################################################
         # CONSIDER REMOVING A VERTEX ON THE BOUNDARY
         ############################################################
@@ -145,45 +96,6 @@ def rcg(cl1, cs, current_cluster_construction_log):
                      remove,
                      current_cluster_construction_log,
                      "removing")
-        # if tries_2_neighborhood < max_tries and  abs(cs.last_failed_remove_round_no - cs.last_failed_add_round_no) == 1:
-        #     tries_2_neighborhood+=1
-        #     # ######################################################################
-        #     # # JUST FOR COMPARISON
-        #     # #####################################################################
-        #     # find_best_add(cl1, cs)
-        #     # if cs.best_change is None:
-        #     #     print("NO REGULAR ADD AVAILABLE")
-        #     # if cs.best_change:
-        #     #     print("REGULAR BEST CHANGE AVAILABLE WITH SCORE OF: %s" % str(cs.best_change_score))
-        #     ######################################################################
-        #     # NOW FOR THE REAL CALL
-        #     #####################################################################
-        #     number_of_calls_to_find_best_2_neighborhood_add+=1
-        #     try_step(cs, best_seen_cs,
-        #              careful_find_best_2neighborhood_add,
-        #              add,
-        #              current_cluster_construction_log,
-        #              "adding")
-        #     if cs.best_change:
-        #         ######################################################################
-        #         # TRY TO ADD SUBOPTIMALLY A FEW TIMES
-        #         #####################################################################
-        #         for counter in range(4):
-        #             try_step(cs, best_seen_cs,
-        #                     find_best_suboptimal_add,
-        #                     add,
-        #                     current_cluster_construction_log,
-        #                     "adding")
-        #         ######################################################################
-        #         # TRY TO ADD REGULARLY A FEW TIMES
-        #         #####################################################################
-        #         for counter in range(2):
-        #             try_step(cs, best_seen_cs,
-        #                     find_best_add,
-        #                     add,
-        #                     current_cluster_construction_log,
-        #                     "adding")
-        # # TODO: make Bad Step work with the new object schema
     #########################################
     # in the case that the current_cluster is not the best one that we saw, revert to the best one that we saw
     ##########################################

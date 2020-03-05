@@ -2,7 +2,7 @@ from src.COMMON.cmn import *
 from src.CONSTRUCTION.initialize import *
 from src.CLUSTER_STATE.cluster_state import *
 from src.CONSTRUCTION.randomized_cluster_grower import rcg
-
+import src.CONSTRUCTION.kmeans_clusters as kmeans_clusters
 
 def randomized_construction(cl1):
     """
@@ -26,6 +26,7 @@ def randomized_construction(cl1):
             index += 1
             continue
         else:
+            # if kmeans_clusters.biogrid_clusters[index] in [1]:
             current_cluster_construction_log = []
             cl1.initial_clustering_seeds.append(current_seed)
             current_cluster_construction_log.append(Action("seed", current_seed))
@@ -34,15 +35,10 @@ def randomized_construction(cl1):
             ############################################################
             current_cluster, remove_candidates, add_candidates, current_score, current_cluster_weight_in, current_cluster_weight_out = \
                 initialize_complex(cl1, current_seed)
-            # current_cluster_construction_log.append(
-            #     ClusterState(current_cluster, add_candidates, remove_candidates, current_score))
-
             last_failed_add_round_no = -777
             last_failed_remove_round_no = -666
             round_no = 0
-
             local_number_of_shakes_remaining = cl1.number_of_shakes
-
             cs = ClusterState(current_cluster,
                               add_candidates,
                               remove_candidates,
@@ -56,16 +52,7 @@ def randomized_construction(cl1):
             ############################################################
             # Grow the cluster
             ############################################################
-            """
-            Commented out code allows to see memory allocation
-            """
-            # tracemalloc.start()
             new_cluster = rcg(cl1, cs, current_cluster_construction_log)
-            # snapshot = tracemalloc.take_snapshot()
-            # top_stats = snapshot.statistics('lineno')
-            # print("[ Top 10 ]")
-            # for stat in top_stats[:10]:
-            #     print(stat)
             ############################################################
             # add the cluster
             ############################################################
@@ -79,4 +66,5 @@ def randomized_construction(cl1):
                 considered_vertices.add(current_seed)
                 print("len(considered_vertices): ",len(considered_vertices))
             index+=1
+
 

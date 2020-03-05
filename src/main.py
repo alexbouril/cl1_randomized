@@ -5,6 +5,17 @@ import collections
 import numpy as np
 import matplotlib.pyplot as plt
 import re
+import time
+import os
+import pprint
+import sys
+run_id = time.strftime("run_%Y_%m_%d-%H_%M_%S")
+dir_path = "../runs/"+run_id
+os.mkdir(path=dir_path, mode=0o755)
+notes_path = dir_path+"/notes"
+notes_file = open(notes_path, 'a')
+# sorting by weight vs sorting by degree
+# penalty value fi
 if __name__=="__main__":
     pr = cProfile.Profile()
     pr.enable()
@@ -14,15 +25,20 @@ if __name__=="__main__":
     datasets.append("krogan2006_extended.txt")
     datasets.append("collins2007.txt")
     datasets.append("biogrid_yeast_physical_unweighted+naively_weighted.txt")
-    for dataset in datasets:
+    for i, dataset in enumerate(datasets):
         result = CL1_Randomized("../cl1_datasets/datasets",
                            dataset,
                            'Dummy_quality',
                            density_threshold=.15,
                            merge_threshold=.9,
-                           penalty_value_per_node=10,
+                           penalty_value_per_node=2,
+                           use_original_penalty=False,
                            randomized_construction_bool=True,
                            rng_seed=None,
+                           use_mixed_measure_find=True,
+                           number_consecutive_mixed_measure_finds=1,
+                           use_suboptimal_adds = True,
+                           number_consecutive_suboptimal_adds=4,
                            number_of_shakes=0,
                            number_of_bad_adds=2,
                            sort_seeds_by="weight",
@@ -30,14 +46,20 @@ if __name__=="__main__":
                            seed_from_all=True,
                            gsc_appearance_ratio_threshold=.9,
                            found_gsc_jaccard_threshold=.8,
-                           gold_standard_filename="../cl1_gold_standard/gold_standard/mips_3_100.txt")
+                           gold_standard_filename="../cl1_gold_standard/gold_standard/mips_3_100.txt",
+                           save_self=False)
+        if i==0:
+            notes_file.write(pprint.pformat(result.argument_dict, indent=4)+"\n")
+        notes_file.write(result.run_title+"\n\n")
         scores[dataset]=result.scores
     pp.pprint(scores)
     improvements = collections.defaultdict(dict)
     for dataset in scores:
         for ref in scores[dataset]:
             improvements[dataset][ref] = -1 + (scores[dataset][ref]['mine']['total'] / scores[dataset][ref]['theirs']['total'])
-
+    notes_file.write(str(datasets)+"\n\n")
+    notes_file.write(pprint.pformat(scores, indent=4)+"\n\n")
+    notes_file.write(pprint.pformat(improvements, indent=4)+"\n\n")
     pr.disable()
     s = io.StringIO()
     sortby = SortKey.CUMULATIVE
@@ -91,7 +113,7 @@ if __name__=="__main__":
         section_labels = data.transpose()
         print(data)
         print(section_labels)
-        y_pos = np.arange(len(datasets)*2)
+        y_pos = np.arange(len(datasets)*2).astype(float)
 
         fig = plt.figure(figsize=(10, 8))
         ax = fig.add_subplot(111)
@@ -99,8 +121,12 @@ if __name__=="__main__":
         patch_handles = []
         # left alignment of data starts at zero
         left = np.zeros(len(datasets*2))
+        print(y_pos)
+        for i in range(len(y_pos)):
+            if i%2==1:
+                y_pos[i]-=.1
         for i, d in enumerate(data):
-            print(y_pos, d)
+            print('y_pos: ', y_pos, d)
             to_append = ax.barh(y_pos, d, color=colors[i % len(colors)],align='center', left=left)
             patch_handles.append(to_append)
             left += d
@@ -137,6 +163,8 @@ if __name__=="__main__":
                    framealpha=.25,
                    bbox_to_anchor=(1,1))
 
+        plt.savefig(dir_path+"/"+gold_standard+"_bar_chart")
+
         plt.show()
 
 
@@ -164,7 +192,8 @@ if __name__=="__main__":
                        seed_from_all=True,
                        gsc_appearance_ratio_threshold=.9,
                        found_gsc_jaccard_threshold=.8,
-                       gold_standard_filename="../cl1_gold_standard/gold_standard/mips_3_100.txt")
+                       gold_standard_filename="../cl1_gold_standard/gold_standard/mips_3_100.txt",
+                       save_self=False)
 
     pr.disable()
     s = io.StringIO()

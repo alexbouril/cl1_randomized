@@ -35,7 +35,8 @@ def is_numeric(x):
 
 def matching_score(set1, set2):
     """Calculates the matching score between two sets (e.g., a cluster and a complex)
-    using the approach of Bader et al, 2001"""
+    using the approach of Bader et al, 2001
+    This matching score (overlap) is referred to in the paper as omega(set1, set2)"""
     return len(set1.intersection(set2))**2 / (float(len(set1)) * len(set2))
 
 ###########################################################################
@@ -45,6 +46,11 @@ def accuracy(reference, predicted):
             positive_predictive_value(reference, predicted)) ** 0.5
 
 def clusteringwise_sensitivity(reference, predicted):
+    """Given n reference and m predicted complexes,
+    let t ij denote the number of proteins that are found both in
+    reference complex i and predicted complex j,
+    and let n i denote the number of proteins in
+    reference complex i."""
     num, den = 0., 0.
     for complex in reference:
         den += len(complex)
@@ -83,25 +89,23 @@ def clusteringwise_separation(reference, predicted):
 def fraction_matched(reference, predicted, score_threshold=0.25):
     result = 0
 
-    for id1, c1 in enumerate(reference):
-        for id2, c2 in enumerate(predicted):
+    for c1 in reference:
+        for c2 in predicted:
             score = matching_score(c1, c2)
             if score > score_threshold:
                 result += 1
                 break
-
     return result / len(reference)
 
 def maximum_matching_ratio(reference, predicted, score_threshold=0.2):
     scores = {}
-
     n = len(reference)
     for id1, c1 in enumerate(reference):
         for id2, c2 in enumerate(predicted):
-            score = matching_score(c1, c2)
+            score = matching_score(c1, c2)  # recall that matching score is aka overlap
             if score <= score_threshold:
                 continue
-
+            # use (id1, id2+n) as key, value is score
             scores[id1, id2+n] = score
 
     input = [(v1, v2, w) for (v1, v2), w in scores.iteritems()]
@@ -110,6 +114,11 @@ def maximum_matching_ratio(reference, predicted, score_threshold=0.2):
     return score / n
 
 def positive_predictive_value(reference, predicted):
+    """Given n reference and m predicted complexes,
+    let t ij denote the number of proteins that are found both in
+    reference complex i and predicted complex j,
+    and let n i denote the number of proteins in
+    reference complex i."""
     num, den = 0., 0.
     for cluster in predicted:
         isects = [len(cluster.intersection(complex)) for complex in reference]

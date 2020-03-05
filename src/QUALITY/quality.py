@@ -1,4 +1,4 @@
-def cohesiveness(cl1, list_of_proteins) -> float:
+def cohesiveness(cl1, list_of_proteins, only_allow_good_queries = True) -> float:
     """Returns the cohesiveness of a potential complex.
 
     Searches the neighbors of each protein in the list, keeping track of weights of
@@ -12,6 +12,8 @@ def cohesiveness(cl1, list_of_proteins) -> float:
     weight_in = 0
     weight_out = 0
     for source in list_of_proteins:
+        if not only_allow_good_queries and source not in cl1.graph.hash_graph:
+            continue
         for target in cl1.graph.hash_graph[source]:
             edge_weight = cl1.graph.hash_graph[source][target]
             if target in list_of_proteins:
@@ -21,6 +23,8 @@ def cohesiveness(cl1, list_of_proteins) -> float:
     # TODO: check that all is good with the calculation
     return weight_in / \
            ((weight_in + weight_out)+cl1.penalty_value_per_node*len(list_of_proteins))
+
+
 
 def num_edges_inside(cl1, list_of_proteins):
     num_edges = 0
@@ -32,7 +36,7 @@ def num_edges_inside(cl1, list_of_proteins):
     return num_edges
 
 
-def density(self, list_of_proteins):
+def density(cl1, list_of_proteins, only_allow_good_queries = True):
     # TODO: check that density is calculated with degree, not weights
     """Returns the density of a potential complex.
 
@@ -45,9 +49,11 @@ def density(self, list_of_proteins):
     """
     in_weight = 0
     for source in list_of_proteins:
-        for target in self.graph.hash_graph[source]:
+        if not only_allow_good_queries and source not in cl1.graph.hash_graph:
+            continue
+        for target in cl1.graph.hash_graph[source]:
             if target in list_of_proteins:
-                in_weight += self.graph.hash_graph[source][target]
+                in_weight += cl1.graph.hash_graph[source][target]
     n = len(list_of_proteins)
     # TODO: check that authors didn't mean n* (n+1)/2
     # TODO: check that authors want to double count edges

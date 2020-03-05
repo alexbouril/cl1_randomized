@@ -111,11 +111,26 @@ def remove(cl1, cs):
         collection[v]._out += edge_weight
         collection[v].num_edges_to -= 1
         collection[v].num_edges_from += 1
-        update_v_sanity_check(collection,v)
+        # update_v_sanity_check(collection,v)
+
     for v in cl1.graph.hash_graph[cs.best_change]:
         edge_weight = cl1.graph.hash_graph[cs.best_change][v]
         if v in cs.remove_candidates:
             update_v(v, edge_weight, cs.remove_candidates)
+            ############################################################################################################
+            ############################################################################################################
+            ############################################################################################################
+            if cs.remove_candidates[v].num_edges_to==0:
+                for neighbor in cl1.graph.hash_graph[v]:
+                    other_edge_weight = cl1.graph.hash_graph[neighbor][v]
+                    if neighbor in cs.add_candidates:
+                        update_v(neighbor, other_edge_weight, cs.add_candidates)
+                        if cs.add_candidates[neighbor].num_edges_to==0:
+                            del cs.add_candidates[neighbor]
+            ############################################################################################################
+            ############################################################################################################
+            ############################################################################################################
+
         if v in cs.current_cluster:
             update_v(v, edge_weight, cs.current_cluster)
             if cs.current_cluster[v].num_edges_from == 1:
